@@ -1,5 +1,7 @@
 import useOutsideClick from '@/utils/hooks/useOutsideClick';
+import { signOut } from '@/utils/supabase/actions';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { PiDotsThreeCircle } from 'react-icons/pi';
 
@@ -8,6 +10,7 @@ interface DropdownProps {
 }
 
 const Dropdown = ({ isOpen = false }: DropdownProps) => {
+  const router = useRouter();
   const [open, setOpen] = useState(isOpen);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -15,8 +18,9 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
     setOpen(false)
   );
 
-  const handleLogout = () => {
-    // logout logic
+  const handleLogout = async () => {
+    await signOut();
+    router.replace('/');
   };
 
   return (
