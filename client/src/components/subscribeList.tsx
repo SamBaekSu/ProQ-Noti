@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import useOutsideClick from '@/utils/hooks/useOutsideClick';
+import useOutsideClick from '@/hooks/useOutsideClick';
 import IngameBox from '@/components/IngameBox';
 import { gamerInfo, ISubscribeItem } from '@/types';
 import { useSelector } from 'react-redux';

@@ -1,6 +1,6 @@
 import { useToast } from '@/hooks/use-toast';
 import { isLoggedIn as selectIsLoggedIn, storeLogout } from '@/store/authSlice';
-import useOutsideClick from '@/utils/hooks/useOutsideClick';
+import useOutsideClick from '@/hooks/useOutsideClick';
 import { signOut } from '@/utils/supabase/actions';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
