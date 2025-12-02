@@ -19,7 +19,10 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="flex justify-center w-full min-h-screen">
+      <body
+        className="flex justify-center w-full min-h-screen"
+        suppressHydrationWarning
+      >
         <Providers>
           <AuthProvider />
           <LayoutRouter>{children}</LayoutRouter>
