@@ -8,10 +8,12 @@ const spellIdToFileName: Record<number, string> = {
   12: 'summoner_teleport_new',
   13: 'summonermana',
   14: 'summonerignite',
-  21: 'summonerbarrier'
+  21: 'summonerbarrier',
+  32: 'summoner_mark'
 };
 
-export const getSpellName = (id: number): string | undefined => spellIdToFileName[id];
+export const getSpellName = (id: number): string | undefined =>
+  spellIdToFileName[id];
 
 const perkIdToPath: Record<number, string> = {
   8000: 'styles/7201_Precision',
@@ -42,11 +44,12 @@ const perkIdToPath: Record<number, string> = {
 };
 
 export const getRunePath = (perkId: number): string =>
-  (perkIdToPath[perkId]?.toLowerCase()) || `perk-images/perks/${perkId}.png`;
+  perkIdToPath[perkId]?.toLowerCase() || `perk-images/perks/${perkId}.png`;
 
 export const gameModeMap = {
-  CLASSIC: "솔로랭크",
-  CHERRY: "아레나",
-  ARAM: "칼바람",
-  URF: "우르프"
+  CLASSIC: '솔로랭크',
+  CHERRY: '아레나',
+  ARAM: '칼바람',
+  URF: '우르프',
+  KIWI: '증강 칼바람'
 };
