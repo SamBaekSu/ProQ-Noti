@@ -94,6 +94,7 @@ export type Database = {
           is_main: boolean | null;
           is_online: boolean | null;
           last_checked_at: string | null;
+          last_match_id: string | null;
           last_online: string | null;
           pro_user_id: number;
           puuid: string;
@@ -108,6 +109,7 @@ export type Database = {
           is_main?: boolean | null;
           is_online?: boolean | null;
           last_checked_at?: string | null;
+          last_match_id?: string | null;
           last_online?: string | null;
           pro_user_id: number;
           puuid: string;
@@ -122,6 +124,7 @@ export type Database = {
           is_main?: boolean | null;
           is_online?: boolean | null;
           last_checked_at?: string | null;
+          last_match_id?: string | null;
           last_online?: string | null;
           pro_user_id?: number;
           puuid?: string;
@@ -144,6 +147,7 @@ export type Database = {
         Row: {
           id: number;
           is_starter: boolean;
+          league: string | null;
           position_number: number;
           pro_name: string;
           team_id: number | null;
@@ -151,6 +155,7 @@ export type Database = {
         Insert: {
           id?: number;
           is_starter?: boolean;
+          league?: string | null;
           position_number?: number;
           pro_name: string;
           team_id?: number | null;
@@ -158,6 +163,7 @@ export type Database = {
         Update: {
           id?: number;
           is_starter?: boolean;
+          league?: string | null;
           position_number?: number;
           pro_name?: string;
           team_id?: number | null;
@@ -257,10 +263,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      clean_old_cron_job_run_details: {
-        Args: Record<PropertyKey, never>;
-        Returns: undefined;
-      };
+      clean_old_cron_job_run_details: { Args: never; Returns: undefined };
       get_players_with_subscription: {
         Args: { current_user_id?: string; team_abbr: string };
         Returns: {
