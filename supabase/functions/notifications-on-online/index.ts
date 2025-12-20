@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
         const supabaseAdmin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
         // 해당 선수 리그 정보
-        const { data: pro_league, error } = await supabase
+        const { data: pro_league, error } = await supabaseAdmin
             .from(TABLES.RIOT_PRO_USERS)
             .select("league")
             .eq("id", proUserId)
