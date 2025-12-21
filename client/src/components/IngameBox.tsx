@@ -11,7 +11,9 @@ import { getFirebaseMessaging } from '@/lib/firebase';
 import type {
   IIngameBoxProps,
   LiveGameData,
-  LiveGameParticipant
+  LiveGameParticipant,
+  LPLGameFields,
+  LPLPlayerFields
 } from '@/types';
 import { useToast } from '@/hooks/useToast';
 import { useUserId } from '@/hooks/useAuth';
@@ -21,10 +23,12 @@ import SpellImages from './SpellImages';
 import RuneImages from './RuneImages';
 import { gameModeMap } from '@/hooks/lol';
 
-const FETCH_INTERVAL = 3000; 
+const FETCH_INTERVAL = 3000;
 
 const ARENA_GAME_MODES = ['CHERRY'];
 const ARENA_QUEUE_IDS = [1700, 1710]; // 아레나 큐
+
+const RIOT_API_KEY = process.env.NEXT_PUBLIC_RIOT_API_KEY;
 
 export default function IngameBox({
   pro_name,
@@ -36,14 +40,19 @@ export default function IngameBox({
   onBoxClick,
   loggedIn,
   puuid,
-  id
+  id,
+  league,
+  last_match_id
 }: IIngameBoxProps) {
   const [isSubscribe, setIsSubscribe] = useState<boolean>(
     initialIsSubscribe ?? false
   );
   const [hasFetched, setHasFetched] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [liveGame, setLiveGame] = useState<LiveGameData | null>(null);
+  const [liveGame, setLiveGame] = useState<LiveGameData<
+    LPLPlayerFields,
+    LPLGameFields
+  > | null>(null);
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
   const { toast } = useToast();
   const userId = useUserId();
@@ -59,23 +68,49 @@ export default function IngameBox({
     }
     setLastFetchTime(now);
     if (isOpen && puuid) setLoading(true);
-    fetch(`/api/live-game?summonerId=${puuid}`, { cache: 'no-store' })
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.inGame) {
-          setLiveGame(json.game);
-        } else {
+
+    if (league === 'LPL') {
+      // 중국리그 선수일 경우 최신 전적 보여주기
+      fetch(
+        `https://asia.api.riotgames.com/lol/match/v5/matches/${last_match_id}?api_key=${RIOT_API_KEY}`,
+        { cache: 'no-store' }
+      )
+        .then((res) => res.json())
+        .then((json) => {
+          if (json.info) {
+            setLiveGame(json.info);
+          } else {
+            setLiveGame(null);
+          }
+          setHasFetched(true);
+        })
+        .catch((error) => {
           setLiveGame(null);
-        }
-        setHasFetched(true);
-      })
-      .catch((error) => {
-        setLiveGame(null);
-        setHasFetched(true);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+          setHasFetched(true);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      // 기본 실시간 게임
+      fetch(`/api/live-game?summonerId=${puuid}`, { cache: 'no-store' })
+        .then((res) => res.json())
+        .then((json) => {
+          if (json.inGame) {
+            setLiveGame(json.game);
+          } else {
+            setLiveGame(null);
+          }
+          setHasFetched(true);
+        })
+        .catch((error) => {
+          setLiveGame(null);
+          setHasFetched(true);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }, [puuid, isOpen, hasFetched]);
 
   useEffect(() => {
@@ -89,15 +124,31 @@ export default function IngameBox({
     (p: LiveGameParticipant) => p.puuid === puuid
   );
   const championId = player ? player.championId : null;
-  const spellIds = player ? [player.spell1Id, player.spell2Id] : [];
+  const spellIds = player
+    ? league === 'LPL'
+      ? [player.summoner1Id, player.summoner2Id] // LPL 전적 데이터일 때
+      : [player.spell1Id, player.spell2Id] // 실시간 게임 데이터일 때
+    : [];
 
   const runePaths = player?.perks
-    ? [player.perks.perkStyle, player.perks.perkSubStyle]
+    ? league === 'LPL'
+      ? [
+          player.perks.styles[0].style, // 핵심 룬 스타일 (8000, 8100 등)
+          player.perks.styles[1].style // 보조 룬 스타일
+        ]
+      : [player.perks.perkStyle, player.perks.perkSubStyle]
     : [];
+
+  const getKdaRatio = (kills: number, deaths: number, assists: number) => {
+    const safeDeaths = deaths === 0 ? 1 : deaths;
+    const ratio = (kills + assists) / safeDeaths;
+
+    return ratio.toFixed(2);
+  };
 
   const isArenaMode = (game: LiveGameData | null): boolean => {
     if (!game) return false;
-    
+
     return (
       ARENA_GAME_MODES.includes(game.gameMode) ||
       ARENA_QUEUE_IDS.includes(game.gameQueueConfigId)
@@ -165,7 +216,9 @@ export default function IngameBox({
             <div className="flex flex-col items-center justify-center gap-2 h-full">
               <div className="flex items-center gap-2">
                 <GiSwordClash size={24} className="text-yellow-500" />
-                <span className="text-xl font-bold text-yellow-600">아레나 모드 중</span>
+                <span className="text-xl font-bold text-yellow-600">
+                  아레나 모드 중
+                </span>
                 <GiSwordClash size={24} className="text-yellow-500" />
               </div>
               <div className="text-body2Bold">
@@ -175,10 +228,8 @@ export default function IngameBox({
               <div className="flex gap-1 items-center text-body2">
                 <FaHourglassStart className="text-primary-mint" />
                 <div>
-                  {Math.floor(
-                    (Date.now() - liveGame.gameStartTime) / 60000
-                  )}
-                  분 전 시작
+                  {Math.floor((Date.now() - liveGame.gameStartTime) / 60000)}분
+                  전 시작
                 </div>
               </div>
             </div>
@@ -187,24 +238,40 @@ export default function IngameBox({
             <>
               <div className="flex gap-2 w-full h-full overflow-hidden items-center justify-center">
                 <ChampionImage championId={championId} />
-                <div className="flex gap-1">
+                <div className="flex items-center gap-0.5">
                   <SpellImages spellIds={spellIds} />
                   <RuneImages runePaths={runePaths} />
                 </div>
               </div>
-              <div className="text-body2Bold">
+              <div className="text-body2Bold flex gap-2">
                 {summoner_name}
                 {tag_line && `#${tag_line}`}
+                {league === 'LPL' && (
+                  <div
+                    className={player.win ? 'text-blue-500' : 'text-red-500'}
+                  >
+                    {player.win ? '승' : '패'}
+                  </div>
+                )}
               </div>
+              {league === 'LPL' && (
+                <div className="text-body2Bold flex gap-0.5 leading-none -mt-0.5 text-gray-700">
+                  <span>
+                    {player.kills}/{player.deaths}/{player.assists}
+                  </span>
+                  <span>
+                    ({getKdaRatio(player.kills, player.deaths, player.assists)})
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between w-full text-body2">
                 <div className="flex gap-1 items-center">
                   <FaHourglassStart className="text-primary-mint" />
                   {liveGame && (
                     <div>
-                      {Math.floor(
-                        (Date.now() - liveGame.gameStartTime) / 60000
-                      )}
-                      분 전 시작
+                      {league === 'LPL'
+                        ? `${Math.floor((Date.now() - liveGame.gameEndTimestamp) / 60000)}분 전 종료`
+                        : `${Math.floor((Date.now() - liveGame.gameStartTime) / 60000)}분 전 시작`}
                     </div>
                   )}
                 </div>

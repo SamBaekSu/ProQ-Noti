@@ -42,7 +42,8 @@ export default function UserPage() {
               pro_name,
               team_id,
               position_number,
-              is_starter
+              is_starter,
+              league
             )
           `
             )
@@ -65,7 +66,7 @@ export default function UserPage() {
         const { data: riotAccounts, error: riotAccountsError } = await supabase
           .from('riot_accounts')
           .select(
-            'pro_user_id, summoner_name, tag_line, puuid, is_online, is_main, last_online'
+            'pro_user_id, summoner_name, tag_line, puuid, is_online, is_main, last_online, last_match_id'
           )
           .in('pro_user_id', riotProUserIds);
 
@@ -94,7 +95,9 @@ export default function UserPage() {
             summoner_name: riotAccount?.summoner_name || 'Unknown',
             tag_line: riotAccount?.tag_line || null,
             is_online: riotAccount?.is_online || false,
-            last_online: riotAccount?.last_online || null
+            last_online: riotAccount?.last_online || null,
+            league: proPlayerData?.league || null,
+            last_match_id: riotAccount?.last_match_id || null
           };
         });
 
