@@ -19,4 +19,6 @@ export interface gamerInfo {
   is_online: boolean;
   last_online?: string | null;
   is_subscribed?: boolean;
+  league: string | null;
+  last_match_id: string | null;
 }

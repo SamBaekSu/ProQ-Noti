@@ -265,7 +265,9 @@ export type Database = {
                     id: number;
                     is_online: boolean;
                     is_subscribed: boolean;
+                    last_match_id: string;
                     last_online: string;
+                    league: string;
                     pro_name: string;
                     puuid: string;
                     summoner_name: string;

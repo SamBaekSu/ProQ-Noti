@@ -11,7 +11,10 @@ interface SubscribeListProps {
   onUnsubscribe?: (proId: number) => void;
 }
 
-export default function SubscribeList({ list, onUnsubscribe }: SubscribeListProps) {
+export default function SubscribeList({
+  list,
+  onUnsubscribe
+}: SubscribeListProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +59,8 @@ export default function SubscribeList({ list, onUnsubscribe }: SubscribeListProp
           tag_line={item.tag_line}
           account_id={item.account_id}
           loggedIn={loggedIn}
+          league={item.league}
+          last_match_id={item.last_match_id}
         />
       ))}
     </div>
