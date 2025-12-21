@@ -7,15 +7,18 @@ export async function GET(req: Request) {
   const summonerId = searchParams.get('summonerId');
 
   if (!summonerId) {
-    return NextResponse.json({ error: 'summonerId 파라미터가 없습니다.' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'summonerId 파라미터가 없습니다.' },
+      { status: 400 }
+    );
   }
   try {
     const res = await fetch(
       `https://kr.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/${summonerId}`,
       {
         headers: {
-          'X-Riot-Token': RIOT_API_KEY!,
-        },
+          'X-Riot-Token': RIOT_API_KEY!
+        }
       }
     );
 
@@ -27,6 +30,9 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ inGame: true, game: data });
   } catch (err) {
-    return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 });
+    return NextResponse.json(
+      { error: '서버 오류가 발생했습니다.' },
+      { status: 500 }
+    );
   }
 }

@@ -12,7 +12,7 @@ function delay(ms: number) {
 Deno.serve(async () => {
     const { data: players, error } = await supabase
         .from(TABLES.RIOT_ACCOUNTS)
-        .select("*")
+        .select("*, riot_pro_users ( league )")
         .order("last_checked_at", { ascending: true })
         .limit(25)
         .returns<Player[]>();
@@ -26,10 +26,16 @@ Deno.serve(async () => {
     let failCount = 0;
 
     for (const player of players) {
-        const { id, summoner_name, puuid } = player;
-        const url = `https://kr.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/${puuid}?api_key=${RIOT_API_KEY}`;
+        const { id, summoner_name, puuid, riot_pro_users, last_match_id } = player;
+        const { league } = riot_pro_users;
 
-        await delay(150);
+        let url = "";
+
+        league === "LPL"
+            ? (url = `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?queue=420&start=0&count=1&api_key=${RIOT_API_KEY}`)
+            : (url = `https://kr.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/${puuid}?api_key=${RIOT_API_KEY}`);
+
+        await delay(200);
 
         try {
             const res = await fetch(url);
@@ -50,7 +56,27 @@ Deno.serve(async () => {
                 }
             }
 
-            const is_online = res.status === 200;
+            let is_online = false;
+            let latest = last_match_id;
+
+            // 중국리그 선수면 최신 매치 아이디와 저장된 매치 아이디가 달라야 온라인
+            if (league === "LPL") {
+                const data = await res.json();
+
+                latest = data[0];
+                if (!latest) {
+                    console.warn(`⚠️ [${summoner_name}] 전적 데이터 없음`);
+                    latest = last_match_id;
+                    is_online = false;
+                } else if (last_match_id && last_match_id !== latest) {
+                    is_online = true;
+                } else {
+                    is_online = false;
+                }
+            } else {
+                is_online = res.status === 200;
+            }
+
             const last_online = is_online ? new Date().toISOString() : player.last_online;
 
             const { error: updateError } = await supabase
@@ -59,6 +85,7 @@ Deno.serve(async () => {
                     is_online,
                     last_online,
                     last_checked_at: new Date().toISOString(),
+                    last_match_id: latest,
                 })
                 .eq("id", id);
 
@@ -70,7 +97,7 @@ Deno.serve(async () => {
             }
         } catch (e) {
             failCount++;
-            console.error(`🔥 [${summor_name}, ${id}] Riot API 호출 실패:`, e);
+            console.error(`🔥 [${summoner_name}, ${id}] Riot API 호출 실패:`, e);
         }
     }
 
