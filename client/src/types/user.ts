@@ -18,6 +18,6 @@ export interface IProPlayerData {
   last_online: string | null;
   account_id: number;
   is_subscribed: true;
-  league: string | null;
+  streamer_mode: boolean;
   last_match_id: string | null;
 }

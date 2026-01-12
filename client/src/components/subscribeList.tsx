@@ -59,7 +59,7 @@ export default function SubscribeList({
           tag_line={item.tag_line}
           account_id={item.account_id}
           loggedIn={loggedIn}
-          league={item.league}
+          streamer_mode={item.streamer_mode}
           last_match_id={item.last_match_id}
         />
       ))}
