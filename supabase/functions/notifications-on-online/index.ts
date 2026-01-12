@@ -6,6 +6,7 @@ interface RiotAccountRecord {
     pro_user_id: number;
     summoner_name: string;
     is_online: boolean;
+    streamer_mode: boolean;
 }
 
 // 이 함수는 UPDATE 이벤트만 처리하므로 타입을 더 명확하게 지정
@@ -30,19 +31,14 @@ Deno.serve(async (req) => {
 
         const proUserId = payload.record.pro_user_id;
         const proSummonerName = payload.record.summoner_name;
+        const streamer_mode = payload.record.streamer_mode;
+
         console.log(
             `Player ${proSummonerName} (pro_user_id: ${proUserId}) is now online. Finding subscribers to create notifications...`
         );
 
         // 관리자용 Supabase 클라이언트 생성
         const supabaseAdmin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-
-        // 해당 선수 리그 정보
-        const { data: pro_league, error } = await supabaseAdmin
-            .from(TABLES.RIOT_PRO_USERS)
-            .select("league")
-            .eq("id", proUserId)
-            .single();
 
         // 해당 프로 선수를 구독하는 모든 user_id 조회
         const { data: subscribers, error: subscriberError } = await supabaseAdmin
@@ -59,10 +55,9 @@ Deno.serve(async (req) => {
         // notifications 테이블에 삽입할 데이터 배열 생성
         const notificationsToInsert = subscribers.map((subscriber) => ({
             user_id: subscriber.user_id, // 알림을 받을 유저
-            body:
-                pro_league?.league === "LPL"
-                    ? `${proSummonerName} 방금 게임을 마쳤습니다. 전적을 확인해주세요.`
-                    : `${proSummonerName} 방금 게임을 시작했습니다!`,
+            body: streamer_mode
+                ? `${proSummonerName} 방금 게임을 마쳤습니다. 전적을 확인해주세요.`
+                : `${proSummonerName} 방금 게임을 시작했습니다!`,
         }));
 
         console.log(`Creating ${notificationsToInsert.length} notification rows...`);

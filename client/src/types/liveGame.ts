@@ -1,7 +1,7 @@
 /**
- * 서브 타입 lpl 추가용
+ * 서브 타입 전적기록용
  */
-export interface LPLPerks {
+export interface StreamerModePerks {
   styles: Array<{
     style: number;
     description: string;
@@ -10,16 +10,16 @@ export interface LPLPerks {
   statPerks: any;
 }
 
-export interface LPLPlayerFields {
+export interface StreamerModePlayerFields {
   win: boolean;
   kills: number;
   deaths: number;
   assists: number;
   summoner1Id: number;
   summoner2Id: number;
-  perks: LPLPerks; // 👈 여기서 기존 perks를 LPL용으로 덮어씀
+  perks: StreamerModePerks; // 👈 여기서 기존 perks를 전적용으로 덮어씀
 }
-export interface LPLGameFields {
+export interface StreamerModeGameFields {
   gameEndTimestamp: number;
 }
 

@@ -12,7 +12,7 @@ function delay(ms: number) {
 Deno.serve(async () => {
     const { data: players, error } = await supabase
         .from(TABLES.RIOT_ACCOUNTS)
-        .select("*, riot_pro_users ( league )")
+        .select("*")
         .order("last_checked_at", { ascending: true })
         .limit(25)
         .returns<Player[]>();
@@ -26,12 +26,12 @@ Deno.serve(async () => {
     let failCount = 0;
 
     for (const player of players) {
-        const { id, summoner_name, puuid, riot_pro_users, last_match_id } = player;
-        const { league } = riot_pro_users;
+        const { id, summoner_name, puuid, riot_pro_users, last_match_id, streamer_mode } = player;
 
         let url = "";
 
-        league === "LPL"
+        //스머 모드일시 전적검색, 아닐시 실시간
+        streamer_mode
             ? (url = `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?queue=420&start=0&count=1&api_key=${RIOT_API_KEY}`)
             : (url = `https://kr.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/${puuid}?api_key=${RIOT_API_KEY}`);
 
@@ -59,8 +59,8 @@ Deno.serve(async () => {
             let is_online = false;
             let latest = last_match_id;
 
-            // 중국리그 선수면 최신 매치 아이디와 저장된 매치 아이디가 달라야 온라인
-            if (league === "LPL") {
+            // 스트리머 모드면 최신 매치 아이디와 저장된 매치 아이디가 다르면 방금 접속해서 게임 끝난것
+            if (streamer_mode) {
                 const data = await res.json();
 
                 latest = data[0];

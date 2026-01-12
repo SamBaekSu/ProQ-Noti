@@ -99,6 +99,7 @@ export type Database = {
           pro_user_id: number;
           puuid: string;
           region: string;
+          streamer_mode: boolean;
           summoner_name: string;
           tag_line: string;
           updated_at: string | null;
@@ -114,6 +115,7 @@ export type Database = {
           pro_user_id: number;
           puuid: string;
           region?: string;
+          streamer_mode?: boolean;
           summoner_name: string;
           tag_line: string;
           updated_at?: string | null;
@@ -129,6 +131,7 @@ export type Database = {
           pro_user_id?: number;
           puuid?: string;
           region?: string;
+          streamer_mode?: boolean;
           summoner_name?: string;
           tag_line?: string;
           updated_at?: string | null;
