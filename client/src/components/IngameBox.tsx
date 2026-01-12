@@ -12,8 +12,8 @@ import type {
   IIngameBoxProps,
   LiveGameData,
   LiveGameParticipant,
-  LPLGameFields,
-  LPLPlayerFields
+  StreamerModeGameFields,
+  StreamerModePlayerFields
 } from '@/types';
 import { useToast } from '@/hooks/useToast';
 import { useUserId } from '@/hooks/useAuth';
@@ -41,7 +41,7 @@ export default function IngameBox({
   loggedIn,
   puuid,
   id,
-  league,
+  streamer_mode,
   last_match_id
 }: IIngameBoxProps) {
   const [isSubscribe, setIsSubscribe] = useState<boolean>(
@@ -50,8 +50,8 @@ export default function IngameBox({
   const [hasFetched, setHasFetched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [liveGame, setLiveGame] = useState<LiveGameData<
-    LPLPlayerFields,
-    LPLGameFields
+    StreamerModePlayerFields,
+    StreamerModeGameFields
   > | null>(null);
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
   const { toast } = useToast();
@@ -69,8 +69,8 @@ export default function IngameBox({
     setLastFetchTime(now);
     if (isOpen && puuid) setLoading(true);
 
-    if (league === 'LPL') {
-      // 중국리그 선수일 경우 최신 전적 보여주기
+    if (streamer_mode) {
+      // 스트리머모드일 경우 최신 전적 보여주기
       fetch(
         `https://asia.api.riotgames.com/lol/match/v5/matches/${last_match_id}?api_key=${RIOT_API_KEY}`,
         { cache: 'no-store' }
@@ -125,13 +125,13 @@ export default function IngameBox({
   );
   const championId = player ? player.championId : null;
   const spellIds = player
-    ? league === 'LPL'
-      ? [player.summoner1Id, player.summoner2Id] // LPL 전적 데이터일 때
+    ? streamer_mode
+      ? [player.summoner1Id, player.summoner2Id] // 전적 데이터일 때
       : [player.spell1Id, player.spell2Id] // 실시간 게임 데이터일 때
     : [];
 
   const runePaths = player?.perks
-    ? league === 'LPL'
+    ? streamer_mode
       ? [
           player.perks.styles[0].style, // 핵심 룬 스타일 (8000, 8100 등)
           player.perks.styles[1].style // 보조 룬 스타일
@@ -246,7 +246,7 @@ export default function IngameBox({
               <div className="text-body2Bold flex gap-2">
                 {summoner_name}
                 {tag_line && `#${tag_line}`}
-                {league === 'LPL' && (
+                {streamer_mode && (
                   <div
                     className={player.win ? 'text-blue-500' : 'text-red-500'}
                   >
@@ -254,7 +254,7 @@ export default function IngameBox({
                   </div>
                 )}
               </div>
-              {league === 'LPL' && (
+              {streamer_mode && (
                 <div className="text-body2Bold flex gap-0.5 leading-none -mt-0.5 text-gray-700">
                   <span>
                     {player.kills}/{player.deaths}/{player.assists}
@@ -269,7 +269,7 @@ export default function IngameBox({
                   <FaHourglassStart className="text-primary-mint" />
                   {liveGame && (
                     <div>
-                      {league === 'LPL'
+                      {streamer_mode
                         ? `${Math.floor((Date.now() - liveGame.gameEndTimestamp) / 60000)}분 전 종료`
                         : `${Math.floor((Date.now() - liveGame.gameStartTime) / 60000)}분 전 시작`}
                     </div>
