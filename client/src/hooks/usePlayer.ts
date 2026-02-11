@@ -1,6 +1,4 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { GET, GET_TEAM_ID } from '@/app/api/subscribe/route';
-import { GET as GET_TEAM } from '@/app/api/team/route';
 import { gamerInfo, Team } from '@/types';
 import { useToast } from '@/hooks/useToast';
 import { useEffect, useState } from 'react';
@@ -8,7 +6,7 @@ import { supabase } from '@/utils/supabase/client';
 import { TABLES } from '@/constant/db';
 import { useUserId } from '@/hooks/useAuth';
 
-export function usePlayerList(team: string) {
+export function usePlayerList(team: string, initialData?: gamerInfo[]) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [teamId, setTeamId] = useState<number | null>(null);
@@ -23,9 +21,17 @@ export function usePlayerList(team: string) {
 
     const fetchTeamId = async () => {
       try {
-        const teamId = await GET_TEAM_ID(team);
+        const { data, error } = await (supabase as any)
+          .from(TABLES.TEAMS)
+          .select('id')
+          .eq('name_abbr', team)
+          .single();
 
-        setTeamId(teamId);
+        if (error || !data) {
+          throw new Error('팀 ID 조회 실패');
+        }
+
+        setTeamId(data.id);
       } catch (e) {
         console.error('error:', e);
       }
@@ -41,13 +47,22 @@ export function usePlayerList(team: string) {
   } = useQuery<gamerInfo[]>({
     queryKey: ['players', team, userId],
     queryFn: async () => {
-      const response = await GET(team, userId ?? undefined);
-      if (!Array.isArray(response)) {
-        throw new Error('서버 오류');
+      const { data, error } = await (supabase as any).rpc(
+        'get_players_with_subscription',
+        {
+          team_abbr: team,
+          ...(userId != null ? { current_user_id: userId } : {})
+        }
+      );
+
+      if (error) {
+        throw new Error('Failed to fetch players');
       }
-      return response;
+
+      return data;
     },
-    enabled: !!team
+    enabled: !!team,
+    initialData
   });
 
   if (error) {
@@ -135,23 +150,4 @@ export function usePlayerList(team: string) {
   }, [team, teamId, queryClient, loading]);
 
   return { members, loading };
-}
-
-export function useTeams() {
-  const {
-    data: teams = [],
-    isLoading,
-    error
-  } = useQuery<Team[]>({
-    queryKey: ['teams'],
-    queryFn: async () => {
-      const response = await GET_TEAM();
-      if (!Array.isArray(response)) {
-        throw new Error(response?.body?.error || '서버 오류');
-      }
-      return response;
-    }
-  });
-
-  return { teams, isLoading, error };
 }
