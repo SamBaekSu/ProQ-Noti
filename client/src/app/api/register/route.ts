@@ -22,7 +22,7 @@ export const POST = async (
         fcm_token: token,
         device_type: deviceType,
         updated_at: new Date().toISOString()
-      },
+      } as any,
       {
         // 2. 어떤 기준으로 중복을 판단할지 지정
         // 'user_id'와 'device_type'이 모두 같은 행이 있으면 업데이트, 없으면 삽입
