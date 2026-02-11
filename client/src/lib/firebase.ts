@@ -1,6 +1,6 @@
 'use client';
 
-import { POST } from '@/app/api/register/route';
+import { upsertFcmToken } from '@/actions/fcm';
 import { toast } from '@/hooks/useToast';
 import { getDeviceType } from '@/utils/device';
 import { initializeApp, getApp, getApps, FirebaseApp } from 'firebase/app';
@@ -47,9 +47,9 @@ export const requestToken = (userId: string | null, isLoggedIn: boolean) => {
         }).then((currentToken) => {
           if (currentToken) {
             const deviceType = getDeviceType();
-            // FCM 토큰을 서버에 저장하는 API 호출
+            // FCM 토큰을 서버에 저장하는 Server Action 호출
             if (userId) {
-              const result = POST(userId, currentToken, deviceType)
+              const result = upsertFcmToken(userId, currentToken, deviceType)
                 .then((res) => {
                   if (res.status === 'success') {
                     toast({ description: '알림이 재설정됐습니다' });
