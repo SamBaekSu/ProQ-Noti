@@ -1,7 +1,220 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
+/*
+  The following @theme and @utility directives are valid in Tailwind CSS v4.
+  We ignore the lint errors because the current lint configuration does not yet recognize them.
+*/
+/* stylelint-disable */
+@theme {
+  /* Colors */
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(0 0% 3.9%);
+
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(0 0% 3.9%);
+
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(0 0% 3.9%);
+
+  --color-primary: hsl(0 0% 9%);
+  --color-primary-foreground: hsl(0 0% 98%);
+
+  --color-secondary: hsl(0 0% 96.1%);
+  --color-secondary-foreground: hsl(0 0% 9%);
+
+  --color-muted: hsl(0 0% 96.1%);
+  --color-muted-foreground: hsl(0 0% 45.1%);
+
+  --color-accent: hsl(0 0% 96.1%);
+  --color-accent-foreground: hsl(0 0% 9%);
+
+  --color-destructive: hsl(0 84.2% 60.2%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+
+  --color-border: hsl(0 0% 89.8%);
+  --color-input: hsl(0 0% 89.8%);
+  --color-ring: hsl(0 0% 3.9%);
+
+  --color-chart-1: hsl(12 76% 61%);
+  --color-chart-2: hsl(173 58% 39%);
+  --color-chart-3: hsl(197 37% 24%);
+  --color-chart-4: hsl(43 74% 66%);
+  --color-chart-5: hsl(27 87% 67%);
+
+  /* Custom Colors */
+  --color-primary-coral: #E95F5C;
+  --color-primary-mint: #79CEB8;
+  --color-primary-yellow: #FFDB00;
+  --color-primary-skyblue: #5CC3E8;
+  --color-primary-navy: #314855;
+  --color-primary-white: #FFFFFF;
+  --color-error: #f5f5f5;
+
+  /* Fonts */
+  --font-ganpan: 'KCC-Ganpan', sans-serif;
+  --font-pretendard: 'Pretendard', sans-serif;
+
+  /* Font Weights */
+  --font-weight-extraBold: 800;
+  --font-weight-bold: 700;
+  --font-weight-semiBold: 600;
+  --font-weight-medium: 500;
+  --font-weight-regular: 400;
+  --font-weight-light: 300;
+  --font-weight-extraLight: 200;
+
+  /* Radius */
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
+
+  /* Shadows */
+  --shadow-bottom: 0px 4px 4px rgba(0, 0, 0, 0.1);
+
+  /* Keyframes & Animations */
+  --animate-slideindown: slide-in-down 0.5s ease-in-out forwards;
+  --animate-like: liked 1s ease-in-out;
+
+  @keyframes slide-in-down {
+    0% {
+      transform: translateY(-10%);
+      opacity: 0;
+    }
+
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes liked {
+    50% {
+      transform: scale(1.15);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Breakpoints */
+  --breakpoint-mobile: 480px;
+  --breakpoint-web: 750px;
+  --breakpoint-screen: 1250px;
+  --breakpoint-image: 530px;
+}
+
+/* Dark Mode Overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: hsl(0 0% 3.9%);
+    --color-foreground: hsl(0 0% 98%);
+    --color-card: hsl(0 0% 3.9%);
+    --color-card-foreground: hsl(0 0% 98%);
+    --color-popover: hsl(0 0% 3.9%);
+    --color-popover-foreground: hsl(0 0% 98%);
+    --color-primary: hsl(0 0% 98%);
+    --color-primary-foreground: hsl(0 0% 9%);
+    --color-secondary: hsl(0 0% 14.9%);
+    --color-secondary-foreground: hsl(0 0% 98%);
+    --color-muted: hsl(0 0% 14.9%);
+    --color-muted-foreground: hsl(0 0% 63.9%);
+    --color-accent: hsl(0 0% 14.9%);
+    --color-accent-foreground: hsl(0 0% 98%);
+    --color-destructive: hsl(0 62.8% 30.6%);
+    --color-destructive-foreground: hsl(0 0% 98%);
+    --color-border: hsl(0 0% 14.9%);
+    --color-input: hsl(0 0% 14.9%);
+    --color-ring: hsl(0 0% 83.1%);
+    --color-chart-1: hsl(220 70% 50%);
+    --color-chart-2: hsl(160 60% 45%);
+    --color-chart-3: hsl(30 80% 55%);
+    --color-chart-4: hsl(280 65% 60%);
+    --color-chart-5: hsl(340 75% 55%);
+  }
+}
+
+/* Utilities */
+@utility text-heading1 {
+  font-size: 1.5rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+@utility text-heading2 {
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+@utility text-heading3 {
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+@utility text-body1 {
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+@utility text-body2 {
+  font-size: .875rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+@utility text-body1Bold {
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 700;
+}
+
+@utility text-body2Bold {
+  font-size: .875rem;
+  line-height: 1.6;
+  font-weight: 700;
+}
+
+@utility text-button {
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+@utility text-smallBtn {
+  font-size: .875rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+@utility text-caption {
+  font-size: .75rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+@utility w-web {
+  width: 46.875rem;
+}
+
+@utility w-mobile {
+  width: 30rem;
+}
+
+@utility w-screen {
+  width: 78.125rem;
+}
+
+@utility min-w-mobile {
+  min-width: 21.875rem;
+}
+
+
+/* Fonts */
 @font-face {
   font-family: 'Pretendard';
   font-weight: 800;
@@ -50,80 +263,17 @@
   src: url('./assets/fonts/KCC-Ganpan.woff') format('woff');
 }
 
+/* Global Styles */
 body {
   display: flex;
   justify-content: center;
-  @apply text-primary-navy;
-  font-family: 'Pretendard', 'sans-serif';
+  color: var(--color-primary-navy);
+  font-family: 'Pretendard', sans-serif;
   width: 100vw;
   min-height: 100vh;
+  background-color: var(--color-background);
 }
 
-
-
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-  }
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
-}
-
-
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+* {
+  border-color: var(--color-border);
 }
