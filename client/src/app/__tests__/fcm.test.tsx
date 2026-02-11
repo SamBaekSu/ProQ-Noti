@@ -1,14 +1,14 @@
 import { render, waitFor } from '@testing-library/react';
 import HomePageClient from '@/app/HomePageClient';
-import { POST } from '@/app/api/register/route';
+import { upsertFcmToken } from '@/actions/fcm';
 import { getDeviceType } from '@/utils/device';
 import { useIsLoggedIn, useUserId } from '@/hooks/useAuth';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { getToken } from 'firebase/messaging';
 
 // Mock dependencies
-vi.mock('@/app/api/register/route', () => ({
-  POST: vi.fn(() => Promise.resolve({ status: 'success' }))
+vi.mock('@/actions/fcm', () => ({
+  upsertFcmToken: vi.fn(() => Promise.resolve({ status: 'success' }))
 }));
 
 vi.mock('@/utils/device', () => ({
@@ -77,7 +77,7 @@ describe('FCM Token Logic in HomePageClient', () => {
 
     await waitFor(() => {
       expect(getToken).toHaveBeenCalled();
-      expect(POST).toHaveBeenCalledWith(mockUserId, mockToken, 'web');
+      expect(upsertFcmToken).toHaveBeenCalledWith(mockUserId, mockToken, 'web');
       expect(localStorage.getItem('sentFCMToken')).toBe(mockToken);
     });
   });
@@ -89,9 +89,9 @@ describe('FCM Token Logic in HomePageClient', () => {
     render(<HomePageClient initialTeams={[]} />);
 
     await waitFor(() => {
-      // Should not call getToken or POST
+      // Should not call getToken or upsertFcmToken
       expect(getToken).not.toHaveBeenCalled();
-      expect(POST).not.toHaveBeenCalled();
+      expect(upsertFcmToken).not.toHaveBeenCalled();
     });
   });
 
@@ -110,7 +110,7 @@ describe('FCM Token Logic in HomePageClient', () => {
     await waitFor(() => {
       expect(global.Notification.requestPermission).toHaveBeenCalled();
       expect(getToken).toHaveBeenCalled();
-      expect(POST).toHaveBeenCalledWith(mockUserId, mockToken, 'web');
+      expect(upsertFcmToken).toHaveBeenCalledWith(mockUserId, mockToken, 'web');
     });
   });
 
@@ -121,8 +121,8 @@ describe('FCM Token Logic in HomePageClient', () => {
 
     await waitFor(() => {
       expect(getToken).toHaveBeenCalled();
-      // POST should NOT be called because token in localStorage matches current token
-      expect(POST).not.toHaveBeenCalled();
+      // upsertFcmToken should NOT be called because token in localStorage matches current token
+      expect(upsertFcmToken).not.toHaveBeenCalled();
     });
   });
 });

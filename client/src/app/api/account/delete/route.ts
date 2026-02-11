@@ -27,7 +27,7 @@ export async function DELETE(request: NextRequest) {
     );
 
     try {
-      const { data: subscribeData, error: subscribeError } = await supabaseAdmin
+      const { data: subscribeData, error: subscribeError } = await (supabaseAdmin as any)
         .from('subscribe')
         .delete()
         .eq('user_id', user.id)
@@ -42,7 +42,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     try {
-      const { data: fcmData, error: fcmError } = await supabaseAdmin
+      const { data: fcmData, error: fcmError } = await (supabaseAdmin as any)
         .from('fcm_tokens')
         .delete()
         .eq('user_id', user.id)
@@ -56,7 +56,7 @@ export async function DELETE(request: NextRequest) {
       console.warn('FCM 토큰 테이블 접근 실패:', fcmDeleteError);
     }
 
-    const { data: deleteResult, error: deleteError } = await supabaseAdmin
+    const { data: deleteResult, error: deleteError } = await (supabaseAdmin as any)
       .from('users')
       .delete()
       .eq('id', user.id)

@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: 'empty user' });
     }
 
-    const { error: insertError } = await supabase.from('users').upsert(
+    const { error: insertError } = await (supabase as any).from('users').upsert(
       {
         id: user.id,
         email: user.email,
