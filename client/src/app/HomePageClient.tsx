@@ -8,8 +8,8 @@ import { useIsLoggedIn, useUserId } from '@/hooks/useAuth';
 import { getFirebaseMessaging } from '@/lib/firebase';
 import { getToken } from 'firebase/messaging';
 import { getDeviceType } from '@/utils/device';
-import { POST } from './api/register/route';
-import { Team } from '@/types';
+import { upsertFcmToken } from '@/actions/fcm';
+import type { Team } from '@/types';
 
 interface HomePageClientProps {
   initialTeams: Team[];
@@ -70,7 +70,7 @@ export default function HomePageClient({ initialTeams }: HomePageClientProps) {
         console.log('새 토큰을 발견하여 서버에 갱신을 시도합니다.');
         const deviceType = getDeviceType();
 
-        const result = POST(userId, currentToken, deviceType)
+        const result = upsertFcmToken(userId, currentToken, deviceType)
           .then((res) => {
             if (res.status === 'success') {
               localStorage.setItem('sentFCMToken', currentToken);

@@ -9,6 +9,31 @@ import { supabase } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+// Types for Supabase join results
+interface SubscriptionWithProUser {
+  riot_pro_user_id: number;
+  created_at: string | null;
+  riot_pro_users: {
+    id: number;
+    pro_name: string;
+    team_id: number | null;
+    position_number: number;
+    is_starter: boolean;
+  } | null;
+}
+
+interface RiotAccountRow {
+  pro_user_id: number;
+  summoner_name: string;
+  tag_line: string;
+  puuid: string;
+  is_online: boolean | null;
+  is_main: boolean | null;
+  last_online: string | null;
+  last_match_id: string | null;
+  streamer_mode: boolean;
+}
+
 export default function UserPage() {
   const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -58,7 +83,7 @@ export default function UserPage() {
           return;
         }
 
-        const riotProUserIds = (subscriptions as any[])
+        const riotProUserIds = (subscriptions as SubscriptionWithProUser[])
           .map((s) => s.riot_pro_user_id)
           .filter(Boolean);
 
@@ -74,31 +99,33 @@ export default function UserPage() {
           throw new Error('계정 정보를 가져오는데 실패했습니다.');
         }
 
-        const combinedData = (subscriptions as any[]).map((subscription) => {
-          const proPlayerData = subscription.riot_pro_users;
-          const riotAccount = (riotAccounts as any[])?.find(
-            (acc) =>
-              acc.pro_user_id === subscription.riot_pro_user_id && acc.is_main
-          );
+        const combinedData = (subscriptions as SubscriptionWithProUser[]).map(
+          (subscription) => {
+            const proPlayerData = subscription.riot_pro_users;
+            const riotAccount = (riotAccounts as RiotAccountRow[])?.find(
+              (acc) =>
+                acc.pro_user_id === subscription.riot_pro_user_id && acc.is_main
+            );
 
-          return {
-            id: subscription.riot_pro_user_id,
-            pro_name: proPlayerData?.pro_name || 'Unknown',
-            position_number: proPlayerData?.position_number || 0,
-            is_starter: proPlayerData?.is_starter || false,
-            created_at: subscription.created_at,
-            team_id: proPlayerData?.team_id || null,
-            account_id: subscription.riot_pro_user_id,
-            is_subscribed: true,
-            puuid: riotAccount?.puuid || null,
-            summoner_name: riotAccount?.summoner_name || 'Unknown',
-            tag_line: riotAccount?.tag_line || null,
-            is_online: riotAccount?.is_online || false,
-            last_online: riotAccount?.last_online || null,
-            streamer_mode: riotAccount?.streamer_mode,
-            last_match_id: riotAccount?.last_match_id || null
-          };
-        });
+            return {
+              id: subscription.riot_pro_user_id,
+              pro_name: proPlayerData?.pro_name || 'Unknown',
+              position_number: proPlayerData?.position_number || 0,
+              is_starter: proPlayerData?.is_starter || false,
+              created_at: subscription.created_at,
+              team_id: proPlayerData?.team_id || null,
+              account_id: subscription.riot_pro_user_id,
+              is_subscribed: true,
+              puuid: riotAccount?.puuid || null,
+              summoner_name: riotAccount?.summoner_name || 'Unknown',
+              tag_line: riotAccount?.tag_line || null,
+              is_online: riotAccount?.is_online || false,
+              last_online: riotAccount?.last_online || null,
+              streamer_mode: riotAccount?.streamer_mode,
+              last_match_id: riotAccount?.last_match_id || null
+            };
+          }
+        );
 
         setSubscribeList(combinedData as IProPlayerData[]);
       } catch (err) {

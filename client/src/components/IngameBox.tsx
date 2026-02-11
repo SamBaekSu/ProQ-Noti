@@ -6,8 +6,6 @@ import { FaRegHeart } from 'react-icons/fa';
 import { FaHeart } from 'react-icons/fa';
 import { FaHourglassStart } from 'react-icons/fa';
 import { GiSwordClash } from 'react-icons/gi';
-import { getToken } from 'firebase/messaging';
-import { getFirebaseMessaging } from '@/lib/firebase';
 import type {
   IIngameBoxProps,
   LiveGameData,
@@ -17,7 +15,7 @@ import type {
 } from '@/types';
 import { useToast } from '@/hooks/useToast';
 import { useUserId } from '@/hooks/useAuth';
-import { POST } from '@/app/api/subscribe/route';
+import { toggleSubscription } from '@/actions/subscribe';
 import ChampionImage from './ChampionImage';
 import SpellImages from './SpellImages';
 import RuneImages from './RuneImages';
@@ -56,7 +54,6 @@ export default function IngameBox({
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
   const { toast } = useToast();
   const userId = useUserId();
-  const messaging = getFirebaseMessaging();
 
   useEffect(() => {
     if (!puuid || !isOpen || hasFetched) return;
@@ -171,12 +168,8 @@ export default function IngameBox({
         return;
       }
 
-      if (messaging) {
-        const token = await getToken(messaging, {
-          vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
-        });
-        const result = await POST(userId!, token, Number(id));
-      }
+      // Call server action to toggle subscription
+      const result = await toggleSubscription(userId!, Number(id));
 
       setIsSubscribe(!isSubscribe);
     } else {

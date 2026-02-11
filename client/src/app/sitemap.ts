@@ -24,10 +24,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic routes (Teams)
   try {
     const supabase = await createClientForServer();
-    const { data: teams } = await supabase.from(TABLES.TEAMS).select('name');
+    const { data: teams } = await (supabase as any).from(TABLES.TEAMS).select('name');
 
     if (teams) {
-      const teamRoutes = teams.map((team) => ({
+      const teamRoutes = teams.map((team: any) => ({
         url: `${baseUrl}/subscribe/${encodeURIComponent(team.name)}`,
         lastModified: new Date(),
         changeFrequency: 'hourly' as const,

@@ -10,19 +10,24 @@ import { getToken } from 'firebase/messaging';
 import { getFirebaseMessaging } from '@/lib/firebase';
 import { getDeviceType } from '@/utils/device';
 import { useIsLoggedIn, useUserId } from '@/hooks/useAuth';
-import { POST } from '@/app/api/register/route';
-import { IProPlayerData } from '@/types';
+import { upsertFcmToken } from '@/actions/fcm';
+import type { IProPlayerData, gamerInfo } from '@/types';
 
 interface SubscribePageClientProps {
   teamName: string;
+  initialPlayers: gamerInfo[];
 }
 
 export default function SubscribePageClient({
-  teamName
+  teamName,
+  initialPlayers
 }: SubscribePageClientProps) {
   const router = useRouter();
   // teamName is passed from Server Component
-  const { members, loading: dataLoading } = usePlayerList(teamName);
+  const { members, loading: dataLoading } = usePlayerList(
+    teamName,
+    initialPlayers
+  );
   const [minLoading, setMinLoading] = useState(true);
   const isLoggedIn = useIsLoggedIn();
   const userId = useUserId();
@@ -42,9 +47,9 @@ export default function SubscribePageClient({
             }).then((currentToken) => {
               if (currentToken) {
                 const deviceType = getDeviceType();
-                // FCM 토큰을 서버에 저장하는 API 호출
+                // FCM 토큰을 서버에 저장하는 Server Action 호출
                 if (userId) {
-                  const result = POST(userId, currentToken, deviceType)
+                  const result = upsertFcmToken(userId, currentToken, deviceType)
                     .then((res) => {
                       if (res.status === 'success') {
                         console.log(currentToken);
