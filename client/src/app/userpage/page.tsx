@@ -58,7 +58,7 @@ export default function UserPage() {
           return;
         }
 
-        const riotProUserIds = subscriptions
+        const riotProUserIds = (subscriptions as any[])
           .map((s) => s.riot_pro_user_id)
           .filter(Boolean);
 
@@ -74,9 +74,9 @@ export default function UserPage() {
           throw new Error('계정 정보를 가져오는데 실패했습니다.');
         }
 
-        const combinedData = subscriptions.map((subscription) => {
+        const combinedData = (subscriptions as any[]).map((subscription) => {
           const proPlayerData = subscription.riot_pro_users;
-          const riotAccount = riotAccounts?.find(
+          const riotAccount = (riotAccounts as any[])?.find(
             (acc) =>
               acc.pro_user_id === subscription.riot_pro_user_id && acc.is_main
           );

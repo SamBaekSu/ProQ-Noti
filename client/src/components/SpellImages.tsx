@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { getSpellName } from "@/hooks/lol";
+import { getSpellName } from '@/hooks/lol';
 
 interface SpellImagesProps {
   spellIds: number[];
@@ -19,8 +19,8 @@ export default function SpellImages({ spellIds }: SpellImagesProps) {
             src={`https://raw.communitydragon.org/latest/game/data/spells/icons2d/${fileName}.png`}
             alt={`spell-${spell}`}
           />
-        )
+        );
       })}
     </div>
-  )
+  );
 }

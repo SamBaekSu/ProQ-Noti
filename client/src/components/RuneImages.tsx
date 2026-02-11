@@ -1,13 +1,12 @@
-'use client'
+'use client';
 
-import { getRunePath } from "@/hooks/lol";
+import { getRunePath } from '@/hooks/lol';
 
 interface RuneImagesProps {
   runePaths: number[];
 }
 
 export default function RuneImages({ runePaths }: RuneImagesProps) {
-
   return (
     <div className="overflow-hidden h-full flex flex-col gap-1">
       {runePaths.map((perkId, i) => {
@@ -22,5 +21,5 @@ export default function RuneImages({ runePaths }: RuneImagesProps) {
         );
       })}
     </div>
-  )
+  );
 }

@@ -7,7 +7,10 @@ interface DeleteAccountModalProps {
   onClose: () => void;
 }
 
-export default function DeleteAccountModal({ isOpen, onClose }: DeleteAccountModalProps) {
+export default function DeleteAccountModal({
+  isOpen,
+  onClose
+}: DeleteAccountModalProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [confirmText, setConfirmText] = useState('');
   const { toast } = useToast();
@@ -27,7 +30,7 @@ export default function DeleteAccountModal({ isOpen, onClose }: DeleteAccountMod
 
     try {
       const response = await fetch('/api/account/delete', {
-        method: 'DELETE',
+        method: 'DELETE'
       });
 
       const data = await response.json();
@@ -44,7 +47,8 @@ export default function DeleteAccountModal({ isOpen, onClose }: DeleteAccountMod
     } catch (error) {
       console.error('회원탈퇴 오류:', error);
       toast({
-        description: error instanceof Error ? error.message : '회원탈퇴에 실패했습니다.'
+        description:
+          error instanceof Error ? error.message : '회원탈퇴에 실패했습니다.'
       });
     } finally {
       setIsDeleting(false);
@@ -55,18 +59,18 @@ export default function DeleteAccountModal({ isOpen, onClose }: DeleteAccountMod
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-[20rem] web:w-[25rem] mx-4">
         <h2 className="text-xl font-bold text-center mb-4">회원탈퇴</h2>
-        
+
         <div className="mb-6">
-          <p className="text-gray-700 mb-3">
-            정말로 회원탈퇴를 하시겠습니까?
-          </p>
+          <p className="text-gray-700 mb-3">정말로 회원탈퇴를 하시겠습니까?</p>
           <p className="text-red-600 text-sm mb-4">
             ⚠️ 탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.
           </p>
-          
+
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              확인을 위해 <span className="font-bold text-red-600">'회원탈퇴'</span>를 입력해주세요:
+              확인을 위해{' '}
+              <span className="font-bold text-red-600">'회원탈퇴'</span>를
+              입력해주세요:
             </label>
             <input
               type="text"
