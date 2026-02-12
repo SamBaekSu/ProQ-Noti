@@ -7,22 +7,41 @@ type TeamCardProps = {
 
 export function TeamCard({ team, onClick }: TeamCardProps) {
   const team_name = [team.name_prefix, team.name_suffix];
+  const teamLabel = team_name.filter(Boolean).join(' ');
+
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className="flex flex-col justify-center items-center text-center rounded-xl shadow-bottom bg-white hover:bg-gray-200 cursor-pointer"
-      style={{
-        width: '100%',
-        aspectRatio: '1 / 1',
-        fontSize: 'clamp(15px, 3.5vw, 16px)',
-        padding: '1vh'
-      }}
+      aria-label={`${teamLabel} 팀 선택`}
+      className="
+        group
+        flex flex-col justify-center items-center text-center
+        w-full aspect-square
+        px-3 py-4
+        rounded-xl shadow-bottom
+        bg-primary-white
+        hover:bg-gray-50 hover:shadow-lg
+        focus:outline-none focus:ring-2 focus:ring-primary-mint focus:ring-offset-2
+        active:scale-95
+        transition-all duration-200
+        cursor-pointer
+      "
     >
       {team_name.map((value, id) => (
-        <span key={id} className="font-ganpan text-primary-navy font-bold">
+        <span
+          key={id}
+          className="
+            font-ganpan text-primary-navy font-bold
+            text-[15px] web:text-base
+            leading-tight
+            group-hover:text-primary-navy/90
+            transition-colors
+          "
+        >
           {value}
         </span>
       ))}
-    </div>
+    </button>
   );
 }

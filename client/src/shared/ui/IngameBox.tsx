@@ -72,7 +72,12 @@ export default function IngameBox({
         `https://asia.api.riotgames.com/lol/match/v5/matches/${last_match_id}?api_key=${RIOT_API_KEY}`,
         { cache: 'no-store' }
       )
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error('전적 정보를 불러올 수 없습니다');
+          }
+          return res.json();
+        })
         .then((json) => {
           if (json.info) {
             setLiveGame(json.info);
@@ -82,6 +87,9 @@ export default function IngameBox({
           setHasFetched(true);
         })
         .catch((error) => {
+          toast({
+            description: '전적 정보를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.'
+          });
           setLiveGame(null);
           setHasFetched(true);
         })
@@ -91,7 +99,12 @@ export default function IngameBox({
     } else {
       // 기본 실시간 게임
       fetch(`/api/live-game?summonerId=${puuid}`, { cache: 'no-store' })
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error('게임 정보를 불러올 수 없습니다');
+          }
+          return res.json();
+        })
         .then((json) => {
           if (json.inGame) {
             setLiveGame(json.game);
@@ -101,6 +114,9 @@ export default function IngameBox({
           setHasFetched(true);
         })
         .catch((error) => {
+          toast({
+            description: '게임 정보를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.'
+          });
           setLiveGame(null);
           setHasFetched(true);
         })
@@ -263,8 +279,8 @@ export default function IngameBox({
                   {liveGame && (
                     <div>
                       {streamer_mode
-                        ? `${Math.floor((Date.now() - liveGame.gameEndTimestamp) / 60000)}분 전 종료`
-                        : `${Math.floor((Date.now() - liveGame.gameStartTime) / 60000)}분 전 시작`}
+                        ? `${Math.max(0, Math.floor((Date.now() - liveGame.gameEndTimestamp) / 60000))}분 전 종료`
+                        : `${Math.max(0, Math.floor((Date.now() - liveGame.gameStartTime) / 60000))}분 전 시작`}
                     </div>
                   )}
                 </div>

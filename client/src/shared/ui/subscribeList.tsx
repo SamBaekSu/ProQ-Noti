@@ -47,7 +47,7 @@ export default function SubscribeList({
     >
       {list.map((item, index) => (
         <IngameBox
-          key={index}
+          key={item.id}
           pro_name={item.pro_name}
           is_online={item.is_online}
           is_subscribed={item.is_subscribed}

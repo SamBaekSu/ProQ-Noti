@@ -8,7 +8,6 @@ import { useRef, useState } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { useDispatch } from 'react-redux';
 import { requestToken } from '@/shared/lib/firebase';
-import { redirect } from 'next/navigation';
 
 interface DropdownProps {
   isOpen?: boolean;
@@ -32,7 +31,8 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
     toast({
       description: '로그아웃 되었습니다.'
     });
-    redirect('/');
+    // 클라이언트 컴포넌트에서는 window.location 사용
+    window.location.href = '/';
   };
 
   return (
@@ -40,6 +40,9 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
       <button
         className="bg-none border-none cursor-pointer outline-none p-0"
         onClick={() => setOpen(!open)}
+        aria-label="메뉴 열기"
+        aria-expanded={open}
+        aria-haspopup="true"
       >
         <GiHamburgerMenu size={25} className="text-primary-navy" />
       </button>
@@ -94,7 +97,11 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
             {isLoggedIn && (
               <li className="text-center hover:bg-gray-100 cursor-pointer">
                 <button
-                  onClick={() => requestToken(userId, isLoggedIn)}
+                  onClick={() => {
+                    if (confirm('알림 권한을 재설정하시겠습니까?')) {
+                      requestToken(userId, isLoggedIn);
+                    }
+                  }}
                   className="block p-2 w-full text-black"
                 >
                   알림 재설정
