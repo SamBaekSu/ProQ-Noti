@@ -30,24 +30,16 @@ const nextConfig: NextConfig = {
 
     return config;
   },
-  experimental: {},
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js'
+  experimental: {
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js'
+        }
       }
     }
   },
-  // @ts-expect-error turbo types need update
-  turbo: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js'
-      }
-    }
-  }
 };
 
 // @ts-expect-error next-pwa return type mismatch
