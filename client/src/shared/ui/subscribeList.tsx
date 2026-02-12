@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import useOutsideClick from '@/hooks/useOutsideClick';
-import IngameBox from '@/components/IngameBox';
-import { IProPlayerData } from '@/types';
-import { useIsLoggedIn } from '@/hooks/useAuth';
+import useOutsideClick from '@/shared/hooks/useOutsideClick';
+import IngameBox from '@/shared/ui/IngameBox';
+import { IProPlayerData } from '@/shared/types';
+import { useIsLoggedIn } from '@/shared/hooks/useAuth';
 
 interface SubscribeListProps {
   list: IProPlayerData[];

@@ -1,7 +1,7 @@
 'use client';
 
-import RuneImages from '@/components/RuneImages';
-import SpellImages from '@/components/SpellImages';
+import RuneImages from '@/shared/ui/RuneImages';
+import SpellImages from '@/shared/ui/SpellImages';
 
 const rankedSpellIds = [
   1, // Cleanse

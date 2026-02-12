@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/useToast';
+import { useToast } from '@/shared/hooks/useToast';
 
 interface DeleteAccountModalProps {
   isOpen: boolean;

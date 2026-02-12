@@ -1,7 +1,7 @@
 'use client';
 
-import { Layout } from '@/components/Layout';
-import { signInWithGoogle, signInWithKakao } from '@/utils/supabase/actions';
+import { Layout } from '@/shared/ui/Layout';
+import { signInWithGoogle, signInWithKakao } from '@/shared/lib/supabase/actions';
 import { useRouter } from 'next/navigation';
 import { FaGoogle } from 'react-icons/fa';
 import { RiKakaoTalkFill } from 'react-icons/ri';

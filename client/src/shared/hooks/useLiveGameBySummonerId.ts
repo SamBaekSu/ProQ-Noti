@@ -1,6 +1,6 @@
 'use client';
 
-import { LiveGameData } from '@/types';
+import { LiveGameData } from '@/shared/types';
 import { useEffect, useState } from 'react';
 
 export function useLiveGameBySummonerId(summonerId: string) {

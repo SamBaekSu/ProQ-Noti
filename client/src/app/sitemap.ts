@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
-import { createClientForServer } from '@/utils/supabase/server';
-import { TABLES } from '@/constant/db';
+import { createClientForServer } from '@/shared/lib/supabase/server';
+import { TABLES } from '@/shared/constants/db';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://proq-noti.vercel.app';

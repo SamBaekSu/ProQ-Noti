@@ -1,8 +1,8 @@
 'use client';
 
 import { upsertFcmToken } from '@/actions/fcm';
-import { toast } from '@/hooks/useToast';
-import { getDeviceType } from '@/utils/device';
+import { toast } from '@/shared/hooks/useToast';
+import { getDeviceType } from '@/shared/lib/device';
 import { initializeApp, getApp, getApps, FirebaseApp } from 'firebase/app';
 import { getMessaging, getToken, Messaging } from 'firebase/messaging';
 

@@ -1,4 +1,4 @@
-import { Team } from '@/types';
+import { Team } from '@/shared/types';
 import { TeamCard } from './TeamCard';
 
 type TeamGridProps = {

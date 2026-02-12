@@ -1,10 +1,10 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { gamerInfo, Team } from '@/types';
-import { useToast } from '@/hooks/useToast';
+import { gamerInfo, Team } from '@/shared/types';
+import { useToast } from '@/shared/hooks/useToast';
 import { useEffect, useState } from 'react';
-import { supabase } from '@/utils/supabase/client';
-import { TABLES } from '@/constant/db';
-import { useUserId } from '@/hooks/useAuth';
+import { supabase } from '@/shared/lib/supabase/client';
+import { TABLES } from '@/shared/constants/db';
+import { useUserId } from '@/shared/hooks/useAuth';
 
 export function usePlayerList(team: string, initialData?: gamerInfo[]) {
   const { toast } = useToast();

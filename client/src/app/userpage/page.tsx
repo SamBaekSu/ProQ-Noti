@@ -1,11 +1,11 @@
 'use client';
 
-import { Layout } from '@/components/Layout';
-import DeleteAccountModal from '@/components/modal/DeleteAccountModal';
-import SubscribeList from '@/components/subscribeList';
-import { useIsLoggedIn, useUserId } from '@/hooks/useAuth';
-import { IProPlayerData } from '@/types';
-import { supabase } from '@/utils/supabase/client';
+import { Layout } from '@/shared/ui/Layout';
+import DeleteAccountModal from '@/shared/ui/modal/DeleteAccountModal';
+import SubscribeList from '@/shared/ui/subscribeList';
+import { useIsLoggedIn, useUserId } from '@/shared/hooks/useAuth';
+import { IProPlayerData } from '@/shared/types';
+import { supabase } from '@/shared/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 

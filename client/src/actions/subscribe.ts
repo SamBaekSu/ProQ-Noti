@@ -1,6 +1,6 @@
 'use server';
 
-import { createClientForServer } from '@/utils/supabase/server';
+import { createClientForServer } from '@/shared/lib/supabase/server';
 
 /**
  * @description Subscribe or Unsubscribe to a pro player

@@ -1,6 +1,6 @@
 'use server';
 
-import { createClientForServer } from '@/utils/supabase/server';
+import { createClientForServer } from '@/shared/lib/supabase/server';
 
 /**
  * @description Save or update FCM token and device type using upsert.

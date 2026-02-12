@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import SubscribePageClient from './SubscribePageClient';
-import { getPlayersWithSubscription } from '@/lib/queries/players';
-import { createClientForServer } from '@/utils/supabase/server';
+import { getPlayersWithSubscription } from '@/shared/api/queries/players';
+import { createClientForServer } from '@/shared/lib/supabase/server';
 
 type Props = {
   params: Promise<{ team: string }>;

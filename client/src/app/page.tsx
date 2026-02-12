@@ -1,4 +1,4 @@
-import { getTeams } from '@/lib/queries/teams';
+import { getTeams } from '@/shared/api/queries/teams';
 import HomePageClient from './HomePageClient';
 
 export default async function Page() {

@@ -1,4 +1,4 @@
-import { isLoggedIn, rUserId } from '@/store/authSlice';
+import { isLoggedIn, rUserId } from '@/shared/store/authSlice';
 import { useSelector } from 'react-redux';
 
 export function useUserId() {

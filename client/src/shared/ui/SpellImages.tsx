@@ -1,6 +1,6 @@
 'use client';
 
-import { getSpellName } from '@/hooks/lol';
+import { getSpellName } from '@/shared/hooks/lol';
 
 interface SpellImagesProps {
   spellIds: number[];

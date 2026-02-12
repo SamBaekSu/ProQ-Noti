@@ -1,8 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
 import HomePageClient from '@/app/HomePageClient';
-import { upsertFcmToken } from '@/actions/fcm';
-import { getDeviceType } from '@/utils/device';
-import { useIsLoggedIn, useUserId } from '@/hooks/useAuth';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { getToken } from 'firebase/messaging';
 
@@ -11,11 +8,11 @@ vi.mock('@/actions/fcm', () => ({
   upsertFcmToken: vi.fn(() => Promise.resolve({ status: 'success' }))
 }));
 
-vi.mock('@/utils/device', () => ({
+vi.mock('@/shared/lib/device', () => ({
   getDeviceType: vi.fn(() => 'web')
 }));
 
-vi.mock('@/hooks/useAuth', () => ({
+vi.mock('@/shared/hooks/useAuth', () => ({
   useIsLoggedIn: vi.fn(),
   useUserId: vi.fn()
 }));
@@ -27,23 +24,15 @@ vi.mock('next/navigation', () => ({
   })
 }));
 
-// Mock components to avoid rendering complexity
-vi.mock('@/components/Layout', () => ({
-  Layout: ({ children }: any) => <div>{children}</div>
+// Mock Layout component
+vi.mock('@/shared/ui/Layout', () => ({
+  Layout: Object.assign(({ children }: any) => <div>{children}</div>, {
+    Header: () => <div>Header</div>,
+    Main: ({ children }: any) => <div>{children}</div>
+  })
 }));
-// Fix for Layout compound component
-// @ts-ignore
-vi.mock('@/components/Layout', async (importOriginal) => {
-  const mod = await importOriginal();
-  return {
-    Layout: Object.assign(({ children }: any) => <div>{children}</div>, {
-      Header: () => <div>Header</div>,
-      Main: ({ children }: any) => <div>{children}</div>
-    })
-  };
-});
 
-vi.mock('@/components/TeamGrid', () => ({
+vi.mock('@/shared/ui/TeamGrid', () => ({
   TeamGrid: () => <div>TeamGrid</div>
 }));
 
@@ -51,8 +40,14 @@ describe('FCM Token Logic in HomePageClient', () => {
   const mockToken = 'test-fcm-token';
   const mockUserId = 'test-user-id';
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
+
+    // Import mocked modules
+    const { upsertFcmToken } = await import('@/actions/fcm');
+    const { getDeviceType } = await import('@/shared/lib/device');
+    const { useIsLoggedIn, useUserId } = await import('@/shared/hooks/useAuth');
+
     (useIsLoggedIn as any).mockReturnValue(true);
     (useUserId as any).mockReturnValue(mockUserId);
     (getToken as any).mockResolvedValue(mockToken);
@@ -70,7 +65,8 @@ describe('FCM Token Logic in HomePageClient', () => {
   });
 
   it('should register token when logged in and permission is granted', async () => {
-    // Setup: no token in local storage
+    const { upsertFcmToken } = await import('@/actions/fcm');
+
     localStorage.removeItem('sentFCMToken');
 
     render(<HomePageClient initialTeams={[]} />);
@@ -83,26 +79,28 @@ describe('FCM Token Logic in HomePageClient', () => {
   });
 
   it('should NOT register token if not logged in', async () => {
+    const { useIsLoggedIn, useUserId } = await import('@/shared/hooks/useAuth');
+    const { upsertFcmToken } = await import('@/actions/fcm');
+
     (useIsLoggedIn as any).mockReturnValue(false);
     (useUserId as any).mockReturnValue(null);
 
     render(<HomePageClient initialTeams={[]} />);
 
     await waitFor(() => {
-      // Should not call getToken or upsertFcmToken
       expect(getToken).not.toHaveBeenCalled();
       expect(upsertFcmToken).not.toHaveBeenCalled();
     });
   });
 
   it('should request permission if default', async () => {
+    const { upsertFcmToken } = await import('@/actions/fcm');
+
     Object.defineProperty(global.Notification, 'permission', {
       value: 'default',
       writable: true
     });
-    const requestPermissionSpy = vi.spyOn(global.Notification, 'requestPermission').mockResolvedValue('granted');
 
-    // We mock Notification.requestPermission in setup.ts but here we want to spy/mock specific return
     global.Notification.requestPermission = vi.fn().mockResolvedValue('granted');
 
     render(<HomePageClient initialTeams={[]} />);
@@ -115,13 +113,14 @@ describe('FCM Token Logic in HomePageClient', () => {
   });
 
   it('should NOT register if token matches localStorage', async () => {
+    const { upsertFcmToken } = await import('@/actions/fcm');
+
     localStorage.setItem('sentFCMToken', mockToken);
 
     render(<HomePageClient initialTeams={[]} />);
 
     await waitFor(() => {
       expect(getToken).toHaveBeenCalled();
-      // upsertFcmToken should NOT be called because token in localStorage matches current token
       expect(upsertFcmToken).not.toHaveBeenCalled();
     });
   });

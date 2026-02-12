@@ -1,15 +1,15 @@
 'use client';
 
-import { Layout } from '@/components/Layout';
-import { TeamGrid } from '@/components/TeamGrid';
+import { Layout } from '@/shared/ui/Layout';
+import { TeamGrid } from '@/shared/ui/TeamGrid';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { useIsLoggedIn, useUserId } from '@/hooks/useAuth';
-import { getFirebaseMessaging } from '@/lib/firebase';
+import { useIsLoggedIn, useUserId } from '@/shared/hooks/useAuth';
+import { getFirebaseMessaging } from '@/shared/lib/firebase';
 import { getToken } from 'firebase/messaging';
-import { getDeviceType } from '@/utils/device';
+import { getDeviceType } from '@/shared/lib/device';
 import { upsertFcmToken } from '@/actions/fcm';
-import type { Team } from '@/types';
+import type { Team } from '@/shared/types';
 
 interface HomePageClientProps {
   initialTeams: Team[];

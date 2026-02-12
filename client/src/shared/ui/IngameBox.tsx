@@ -12,14 +12,14 @@ import type {
   LiveGameParticipant,
   StreamerModeGameFields,
   StreamerModePlayerFields
-} from '@/types';
-import { useToast } from '@/hooks/useToast';
-import { useUserId } from '@/hooks/useAuth';
+} from '@/shared/types';
+import { useToast } from '@/shared/hooks/useToast';
+import { useUserId } from '@/shared/hooks/useAuth';
 import { toggleSubscription } from '@/actions/subscribe';
 import ChampionImage from './ChampionImage';
 import SpellImages from './SpellImages';
 import RuneImages from './RuneImages';
-import { gameModeMap } from '@/hooks/lol';
+import { gameModeMap } from '@/shared/hooks/lol';
 
 const FETCH_INTERVAL = 3000;
 

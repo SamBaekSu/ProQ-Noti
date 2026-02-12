@@ -1,17 +1,17 @@
 'use client';
 
-import { Layout } from '@/components/Layout';
-import SubscribeList from '@/components/subscribeList';
+import { Layout } from '@/shared/ui/Layout';
+import SubscribeList from '@/shared/ui/subscribeList';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { usePlayerList } from '@/hooks/usePlayer';
-import SubscribeListSkeleton from '@/components/SubscribeSkeleton';
+import { usePlayerList } from '@/shared/hooks/usePlayer';
+import SubscribeListSkeleton from '@/shared/ui/SubscribeSkeleton';
 import { getToken } from 'firebase/messaging';
-import { getFirebaseMessaging } from '@/lib/firebase';
-import { getDeviceType } from '@/utils/device';
-import { useIsLoggedIn, useUserId } from '@/hooks/useAuth';
+import { getFirebaseMessaging } from '@/shared/lib/firebase';
+import { getDeviceType } from '@/shared/lib/device';
+import { useIsLoggedIn, useUserId } from '@/shared/hooks/useAuth';
 import { upsertFcmToken } from '@/actions/fcm';
-import type { IProPlayerData, gamerInfo } from '@/types';
+import type { IProPlayerData, gamerInfo } from '@/shared/types';
 
 interface SubscribePageClientProps {
   teamName: string;

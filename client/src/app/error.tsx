@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Button } from '@/components/ui/button'; // Assuming button component exists or will be created/used
+import { Button } from '@/shared/ui/ui/button'; // Assuming button component exists or will be created/used
 
 export default function Error({
   error,

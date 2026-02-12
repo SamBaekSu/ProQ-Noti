@@ -1,13 +1,13 @@
-import { useToast } from '@/hooks/useToast';
-import useOutsideClick from '@/hooks/useOutsideClick';
-import { storeLogout } from '@/store/authSlice';
-import { useIsLoggedIn, useUserId } from '@/hooks/useAuth';
-import { signOut } from '@/utils/supabase/actions';
+import { useToast } from '@/shared/hooks/useToast';
+import useOutsideClick from '@/shared/hooks/useOutsideClick';
+import { storeLogout } from '@/shared/store/authSlice';
+import { useIsLoggedIn, useUserId } from '@/shared/hooks/useAuth';
+import { signOut } from '@/shared/lib/supabase/actions';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { useDispatch } from 'react-redux';
-import { requestToken } from '@/lib/firebase';
+import { requestToken } from '@/shared/lib/firebase';
 import { redirect } from 'next/navigation';
 
 interface DropdownProps {
