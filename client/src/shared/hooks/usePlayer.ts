@@ -9,36 +9,10 @@ import { useUserId } from '@/shared/hooks/useAuth';
 export function usePlayerList(team: string, initialData?: gamerInfo[]) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [teamId, setTeamId] = useState<number | null>(null);
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
     null
   );
   const userId = useUserId();
-
-  // 해당 팀의 team_id 가져오기
-  useEffect(() => {
-    if (!team) return;
-
-    const fetchTeamId = async () => {
-      try {
-        const { data, error } = await (supabase as any)
-          .from(TABLES.TEAMS)
-          .select('id')
-          .eq('name_abbr', team)
-          .single();
-
-        if (error || !data) {
-          throw new Error('팀 ID 조회 실패');
-        }
-
-        setTeamId(data.id);
-      } catch (e) {
-        console.error('error:', e);
-      }
-    };
-
-    fetchTeamId();
-  }, [team]);
 
   const {
     data: members = [],
@@ -62,7 +36,11 @@ export function usePlayerList(team: string, initialData?: gamerInfo[]) {
       return data;
     },
     enabled: !!team,
-    initialData
+    initialData,
+    // 서버에서 가져온 데이터를 5분간 fresh하게 유지 (refetch 방지)
+    staleTime: 5 * 60 * 1000,
+    // 캐시를 10분간 유지
+    gcTime: 10 * 60 * 1000
   });
 
   if (error) {
@@ -88,7 +66,8 @@ export function usePlayerList(team: string, initialData?: gamerInfo[]) {
         (payload) => {
           const currentMembers = queryClient.getQueryData<gamerInfo[]>([
             'players',
-            team
+            team,
+            userId
           ]);
           if (!currentMembers) return;
 
@@ -147,7 +126,7 @@ export function usePlayerList(team: string, initialData?: gamerInfo[]) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [team, teamId, queryClient, loading]);
+  }, [team, queryClient, loading, userId, toast, debounceTimer]);
 
   return { members, loading };
 }

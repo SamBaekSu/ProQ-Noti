@@ -24,62 +24,47 @@ export default function SubscribePageClient({
 }: SubscribePageClientProps) {
   const router = useRouter();
   // teamName is passed from Server Component
-  const { members, loading: dataLoading } = usePlayerList(
+  const { members, loading } = usePlayerList(
     teamName,
     initialPlayers
   );
-  const [minLoading, setMinLoading] = useState(true);
   const isLoggedIn = useIsLoggedIn();
   const userId = useUserId();
   const messaging = getFirebaseMessaging();
 
+  // FCM 토큰 등록 - 한 번만 실행
   useEffect(() => {
-    const timer = setTimeout(() => setMinLoading(false), 200);
+    if (!isLoggedIn || !userId || !messaging) return;
 
     const permission = Notification.permission;
 
-    if (isLoggedIn) {
-      if ('Notification' in window && permission === 'default') {
-        Notification.requestPermission().then((result) => {
-          if (result === 'granted' && messaging) {
-            getToken(messaging, {
-              vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
-            }).then((currentToken) => {
-              if (currentToken) {
-                const deviceType = getDeviceType();
-                // FCM 토큰을 서버에 저장하는 Server Action 호출
-                if (userId) {
-                  const result = upsertFcmToken(userId, currentToken, deviceType)
-                    .then((res) => {
-                      if (res.status === 'success') {
-                        console.log(currentToken);
-                      } else {
-                        console.warn('FCM 토큰 저장 실패:', res.message);
-                      }
-                    })
-                    .catch((error) => {
-                      console.error('FCM 토큰 저장 중 오류 발생:', error);
-                    });
-                } else {
-                  console.warn(
-                    '로그인 되지 않은 상태에서 FCM 토큰을 저장할 수 없습니다.'
-                  );
-                }
-              } else {
-                console.warn('fcm 토큰을 가져올 수 없습니다.');
-              }
-            });
-          }
-        });
-      }
+    // 권한이 default인 경우에만 요청
+    if ('Notification' in window && permission === 'default') {
+      Notification.requestPermission().then((result) => {
+        if (result === 'granted') {
+          getToken(messaging, {
+            vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
+          }).then((currentToken) => {
+            if (currentToken && userId) {
+              const deviceType = getDeviceType();
+              upsertFcmToken(userId, currentToken, deviceType)
+                .then((res) => {
+                  if (res.status === 'success') {
+                    console.log('FCM 토큰 등록 완료:', currentToken);
+                  } else {
+                    console.warn('FCM 토큰 저장 실패:', res.message);
+                  }
+                })
+                .catch((error) => {
+                  console.error('FCM 토큰 저장 중 오류 발생:', error);
+                });
+            }
+          });
+        }
+      });
     }
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [teamName, isLoggedIn, messaging, userId]);
-
-  const loading = dataLoading || minLoading;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn, userId]); // teamName 의존성 제거 - 페이지 이동 시마다 실행될 필요 없음
 
   return (
     <>
