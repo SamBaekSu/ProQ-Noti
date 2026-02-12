@@ -30,16 +30,16 @@ const nextConfig: NextConfig = {
 
     return config;
   },
-  experimental: {
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js'
-        }
+  experimental: {},
+  // @ts-expect-error turbo types might be missing in this canary or next-pwa intersection
+  turbo: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js'
       }
     }
-  },
+  }
 };
 
 // @ts-expect-error next-pwa return type mismatch
