@@ -1,14 +1,29 @@
+import { FlatCompat } from '@eslint/eslintrc';
+import js from '@eslint/js';
 import globals from 'globals';
-import tseslint from 'typescript-eslint';
-import pluginReact from 'eslint-plugin-react';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all
+});
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-  { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
-  { languageOptions: { globals: globals.browser } },
-  ...tseslint.configs.recommended,
+  { ignores: ['.next/**', 'public/**', 'node_modules/**', '.turbo/**'] },
+  ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
-    ...pluginReact.configs.flat.recommended,
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node
+      }
+    },
     rules: {
       'react/react-in-jsx-scope': 'off',
       'import/no-extraneous-dependencies': 'off',

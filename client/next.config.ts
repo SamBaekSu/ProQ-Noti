@@ -30,16 +30,9 @@ const nextConfig: NextConfig = {
 
     return config;
   },
-  experimental: {},
-  // @ts-expect-error turbo types might be missing in this canary or next-pwa intersection
-  turbo: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js'
-      }
-    }
-  }
+  // Silence Turbopack warning about webpack config
+  turbopack: {},
+  experimental: {}
 };
 
 // @ts-expect-error next-pwa return type mismatch

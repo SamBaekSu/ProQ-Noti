@@ -3,7 +3,7 @@ import { updateSession } from '@/shared/lib/supabase/middleware';
 import { createClientForServer } from '@/shared/lib/supabase/server';
 import { redirect } from 'next/navigation';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const supabase = await createClientForServer();
   const {
     data: { user }
