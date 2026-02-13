@@ -89,6 +89,29 @@ describe('HomePageClient', () => {
     }
   ];
 
+  const mockLivePlayers = [
+    {
+      id: 1,
+      pro_name: 'Faker',
+      team_abbr: 'T1',
+      team_name: 'T1',
+      summoner_name: 'Hide on bush',
+      tag_line: 'KR1',
+      puuid: 'puuid-123',
+      is_online: true
+    },
+    {
+      id: 2,
+      pro_name: 'Chovy',
+      team_abbr: 'GEN',
+      team_name: 'Gen.G',
+      summoner_name: 'GenG Chovy',
+      tag_line: 'KR1',
+      puuid: 'puuid-456',
+      is_online: true
+    }
+  ];
+
   beforeEach(async () => {
     vi.clearAllMocks();
     const { useIsLoggedIn, useUserId } = await import('@/shared/hooks/useAuth');
@@ -97,13 +120,13 @@ describe('HomePageClient', () => {
   });
 
   it('should render home page with title', () => {
-    render(<HomePageClient initialTeams={mockTeams} />);
+    render(<HomePageClient initialTeams={mockTeams} initialLivePlayers={[]} />);
 
-    expect(screen.getByText('소속 팀 선택')).toBeInTheDocument();
+    expect(screen.getByText('ProQ-Noti')).toBeInTheDocument();
   });
 
   it('should render team grid with teams', () => {
-    render(<HomePageClient initialTeams={mockTeams} />);
+    render(<HomePageClient initialTeams={mockTeams} initialLivePlayers={[]} />);
 
     expect(screen.getByTestId('team-grid')).toBeInTheDocument();
     expect(screen.getByTestId('team-1')).toBeInTheDocument();
@@ -111,7 +134,7 @@ describe('HomePageClient', () => {
   });
 
   it('should display team names', () => {
-    render(<HomePageClient initialTeams={mockTeams} />);
+    render(<HomePageClient initialTeams={mockTeams} initialLivePlayers={[]} />);
 
     expect(screen.getByText('T1')).toBeInTheDocument();
     expect(screen.getByText('GEN')).toBeInTheDocument();
@@ -121,7 +144,7 @@ describe('HomePageClient', () => {
     const navModule = await import('next/navigation');
     const mockPush = (navModule as any).__mockPush;
 
-    render(<HomePageClient initialTeams={mockTeams} />);
+    render(<HomePageClient initialTeams={mockTeams} initialLivePlayers={[]} />);
 
     const t1Button = screen.getByTestId('team-1');
     fireEvent.click(t1Button);
@@ -133,7 +156,7 @@ describe('HomePageClient', () => {
     const navModule = await import('next/navigation');
     const mockPush = (navModule as any).__mockPush;
 
-    render(<HomePageClient initialTeams={mockTeams} />);
+    render(<HomePageClient initialTeams={mockTeams} initialLivePlayers={[]} />);
 
     const genButton = screen.getByTestId('team-2');
     fireEvent.click(genButton);
@@ -145,7 +168,7 @@ describe('HomePageClient', () => {
     const navModule = await import('next/navigation');
     const mockBack = (navModule as any).__mockBack;
 
-    render(<HomePageClient initialTeams={mockTeams} />);
+    render(<HomePageClient initialTeams={mockTeams} initialLivePlayers={[]} />);
 
     const backButton = screen.getByText('Back');
     fireEvent.click(backButton);
@@ -154,7 +177,7 @@ describe('HomePageClient', () => {
   });
 
   it('should render with empty teams list', () => {
-    render(<HomePageClient initialTeams={[]} />);
+    render(<HomePageClient initialTeams={[]} initialLivePlayers={[]} />);
 
     expect(screen.getByTestId('team-grid')).toBeInTheDocument();
     // Should not find any team buttons when list is empty
@@ -171,7 +194,7 @@ describe('HomePageClient', () => {
       created_at: '2024-01-01'
     }));
 
-    render(<HomePageClient initialTeams={manyTeams} />);
+    render(<HomePageClient initialTeams={manyTeams} initialLivePlayers={[]} />);
 
     manyTeams.forEach((team) => {
       expect(screen.getByText(team.name_abbr)).toBeInTheDocument();
@@ -182,12 +205,50 @@ describe('HomePageClient', () => {
     const navModule = await import('next/navigation');
     const mockPush = (navModule as any).__mockPush;
 
-    render(<HomePageClient initialTeams={mockTeams} />);
+    render(<HomePageClient initialTeams={mockTeams} initialLivePlayers={[]} />);
 
     const t1Button = screen.getByTestId('team-1');
     fireEvent.click(t1Button);
 
     // After clicking, router.push should be called
     expect(mockPush).toHaveBeenCalled();
+  });
+
+  it('should render live players section when players are online', () => {
+    render(<HomePageClient initialTeams={mockTeams} initialLivePlayers={mockLivePlayers} />);
+
+    expect(screen.getByText('Live Now')).toBeInTheDocument();
+    expect(screen.getByText('2명의 프로게이머가 게임 중입니다')).toBeInTheDocument();
+    expect(screen.getByText('Faker')).toBeInTheDocument();
+    expect(screen.getByText('Chovy')).toBeInTheDocument();
+  });
+
+  it('should not render live players section when no players are online', () => {
+    render(<HomePageClient initialTeams={mockTeams} initialLivePlayers={[]} />);
+
+    expect(screen.queryByText('Live Now')).not.toBeInTheDocument();
+    expect(screen.queryByText('명의 프로게이머가 게임 중입니다')).not.toBeInTheDocument();
+  });
+
+  it('should navigate to team page when live player card is clicked', async () => {
+    const navModule = await import('next/navigation');
+    const mockPush = (navModule as any).__mockPush;
+
+    render(<HomePageClient initialTeams={mockTeams} initialLivePlayers={mockLivePlayers} />);
+
+    const fakerCard = screen.getByText('Faker').closest('button');
+    expect(fakerCard).toBeInTheDocument();
+
+    if (fakerCard) {
+      fireEvent.click(fakerCard);
+      expect(mockPush).toHaveBeenCalledWith('/subscribe/T1');
+    }
+  });
+
+  it('should display correct summoner info for live players', () => {
+    render(<HomePageClient initialTeams={mockTeams} initialLivePlayers={mockLivePlayers} />);
+
+    expect(screen.getByText('Hide on bush#KR1')).toBeInTheDocument();
+    expect(screen.getByText('GenG Chovy#KR1')).toBeInTheDocument();
   });
 });

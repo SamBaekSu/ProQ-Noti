@@ -99,7 +99,8 @@ describe('UserPage', () => {
     render(<UserPage />);
 
     await waitFor(() => {
-      expect(screen.getByText(/구독한 프로게이머가 없습니다/)).toBeInTheDocument();
+      expect(screen.getByText('No Subscriptions')).toBeInTheDocument();
+      expect(screen.getByText('관심 있는 프로게이머를 구독해보세요!')).toBeInTheDocument();
     });
   });
 

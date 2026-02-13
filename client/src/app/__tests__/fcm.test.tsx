@@ -69,7 +69,7 @@ describe('FCM Token Logic in HomePageClient', () => {
 
     localStorage.removeItem('sentFCMToken');
 
-    render(<HomePageClient initialTeams={[]} />);
+    render(<HomePageClient initialTeams={[]} initialLivePlayers={[]} />);
 
     await waitFor(() => {
       expect(getToken).toHaveBeenCalled();
@@ -85,7 +85,7 @@ describe('FCM Token Logic in HomePageClient', () => {
     (useIsLoggedIn as any).mockReturnValue(false);
     (useUserId as any).mockReturnValue(null);
 
-    render(<HomePageClient initialTeams={[]} />);
+    render(<HomePageClient initialTeams={[]} initialLivePlayers={[]} />);
 
     await waitFor(() => {
       expect(getToken).not.toHaveBeenCalled();
@@ -103,7 +103,7 @@ describe('FCM Token Logic in HomePageClient', () => {
 
     global.Notification.requestPermission = vi.fn().mockResolvedValue('granted');
 
-    render(<HomePageClient initialTeams={[]} />);
+    render(<HomePageClient initialTeams={[]} initialLivePlayers={[]} />);
 
     await waitFor(() => {
       expect(global.Notification.requestPermission).toHaveBeenCalled();
@@ -117,7 +117,7 @@ describe('FCM Token Logic in HomePageClient', () => {
 
     localStorage.setItem('sentFCMToken', mockToken);
 
-    render(<HomePageClient initialTeams={[]} />);
+    render(<HomePageClient initialTeams={[]} initialLivePlayers={[]} />);
 
     await waitFor(() => {
       expect(getToken).toHaveBeenCalled();

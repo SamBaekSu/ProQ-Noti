@@ -109,7 +109,7 @@ describe('LoginPage', () => {
     // Kakao button should have yellow background
     expect(kakaoButton).toHaveClass('bg-[#FEEA1C]');
 
-    // Google button should have white background
-    expect(googleButton).toHaveClass('bg-white');
+    // Google button should have dark card background (dark theme)
+    expect(googleButton).toHaveClass('bg-dark-card');
   });
 });
