@@ -1,32 +1,27 @@
-'use client';
-
-import Image from 'next/image';
-import { useState } from 'react';
+import { GameAssetImage } from './GameAssetImage';
 
 interface ChampionImageProps {
   championId: number | null;
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
 }
 
-export default function ChampionImage({ championId }: ChampionImageProps) {
-  const [error, setError] = useState(false);
-
-  if (!championId || error) {
-    return (
-      <div className="h-full w-full flex items-center justify-center bg-gray-200 rounded">
-        <span className="text-xs text-gray-500">?</span>
-      </div>
-    );
-  }
-
+/**
+ * ChampionImage Component - 챔피언 아이콘
+ * 반응형 크기 지원, 에러 처리 포함
+ */
+export default function ChampionImage({
+  championId,
+  size = 'md',
+  className = ''
+}: ChampionImageProps) {
   return (
-    <Image
-      className="object-contain h-full w-auto"
-      src={`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${championId}.png`}
-      alt={`챔피언 ${championId}`}
-      width={64}
-      height={64}
-      unoptimized
-      onError={() => setError(true)}
+    <GameAssetImage
+      type="champion"
+      id={championId}
+      size={size}
+      className={className}
+      alt={championId ? `챔피언 ${championId}` : undefined}
     />
   );
 }

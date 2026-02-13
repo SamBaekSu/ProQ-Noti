@@ -1,43 +1,28 @@
-'use client';
-
-import Image from 'next/image';
-import { useState } from 'react';
-import { getRunePath } from '@/shared/hooks/lol';
+import { GameAssetImage } from './GameAssetImage';
 
 interface RuneImagesProps {
   runePaths: number[];
+  size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 
-function RuneImage({ perkId }: { perkId: number }) {
-  const [error, setError] = useState(false);
-  const runePath = getRunePath(perkId);
-
-  if (error) {
-    return (
-      <div className="w-6 h-6 flex items-center justify-center bg-gray-200 rounded">
-        <span className="text-xs text-gray-500">?</span>
-      </div>
-    );
-  }
-
+/**
+ * RuneImages Component - 룬 목록
+ * 반응형 레이아웃
+ */
+export default function RuneImages({
+  runePaths,
+  size = 'xs'
+}: RuneImagesProps) {
   return (
-    <Image
-      className="w-6 h-6 object-contain"
-      src={`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perk-images/${runePath.toLowerCase()}.png`}
-      alt={`룬 ${runePath}`}
-      width={24}
-      height={24}
-      unoptimized
-      onError={() => setError(true)}
-    />
-  );
-}
-
-export default function RuneImages({ runePaths }: RuneImagesProps) {
-  return (
-    <div className="overflow-hidden h-full flex flex-col gap-1">
+    <div className="flex flex-col gap-1 overflow-hidden">
       {runePaths.map((perkId, i) => (
-        <RuneImage key={`rune-${perkId}-${i}`} perkId={perkId} />
+        <GameAssetImage
+          key={`rune-${perkId}-${i}`}
+          type="rune"
+          id={perkId}
+          size={size}
+          alt={`룬 ${i + 1}`}
+        />
       ))}
     </div>
   );

@@ -1,43 +1,28 @@
-'use client';
-
-import Image from 'next/image';
-import { useState } from 'react';
-import { getSpellName } from '@/shared/hooks/lol';
+import { GameAssetImage } from './GameAssetImage';
 
 interface SpellImagesProps {
   spellIds: number[];
+  size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 
-function SpellImage({ spellId }: { spellId: number }) {
-  const [error, setError] = useState(false);
-  const fileName = getSpellName(spellId);
-
-  if (error) {
-    return (
-      <div className="w-6 h-6 flex items-center justify-center bg-gray-200 rounded">
-        <span className="text-xs text-gray-500">?</span>
-      </div>
-    );
-  }
-
+/**
+ * SpellImages Component - 스펠 목록
+ * 반응형 레이아웃
+ */
+export default function SpellImages({
+  spellIds,
+  size = 'xs'
+}: SpellImagesProps) {
   return (
-    <Image
-      className="w-6 h-6 object-contain"
-      src={`https://raw.communitydragon.org/latest/game/data/spells/icons2d/${fileName}.png`}
-      alt={`스펠 ${fileName}`}
-      width={24}
-      height={24}
-      unoptimized
-      onError={() => setError(true)}
-    />
-  );
-}
-
-export default function SpellImages({ spellIds }: SpellImagesProps) {
-  return (
-    <div className="overflow-hidden h-full flex flex-col gap-1">
+    <div className="flex flex-col gap-1 overflow-hidden">
       {spellIds.map((spell, i) => (
-        <SpellImage key={`${spell}-${i}`} spellId={spell} />
+        <GameAssetImage
+          key={`spell-${spell}-${i}`}
+          type="spell"
+          id={spell}
+          size={size}
+          alt={`스펠 ${i + 1}`}
+        />
       ))}
     </div>
   );
