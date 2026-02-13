@@ -11,15 +11,28 @@ import { getDeviceType } from '@/shared/lib/device';
 import { upsertFcmToken } from '@/actions/fcm';
 import type { Team } from '@/shared/types';
 
-interface HomePageClientProps {
-  initialTeams: Team[];
+interface LivePlayer {
+  id: number;
+  pro_name: string;
+  team_abbr: string;
+  team_name: string;
+  summoner_name: string;
+  tag_line: string;
+  puuid: string;
+  is_online: boolean;
 }
 
-export default function HomePageClient({ initialTeams }: HomePageClientProps) {
+interface HomePageClientProps {
+  initialTeams: Team[];
+  initialLivePlayers: LivePlayer[];
+}
+
+export default function HomePageClient({ initialTeams, initialLivePlayers }: HomePageClientProps) {
   const router = useRouter();
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   // We use initialTeams passed from Server Component
   const teams = initialTeams;
+  const livePlayers = initialLivePlayers;
 
   const isLoggedIn = useIsLoggedIn();
   const userId = useUserId();
@@ -101,10 +114,67 @@ export default function HomePageClient({ initialTeams }: HomePageClientProps) {
 
   return (
     <Layout>
-      <Layout.Header title="소속 팀 선택" handleBack={() => router.back()} />
+      <Layout.Header title="ProQ-Noti" handleBack={() => router.back()} />
       <Layout.Main>
+        {/* Live Players Section */}
+        {livePlayers.length > 0 && (
+          <div className="flex justify-center w-full px-4 md:px-6 lg:px-8 py-6 md:py-8">
+            <div className="w-full max-w-7xl">
+              <div className="mb-6 md:mb-8">
+                <div className="flex items-center justify-center gap-4 mb-4">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent to-coral/50" />
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 bg-coral rounded-full animate-pulse shadow-[0_0_10px_rgba(233,95,92,0.8)]" />
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-white uppercase tracking-wider text-center">
+                      Live Now
+                    </h2>
+                    <div className="w-3 h-3 bg-coral rounded-full animate-pulse shadow-[0_0_10px_rgba(233,95,92,0.8)]" />
+                  </div>
+                  <div className="h-px flex-1 bg-gradient-to-l from-transparent to-coral/50" />
+                </div>
+                <p className="text-sm md:text-base text-center text-gray-400 font-semibold">
+                  {livePlayers.length}명의 프로게이머가 게임 중입니다
+                </p>
+              </div>
+
+              {/* Live Players Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 mb-8">
+                {livePlayers.map((player) => (
+                  <button
+                    key={player.id}
+                    onClick={() => router.push(`/subscribe/${player.team_abbr}`)}
+                    className="group relative overflow-hidden p-4 bg-dark-card/80 backdrop-blur-sm border-2 border-coral/50 rounded-lg hover:border-coral hover:shadow-[0_0_20px_rgba(233,95,92,0.4)] transition-all duration-300 hover:-translate-y-1"
+                  >
+                    {/* Live indicator */}
+                    <div className="absolute top-2 right-2 flex items-center gap-1">
+                      <div className="w-2 h-2 bg-coral rounded-full animate-pulse" />
+                    </div>
+
+                    {/* Player Info */}
+                    <div className="flex flex-col items-center gap-2 text-center">
+                      <p className="text-lg md:text-xl font-black text-white uppercase tracking-wide">
+                        {player.pro_name}
+                      </p>
+                      <p className="text-xs md:text-sm text-gray-400 font-semibold">
+                        {player.team_name}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate w-full">
+                        {player.summoner_name}#{player.tag_line}
+                      </p>
+                    </div>
+
+                    {/* Hover effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-coral/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Team Selection */}
         <TeamGrid onSelectTeam={handleSelectTeam} teamList={teams} />
       </Layout.Main>
-    </Layout>
+    </Layout >
   );
 }

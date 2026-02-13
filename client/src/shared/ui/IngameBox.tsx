@@ -235,15 +235,17 @@ export default function IngameBox({
           'md:px-5 md:py-4',
           'lg:px-6 lg:py-4',
           'bg-dark-card',
-          'border-2',
+          'border',
           isOpen ? 'border-coral' : 'border-dark-border',
           'hover:border-coral/60',
           'transition-all duration-200',
           'cursor-pointer',
           'flex items-center justify-between gap-3',
-          // Gaming glow effect on hover
-          'hover:shadow-[0_0_20px_rgba(233,95,92,0.3)]',
-          isOpen && 'shadow-[0_0_25px_rgba(233,95,92,0.4)]'
+          // OP.GG card shadow
+          'hover:shadow-card-hover',
+          isOpen && 'shadow-card-hover',
+          // Live indicator
+          is_online && 'border-l-4 border-l-coral shadow-[inset_4px_0_0_0_rgba(233,95,92,0.3)]'
         )}
         aria-label={`${pro_name} 게임 정보 확인`}
         aria-expanded={isOpen}
@@ -251,15 +253,8 @@ export default function IngameBox({
         {/* Animated gradient background on hover */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-coral/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-        {/* Live indicator - Neon glow */}
-        {is_online && (
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-coral via-yellow to-coral">
-            <div className="absolute inset-0 bg-gradient-to-b from-coral via-yellow to-coral blur-sm" />
-          </div>
-        )}
-
         {/* Left: Player Info */}
-        <div className="flex-1 flex items-center gap-3 md:gap-4 min-w-0 pl-2 relative z-10">
+        <div className="flex-1 flex items-center gap-3 md:gap-4 min-w-0">
           <div className="flex-1 flex flex-col gap-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-base md:text-lg font-black text-white uppercase tracking-wide truncate">
@@ -325,8 +320,8 @@ export default function IngameBox({
             'md:px-6 md:py-6',
             'lg:px-8 lg:py-7',
             'bg-dark-surface',
-            'border-2 border-dark-border',
-            'shadow-[0_8px_32px_rgba(0,0,0,0.4)]',
+            'border border-dark-border',
+            'shadow-card',
             'animate-slideindown',
             'flex flex-col',
             'relative overflow-hidden'
@@ -373,17 +368,24 @@ export default function IngameBox({
           ) : player ? (
             // Regular Game Mode - Gaming HUD style
             <div className="relative flex flex-col gap-5 md:gap-6 z-10">
-              {/* Game Assets with neon glow */}
-              <div className="flex gap-4 md:gap-5 items-center justify-center">
-                <div className="flex-shrink-0 relative group">
+              {/* Game Assets - 2x2 Grid Layout */}
+              <div className="grid grid-cols-2 gap-3 md:gap-4 items-center justify-items-center max-w-md">
+                {/* Champion Image - spans 2 rows */}
+                <div className="row-span-2 relative group">
                   <div className="absolute inset-0 bg-coral/20 blur-xl group-hover:blur-2xl transition-all" />
                   <ChampionImage championId={championId} size="lg" />
                   <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-gradient-to-br from-yellow to-amber-500 border-2 border-dark-card shadow-lg flex items-center justify-center">
                     <span className="text-xs font-black text-dark-bg">★</span>
                   </div>
                 </div>
-                <div className="flex flex-col gap-2">
+
+                {/* Spells - top right */}
+                <div className="flex items-center justify-center">
                   <SpellImages spellIds={spellIds} size="md" />
+                </div>
+
+                {/* Runes - bottom right */}
+                <div className="flex items-center justify-center">
                   <RuneImages runePaths={runePaths} size="md" />
                 </div>
               </div>
@@ -407,7 +409,7 @@ export default function IngameBox({
                       className={cn(
                         'px-5 py-2.5 font-black text-base uppercase tracking-wider border-2',
                         player.win
-                          ? 'bg-blue-500/20 border-blue-500 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.5)]'
+                          ? 'bg-opgg-blue/20 border-opgg-blue text-opgg-blue shadow-glow-blue'
                           : 'bg-red-500/20 border-red-500 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.5)]'
                       )}
                     >
