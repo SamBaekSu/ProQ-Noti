@@ -111,13 +111,15 @@
   --color-border: #2d3041;
   --color-border-light: #252836;
 
-  /* Legacy Support */
-  --color-primary-coral: #e95f5c;
-  --color-primary-mint: #79ceb8;
-  --color-primary-yellow: #ffdb00;
-  --color-primary-skyblue: #5cc3e8;
-  --color-primary-navy: #314855;
-  --color-primary-white: #ffffff;
+  /* OP.GG Color System */
+  --color-opgg-blue: #5383E8;
+  --color-opgg-blue-dark: #3B5BA5;
+  --color-opgg-blue-light: #7BA3FF;
+  --color-opgg-yellow: #E8B034;
+  --color-opgg-bg-primary: #1C1C1F;
+  --color-opgg-bg-secondary: #28344E;
+  --color-opgg-bg-tertiary: #31313C;
+  --color-opgg-border: #3F3F46;
 
   /* ========================================
      TYPOGRAPHY SYSTEM
@@ -238,6 +240,13 @@
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   --shadow-bottom: 0px 4px 4px rgba(0, 0, 0, 0.1);
 
+  /* OP.GG Gaming Shadows */
+  --shadow-card: 0 2px 8px 0 rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 4px 16px 0 rgba(0, 0, 0, 0.4);
+  --shadow-glow-coral: 0 0 15px rgba(233, 95, 92, 0.5);
+  --shadow-glow-blue: 0 0 15px rgba(83, 131, 232, 0.5);
+  --shadow-glow-mint: 0 0 15px rgba(121, 206, 184, 0.5);
+
   /* ========================================
      TRANSITIONS & ANIMATIONS
      ======================================== */
@@ -263,11 +272,8 @@
   /* Custom breakpoints for responsive design */
   --breakpoint-mobile: 360px;   /* Base mobile (default, no prefix) */
   --breakpoint-tablet: 768px;   /* md - Tablets and small laptops */
-  --breakpoint-desktop: 960px;  /* lg - Desktop and larger screens */
-
-  /* Legacy breakpoints (for backward compatibility) */
-  --breakpoint-web: 1024px;     /* xl */
-  --breakpoint-wide: 1280px;    /* 2xl */
+  --breakpoint-desktop: 940px;  /* lg - Desktop and larger screens */
+  --breakpoint-wide: 1280px;    /* xl - Wide screens */
 
   /* ========================================
      Z-INDEX SYSTEM
@@ -275,13 +281,13 @@
 
   --z-hide: -1;
   --z-base: 0;
-  --z-dropdown: 40;
   --z-sticky: 20;
   --z-fixed: 30;
-  --z-modal-backdrop: 40;
-  --z-modal: 50;
-  --z-popover: 60;
-  --z-tooltip: 70;
+  --z-dropdown: 40;
+  --z-modal-backdrop: 50;
+  --z-modal: 60;
+  --z-popover: 70;
+  --z-tooltip: 75;
   --z-notification: 80;
 
   /* ========================================
@@ -572,6 +578,27 @@ body {
   font-weight: 700;
 }
 
+/* OP.GG Typography Utilities */
+@utility text-opgg-body {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+@utility text-opgg-body-lg {
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+@utility text-opgg-heading {
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
 /* ========================================
    RESPONSIVE WIDTH UTILITIES
    ======================================== */
@@ -589,7 +616,7 @@ body {
 
 @utility w-desktop {
   width: 100%;
-  max-width: 960px;
+  max-width: 940px;
 }
 
 @utility w-wide {
@@ -605,7 +632,7 @@ body {
 /* Container utility */
 @utility container-responsive {
   width: 100%;
-  max-width: 960px;
+  max-width: 940px;
   margin-left: auto;
   margin-right: auto;
   padding-left: 1rem;
@@ -698,16 +725,97 @@ textarea:disabled {
 }
 
 /* ========================================
-   GAMING DARK MODE (OP.GG / Riot Games Style)
+   THEME SYSTEM - 4 Themes (dark, white, blue, pink)
    ======================================== */
 
-/* Gaming dark theme with Riot/OP.GG aesthetic */
-:root {
+/* Dark Theme (Default - OP.GG Style) */
+:root,
+[data-theme='dark'] {
   color-scheme: dark;
+
+  --theme-bg-primary: #0f1419;
+  --theme-bg-secondary: #1a1d29;
+  --theme-bg-card: #1e2130;
+  --theme-bg-surface: #1a1d29;
+  --theme-bg-hover: #252836;
+
+  --theme-text-primary: #e4e4e7;
+  --theme-text-secondary: #a1a1aa;
+  --theme-text-muted: #71717a;
+
+  --theme-border: #2d3041;
+  --theme-border-hover: #3f3f46;
+
+  --theme-accent: #5383E8;
+  --theme-accent-hover: #3B5BA5;
 }
 
+/* White Theme (Light Mode) */
+[data-theme='white'] {
+  color-scheme: light;
+
+  --theme-bg-primary: #ffffff;
+  --theme-bg-secondary: #f4f4f5;
+  --theme-bg-card: #ffffff;
+  --theme-bg-surface: #fafafa;
+  --theme-bg-hover: #e4e4e7;
+
+  --theme-text-primary: #18181b;
+  --theme-text-secondary: #3f3f46;
+  --theme-text-muted: #71717a;
+
+  --theme-border: #e4e4e7;
+  --theme-border-hover: #d4d4d8;
+
+  --theme-accent: #5383E8;
+  --theme-accent-hover: #3B5BA5;
+}
+
+/* Blue Theme (Ocean Blue) */
+[data-theme='blue'] {
+  color-scheme: dark;
+
+  --theme-bg-primary: #0a1929;
+  --theme-bg-secondary: #132f4c;
+  --theme-bg-card: #1a2942;
+  --theme-bg-surface: #132f4c;
+  --theme-bg-hover: #1e3a5f;
+
+  --theme-text-primary: #e3f2fd;
+  --theme-text-secondary: #90caf9;
+  --theme-text-muted: #64b5f6;
+
+  --theme-border: #1e3a5f;
+  --theme-border-hover: #2563eb;
+
+  --theme-accent: #60a5fa;
+  --theme-accent-hover: #3b82f6;
+}
+
+/* Pink Theme (Gaming Pink) */
+[data-theme='pink'] {
+  color-scheme: dark;
+
+  --theme-bg-primary: #1a0d1a;
+  --theme-bg-secondary: #2d1b2d;
+  --theme-bg-card: #3d2540;
+  --theme-bg-surface: #2d1b2d;
+  --theme-bg-hover: #4a2f4d;
+
+  --theme-text-primary: #fce7f3;
+  --theme-text-secondary: #f9a8d4;
+  --theme-text-muted: #f472b6;
+
+  --theme-border: #4a2f4d;
+  --theme-border-hover: #ec4899;
+
+  --theme-accent: #ec4899;
+  --theme-accent-hover: #db2777;
+}
+
+/* Apply theme to body */
 body {
-  background: linear-gradient(135deg, #0f1419 0%, #1a1d29 100%);
-  color: #e4e4e7;
+  background: linear-gradient(135deg, var(--theme-bg-primary) 0%, var(--theme-bg-secondary) 100%);
+  color: var(--theme-text-primary);
   font-family: 'Pretendard', -apple-system, sans-serif;
 }

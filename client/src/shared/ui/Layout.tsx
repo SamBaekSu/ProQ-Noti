@@ -35,55 +35,58 @@ const Header = ({ title, handleBack, option, children }: HeaderProps) => {
         'w-full',
         'h-16 md:h-18 lg:h-20',
         'px-4 md:px-6 lg:px-8',
-        'bg-dark-card/90 backdrop-blur-lg',
-        'border-b-2 border-dark-border',
-        'flex items-center justify-center',
-        'relative',
-        'sticky top-0 z-40'
+        'bg-opgg-bg-secondary/95 backdrop-blur-xl',
+        'border-b border-opgg-border',
+        'sticky top-0 z-sticky',
+        'relative'
       )}
     >
-      {/* Neon accent line - gaming style */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-coral to-transparent opacity-60" />
+      {/* OP.GG accent line */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-opgg-blue/30 to-transparent" />
 
-      {/* 왼쪽: 뒤로가기 버튼 - Gaming style */}
-      {handleBack && (
-        <button
-          className={cn(
-            'absolute left-4 md:left-6',
-            'p-2.5',
-            'bg-dark-hover border-2 border-dark-border',
-            'hover:border-coral hover:shadow-[0_0_15px_rgba(233,95,92,0.4)]',
-            'active:scale-95',
-            'transition-all duration-200',
-            'group'
+      {/* Flex Container */}
+      <div className="flex items-center justify-between h-full gap-3">
+        {/* 왼쪽: 뒤로가기 버튼 */}
+        <div className="flex items-center flex-shrink-0">
+          {handleBack && (
+            <button
+              className={cn(
+                'p-2.5',
+                'bg-dark-hover border-2 border-dark-border',
+                'hover:border-coral hover:shadow-[0_0_15px_rgba(233,95,92,0.4)]',
+                'active:scale-95',
+                'transition-all duration-200',
+                'group'
+              )}
+              aria-label="뒤로 가기"
+              onClick={handleBack || (() => router.back())}
+            >
+              <IoIosArrowBack
+                className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors"
+                aria-hidden="true"
+              />
+            </button>
           )}
-          aria-label="뒤로 가기"
-          onClick={handleBack || (() => router.back())}
-        >
-          <IoIosArrowBack
-            className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors"
-            aria-hidden="true"
-          />
-        </button>
-      )}
+        </div>
 
-      {/* 중앙: 제목 - Gaming typography */}
-      <div className="flex-1 flex items-center justify-center px-12">
-        {children ? (
-          children
-        ) : (
-          <div className="flex items-center justify-center gap-3">
-            <h1 className="text-xl md:text-2xl lg:text-3xl text-white font-black uppercase tracking-wider drop-shadow-[0_2px_8px_rgba(233,95,92,0.3)]">
-              {title}
-            </h1>
-            {option}
-          </div>
-        )}
-      </div>
+        {/* 중앙: 제목 */}
+        <div className="flex-1 flex items-center justify-center min-w-0">
+          {children ? (
+            children
+          ) : (
+            <div className="flex items-center justify-center gap-3">
+              <h1 className="text-xl md:text-2xl lg:text-3xl text-white font-black uppercase tracking-wider drop-shadow-[0_2px_8px_rgba(233,95,92,0.3)] truncate">
+                {title}
+              </h1>
+              {option}
+            </div>
+          )}
+        </div>
 
-      {/* 오른쪽: 드롭다운 메뉴 */}
-      <div className="absolute right-4 md:right-6">
-        <Dropdown />
+        {/* 오른쪽: 드롭다운 메뉴 */}
+        <div className="flex items-center flex-shrink-0">
+          <Dropdown />
+        </div>
       </div>
     </header>
   );
@@ -103,6 +106,7 @@ const Main = ({ children, className = '' }: MainProps) => {
     <main
       className={cn(
         'relative flex flex-col flex-grow w-full',
+        'bg-background',
         'overflow-y-auto',
         className
       )}
@@ -130,16 +134,16 @@ const Footer = ({ children, className = '' }: FooterProps) => {
         'h-18 md:h-20 lg:h-22',
         'px-4 md:px-6 lg:px-8',
         'py-4 md:py-5 lg:py-6',
-        'bg-dark-card/90 backdrop-blur-lg',
-        'border-t-2 border-dark-border',
+        'bg-opgg-bg-secondary/95 backdrop-blur-xl',
+        'border-t border-opgg-border',
         'shadow-[0_-4px_20px_rgba(0,0,0,0.5)]',
         'flex items-center justify-center',
         'relative',
         className
       )}
     >
-      {/* Neon accent line */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-mint to-transparent opacity-60" />
+      {/* OP.GG accent line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-mint/30 to-transparent" />
       {children}
     </footer>
   );

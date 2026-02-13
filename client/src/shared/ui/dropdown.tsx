@@ -13,6 +13,7 @@ import { signOut } from '@/shared/lib/supabase/actions';
 import { requestToken } from '@/shared/lib/firebase';
 import { cn } from '@/shared/lib/utils';
 import { ConfirmDialog } from './ConfirmDialog';
+import { useTheme, type ThemeType } from '@/shared/contexts/ThemeContext';
 
 interface DropdownProps {
   isOpen?: boolean;
@@ -26,6 +27,7 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
   const { toast } = useToast();
   const isLoggedIn = useIsLoggedIn();
   const userId = useUserId();
+  const { theme, setTheme } = useTheme();
 
   useOutsideClick(dropdownRef as React.RefObject<HTMLElement>, () =>
     setOpen(false)
@@ -75,15 +77,15 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
   return (
     <div
       ref={dropdownRef}
-      className="absolute right-4 md:right-6 lg:right-8 flex items-center z-50"
+      className="relative flex items-center"
     >
-      {/* Menu Toggle Button - Gaming style */}
+      {/* Menu Toggle Button - OP.GG style */}
       <button
         className={cn(
           'p-3',
-          'bg-dark-hover border-2',
-          open ? 'border-coral shadow-[0_0_15px_rgba(233,95,92,0.5)]' : 'border-dark-border',
-          'hover:border-coral hover:shadow-[0_0_15px_rgba(233,95,92,0.4)]',
+          'bg-dark-hover border',
+          open ? 'border-opgg-blue shadow-glow-blue' : 'border-dark-border',
+          'hover:border-opgg-blue hover:shadow-glow-blue',
           'active:scale-95',
           'transition-all duration-200',
           'flex items-center justify-center',
@@ -101,16 +103,16 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
         )}
       </button>
 
-      {/* Dropdown Menu - Gaming dark style */}
+      {/* Dropdown Menu - OP.GG dark style */}
       {open && (
         <div
           className={cn(
             'absolute top-14 md:top-16 right-0',
             'min-w-56 md:min-w-64',
-            'bg-dark-card/95 backdrop-blur-lg',
-            'border-2 border-dark-border',
-            'shadow-[0_8px_32px_rgba(0,0,0,0.6)]',
-            'z-50',
+            'bg-dark-card/98 backdrop-blur-xl',
+            'border border-dark-border',
+            'shadow-card',
+            'z-dropdown',
             'overflow-hidden',
             'animate-scale-in'
           )}
@@ -122,7 +124,7 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
               <div
                 key={index}
                 className={cn(
-                  index < menuItems.length && 'border-b-2 border-dark-border'
+                  index < menuItems.length && 'border-b border-dark-border'
                 )}
               >
                 {item.type === 'external' ? (
@@ -133,7 +135,7 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
                     className={cn(
                       'block w-full px-5 py-4',
                       'text-base text-gray-300 font-bold uppercase tracking-wide',
-                      'hover:bg-dark-hover hover:text-white hover:shadow-[inset_4px_0_0_0_rgba(233,95,92,1)]',
+                      'hover:bg-dark-hover hover:text-white hover:shadow-[inset_4px_0_0_0_rgba(83,131,232,1)]',
                       'active:bg-dark-border',
                       'transition-all duration-200',
                       'text-center'
@@ -149,7 +151,7 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
                     className={cn(
                       'block w-full px-5 py-4',
                       'text-base text-gray-300 font-bold uppercase tracking-wide',
-                      'hover:bg-dark-hover hover:text-white hover:shadow-[inset_4px_0_0_0_rgba(233,95,92,1)]',
+                      'hover:bg-dark-hover hover:text-white hover:shadow-[inset_4px_0_0_0_rgba(83,131,232,1)]',
                       'active:bg-dark-border',
                       'transition-all duration-200',
                       'text-center'
@@ -166,7 +168,7 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
             {/* Logout Button - Gaming danger style */}
             {isLoggedIn && (
               <>
-                <div className="border-b-2 border-dark-border">
+                <div className="border-b border-dark-border">
                   <button
                     onClick={handleLogout}
                     className={cn(
@@ -185,24 +187,67 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
                 </div>
 
                 {/* Notification Settings - Gaming accent */}
-                <button
-                  onClick={() => {
-                    setShowConfirmDialog(true);
-                  }}
-                  className={cn(
-                    'block w-full px-5 py-4',
-                    'text-base text-mint font-bold uppercase tracking-wide',
-                    'hover:bg-mint/20 hover:text-white hover:shadow-[inset_4px_0_0_0_rgba(121,206,184,1)]',
-                    'active:bg-mint/30',
-                    'transition-all duration-200',
-                    'text-center'
-                  )}
-                  role="menuitem"
-                >
-                  알림 재설정
-                </button>
+                <div className="border-b border-dark-border">
+                  <button
+                    onClick={() => {
+                      setShowConfirmDialog(true);
+                    }}
+                    className={cn(
+                      'block w-full px-5 py-4',
+                      'text-base text-mint font-bold uppercase tracking-wide',
+                      'hover:bg-mint/20 hover:text-white hover:shadow-[inset_4px_0_0_0_rgba(121,206,184,1)]',
+                      'active:bg-mint/30',
+                      'transition-all duration-200',
+                      'text-center'
+                    )}
+                    role="menuitem"
+                  >
+                    알림 재설정
+                  </button>
+                </div>
               </>
             )}
+
+            {/* Theme Selector */}
+            <div className="p-4 bg-dark-surface/50">
+              <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-3 text-center">
+                Theme
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {(['dark', 'white', 'blue', 'pink'] as ThemeType[]).map((themeOption) => (
+                  <button
+                    key={themeOption}
+                    onClick={() => {
+                      setTheme(themeOption);
+                      toast({
+                        description: `${themeOption.charAt(0).toUpperCase() + themeOption.slice(1)} 테마로 변경되었습니다.`
+                      });
+                    }}
+                    className={cn(
+                      'px-3 py-2 text-sm font-bold uppercase tracking-wide',
+                      'border-2 transition-all duration-200',
+                      'flex items-center justify-center gap-2',
+                      theme === themeOption
+                        ? 'bg-opgg-blue/20 border-opgg-blue text-opgg-blue shadow-glow-blue'
+                        : 'bg-dark-hover border-dark-border text-gray-400 hover:border-gray-500 hover:text-gray-300'
+                    )}
+                    aria-label={`${themeOption} 테마 선택`}
+                    aria-pressed={theme === themeOption}
+                  >
+                    <span
+                      className={cn(
+                        'w-3 h-3 rounded-full',
+                        themeOption === 'dark' && 'bg-gray-800',
+                        themeOption === 'white' && 'bg-white border border-gray-300',
+                        themeOption === 'blue' && 'bg-blue-500',
+                        themeOption === 'pink' && 'bg-pink-500'
+                      )}
+                    />
+                    {themeOption}
+                  </button>
+                ))}
+              </div>
+            </div>
           </nav>
         </div>
       )}

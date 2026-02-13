@@ -55,13 +55,15 @@ export default async function RootLayout({
   return (
     <html lang="ko">
       <body
-        className="flex justify-center w-full min-h-screen"
+        className="flex justify-center w-full min-h-screen bg-background text-foreground"
         suppressHydrationWarning
       >
-        <Providers>
-          <AuthProvider />
-          <LayoutRouter>{children}</LayoutRouter>
-        </Providers>
+        <div className="w-full min-w-mobile max-w-desktop">
+          <Providers>
+            <AuthProvider />
+            <LayoutRouter>{children}</LayoutRouter>
+          </Providers>
+        </div>
       </body>
       <Pwa />
     </html>

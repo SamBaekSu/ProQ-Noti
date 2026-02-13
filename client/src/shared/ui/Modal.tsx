@@ -61,7 +61,7 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-modal-backdrop"
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? 'modal-title' : undefined}
@@ -70,26 +70,30 @@ export function Modal({
       <div
         ref={modalRef}
         className={cn(
-          'bg-white rounded-2xl p-6 sm:p-8 mx-4 animate-scale-in shadow-2xl border-2 border-gray-200',
+          'bg-dark-card',
+          'border-2 border-coral',
+          'rounded-2xl p-6 sm:p-8 mx-4',
+          'animate-scale-in',
+          'shadow-[0_8px_32px_rgba(0,0,0,0.6)]',
           SIZE_MAP[size]
         )}
         onClick={(e) => e.stopPropagation()}
       >
         {title && (
           <div className="flex items-center justify-between mb-4">
-            <h2 id="modal-title" className="text-heading2 font-bold text-navy">
+            <h2 id="modal-title" className="text-xl font-black text-white uppercase tracking-wide">
               {title}
             </h2>
             {showCloseButton && (
               <button
                 onClick={onClose}
                 className={cn(
-                  'p-2 rounded-lg hover:bg-gray-100 transition-colors',
+                  'p-2 rounded-lg hover:bg-dark-hover transition-colors',
                   FOCUS_RING
                 )}
                 aria-label="닫기"
               >
-                <IoClose className="w-5 h-5 text-navy" />
+                <IoClose className="w-5 h-5 text-white" />
               </button>
             )}
           </div>

@@ -98,7 +98,6 @@ export default function SubscribeList({
         px-4 md:px-6 lg:px-8
         py-6
         max-w-4xl
-        mx-auto
       "
       role="list"
       aria-label="구독한 프로게이머 목록"

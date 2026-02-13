@@ -11,7 +11,7 @@ export default function SubscribeListSkeleton() {
         w-full h-full
         px-4 sm:px-6 lg:px-8
         py-4 sm:py-6 lg:py-8
-        max-w-4xl mx-auto
+        max-w-4xl
       "
       role="status"
       aria-label="로딩 중"
@@ -88,15 +88,15 @@ export default function SubscribeListSkeleton() {
               </div>
 
               {/* Player info */}
-              <div className="space-y-2 text-center">
-                <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto" />
-                <div className="h-3 bg-gray-300 rounded w-1/2 mx-auto" />
+              <div className="flex flex-col items-center gap-2">
+                <div className="h-4 bg-gray-300 rounded w-3/4" />
+                <div className="h-3 bg-gray-300 rounded w-1/2" />
               </div>
 
               {/* Game info */}
-              <div className="border-t border-gray-300 pt-3 space-y-2">
-                <div className="h-3 bg-gray-300 rounded w-2/3 mx-auto" />
-                <div className="h-3 bg-gray-300 rounded w-3/4 mx-auto" />
+              <div className="border-t border-gray-300 pt-3 flex flex-col items-center gap-2">
+                <div className="h-3 bg-gray-300 rounded w-2/3" />
+                <div className="h-3 bg-gray-300 rounded w-3/4" />
               </div>
             </div>
           </div>

@@ -46,7 +46,7 @@ export function ConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-modal-backdrop"
       role="dialog"
       aria-modal="true"
       aria-labelledby="dialog-title"
@@ -54,16 +54,10 @@ export function ConfirmDialog({
     >
       <div
         ref={dialogRef}
-        className="bg-dark-card border-2 border-dark-border p-6 sm:p-8 w-[20rem] sm:w-[28rem] mx-4 animate-scale-in shadow-[0_8px_32px_rgba(0,0,0,0.6)] relative overflow-hidden"
+        className="bg-dark-card border-2 border-coral rounded-2xl p-6 sm:p-8 w-[20rem] sm:w-[28rem] mx-4 animate-scale-in shadow-[0_8px_32px_rgba(0,0,0,0.6)]"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Corner accents */}
-        <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-coral"></div>
-        <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-coral"></div>
-        <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-coral"></div>
-        <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-coral"></div>
-
-        <div className="flex items-center justify-between mb-4 relative z-10">
+        <div className="flex items-center justify-between mb-4">
           <h2 id="dialog-title" className="text-xl font-black text-white uppercase tracking-wide">
             {title}
           </h2>
@@ -79,9 +73,9 @@ export function ConfirmDialog({
           </button>
         </div>
 
-        <p className="text-base text-gray-300 mb-6 relative z-10 font-medium">{message}</p>
+        <p className="text-base text-gray-300 mb-6 font-medium">{message}</p>
 
-        <div className="flex gap-3 relative z-10">
+        <div className="flex gap-3">
           <button
             onClick={onClose}
             className={cn(
