@@ -71,7 +71,8 @@ export default function SubscribePageClient({
       <Layout>
         <Layout.Header title={teamName} handleBack={() => router.back()} />
         <Layout.Main>
-          <div className="w-full">
+          <div className="flex justify-center w-full">
+            <div className="w-full max-w-4xl">
             {loading ? (
               <div className="py-6">
                 <SubscribeListSkeleton />
@@ -79,8 +80,10 @@ export default function SubscribePageClient({
             ) : (
               <SubscribeList list={members as IProPlayerData[]} />
             )}
+            </div>
           </div>
-          <div className="flex w-full justify-end px-4 md:px-6 lg:px-8 py-4">
+          <div className="flex justify-center w-full px-4 md:px-6 lg:px-8 py-4">
+            <div className="w-full max-w-4xl flex justify-center">
             <a
               href="https://forms.gle/r8jky7uKPyCMuwdR6"
               target="_blank"
@@ -89,6 +92,7 @@ export default function SubscribePageClient({
             >
               계정 추가 제보
             </a>
+            </div>
           </div>
         </Layout.Main>
       </Layout>
