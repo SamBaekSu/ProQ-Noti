@@ -103,9 +103,7 @@ export default function HomePageClient({ initialTeams }: HomePageClientProps) {
     <Layout>
       <Layout.Header title="소속 팀 선택" handleBack={() => router.back()} />
       <Layout.Main>
-        <div className="w-full max-w-md mx-auto">
-          <TeamGrid onSelectTeam={handleSelectTeam} teamList={teams} />
-        </div>
+        <TeamGrid onSelectTeam={handleSelectTeam} teamList={teams} />
       </Layout.Main>
     </Layout>
   );

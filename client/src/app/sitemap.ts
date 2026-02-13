@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { createClientForServer } from '@/shared/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import { TABLES } from '@/shared/constants/db';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -23,8 +23,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Dynamic routes (Teams)
   try {
-    const supabase = await createClientForServer();
-    const { data: teams } = await (supabase as any).from(TABLES.TEAMS).select('name');
+    // Use public client without cookies for static generation
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    const { data: teams } = await supabase.from(TABLES.TEAMS).select('name');
 
     if (teams) {
       const teamRoutes = teams.map((team: any) => ({

@@ -11,16 +11,12 @@ export default function LayoutRouter({
 }) {
   const pathname = usePathname();
 
-  const getBgColor = () => {
-    if (pathname === '/' || pathname.startsWith('/subscribe/'))
-      return 'bg-primary-skyblue';
-    if (['/login', '/userpage'].includes(pathname)) return 'bg-primary-mint';
-    return 'bg-primary-white';
-  };
-
   return (
     <div
-      className={`flex flex-col ${getBgColor()} w-full min-w-[21.875rem] max-w-[46.785rem] h-auto shadow-lg`}
+      className="flex flex-col bg-dark-bg w-full min-w-mobile max-w-desktop min-h-screen"
+      style={{
+        background: 'linear-gradient(135deg, #0f1419 0%, #1a1d29 100%)'
+      }}
     >
       {children}
       <Toaster />
