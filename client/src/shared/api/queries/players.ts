@@ -2,6 +2,7 @@
 
 import { createClientForServer } from '@/shared/lib/supabase/server';
 import { cache } from 'react';
+import { handleSupabaseError, ERROR_MESSAGES } from '@/shared/lib/error-handler';
 
 /**
  * @description Get all team members with subscription status
@@ -24,7 +25,7 @@ export const getPlayersWithSubscription = cache(async (
     .single();
 
   if (teamError || !teamData) {
-    throw new Error('팀 정보를 찾을 수 없습니다');
+    handleSupabaseError(teamError, ERROR_MESSAGES.FETCH_TEAM_INFO);
   }
 
   // 2. 선수 조회 및 구독 정보 조인
@@ -55,8 +56,7 @@ export const getPlayersWithSubscription = cache(async (
     .order('position_number', { ascending: true });
 
   if (playersError) {
-    console.error('Fetch players error:', playersError);
-    throw new Error('선수 정보를 불러올 수 없습니다');
+    handleSupabaseError(playersError, ERROR_MESSAGES.FETCH_PLAYERS);
   }
 
   // 3. 데이터 가공
@@ -92,7 +92,7 @@ export async function getTeamIdByAbbr(teamAbbr: string) {
     .single();
 
   if (error || !data) {
-    throw new Error('팀 ID 조회 실패');
+    handleSupabaseError(error, ERROR_MESSAGES.FETCH_TEAM_INFO);
   }
 
   return data.id;

@@ -17,6 +17,7 @@ export interface StreamerModePlayerFields {
   assists: number;
   summoner1Id: number;
   summoner2Id: number;
+  champLevel?: number;
   perks: StreamerModePerks; // 👈 여기서 기존 perks를 전적용으로 덮어씀
 }
 export interface StreamerModeGameFields {
@@ -30,6 +31,7 @@ export type LiveGameParticipant<T = object> = T & {
   puuid: string;
   summonerName: string;
   championId: number;
+  championLevel?: number;
   spell1Id: number;
   spell2Id: number;
   perks: {

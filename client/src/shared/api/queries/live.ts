@@ -1,6 +1,7 @@
 'use server';
 
 import { createClientForServer } from '@/shared/lib/supabase/server';
+import { handleSupabaseError, ERROR_MESSAGES } from '@/shared/lib/error-handler';
 
 /**
  * @description Get all live (online) players
@@ -19,8 +20,7 @@ export async function getLivePlayers() {
         puuid,
         summoner_name,
         tag_line,
-        is_online,
-        account_id
+        is_online
       ),
       teams!inner (
         name_abbr,
@@ -32,8 +32,7 @@ export async function getLivePlayers() {
     .order('pro_name', { ascending: true });
 
   if (error) {
-    console.error('Failed to fetch live players:', error);
-    return [];
+    handleSupabaseError(error, ERROR_MESSAGES.FETCH_LIVE_PLAYERS);
   }
 
   // Transform data to flatten structure
