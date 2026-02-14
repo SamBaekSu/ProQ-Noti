@@ -17,6 +17,7 @@ import { toggleSubscription } from '@/actions/subscribe';
 import ChampionImage from './ChampionImage';
 import SpellImages from './SpellImages';
 import RuneImages from './RuneImages';
+import { GameAssetImage } from './GameAssetImage';
 import { gameModeMap } from '@/shared/hooks/lol';
 import { cn } from '@/shared/lib/utils';
 import { BUTTON_PADDING, FOCUS_RING } from '@/shared/lib/component-utils';
@@ -231,11 +232,12 @@ export default function IngameBox({
         className={cn(
           'group relative overflow-hidden',
           'w-full',
-          'px-4 py-3',
-          'md:px-5 md:py-4',
-          'lg:px-6 lg:py-4',
+          'px-5 py-3',
+          'md:px-6 md:py-4',
+          'lg:px-8 lg:py-5',
           'bg-dark-card',
           'border',
+          'rounded-lg',
           isOpen ? 'border-coral' : 'border-dark-border',
           'hover:border-coral/60',
           'transition-all duration-200',
@@ -281,6 +283,7 @@ export default function IngameBox({
             'relative flex-shrink-0 z-10',
             'p-2.5 md:p-3',
             'border-2',
+            'rounded-lg',
             'transition-all duration-200',
             isSubscribing && 'opacity-50 cursor-wait',
             isSubscribe
@@ -316,11 +319,12 @@ export default function IngameBox({
         <div
           className={cn(
             'w-full',
-            'px-5 py-5',
-            'md:px-6 md:py-6',
-            'lg:px-8 lg:py-7',
+            'px-6 py-5',
+            'md:px-8 md:py-6',
+            'lg:px-10 lg:py-7',
             'bg-dark-surface',
             'border border-dark-border',
+            'rounded-lg',
             'shadow-card',
             'animate-slideindown',
             'flex flex-col',
@@ -366,33 +370,107 @@ export default function IngameBox({
               </div>
             </div>
           ) : player ? (
-            // Regular Game Mode - Gaming HUD style
-            <div className="relative flex flex-col gap-5 md:gap-6 z-10">
-              {/* Game Assets - 2x2 Grid Layout */}
-              <div className="grid grid-cols-2 gap-3 md:gap-4 items-center justify-items-center max-w-md">
-                {/* Champion Image - spans 2 rows */}
-                <div className="row-span-2 relative group">
+            // Regular Game Mode - OP.GG Style Layout
+            <div className="relative flex flex-col gap-4 md:gap-5 z-10 px-2 md:px-4">
+              {/* Main Info Row - Champion + Spells/Runes + KDA */}
+              <div className="flex items-center gap-3 md:gap-4">
+                {/* Champion Image with Level */}
+                <div className="relative group flex-shrink-0">
                   <div className="absolute inset-0 bg-coral/20 blur-xl group-hover:blur-2xl transition-all" />
                   <ChampionImage championId={championId} size="lg" />
-                  <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-gradient-to-br from-yellow to-amber-500 border-2 border-dark-card shadow-lg flex items-center justify-center">
-                    <span className="text-xs font-black text-dark-bg">★</span>
+                  {/* Level Badge */}
+                  <div className="absolute -bottom-1 -right-1 min-w-[28px] h-7 px-1.5 bg-dark-bg/90 border-2 border-dark-border rounded flex items-center justify-center">
+                    <span className="text-xs font-black text-white">
+                      {(player as any).champLevel || player.championLevel || 1}
+                    </span>
                   </div>
                 </div>
 
-                {/* Spells - top right */}
-                <div className="flex items-center justify-center">
-                  <SpellImages spellIds={spellIds} size="md" />
+                {/* Spells & Runes - 2x2 Grid */}
+                <div className="grid grid-cols-2 gap-1 md:gap-1.5 flex-shrink-0">
+                  {/* 왼쪽 위: Spell 1 */}
+                  {spellIds[0] && (
+                    <GameAssetImage
+                      type="spell"
+                      id={spellIds[0]}
+                      size="md"
+                      alt="스펠 1"
+                    />
+                  )}
+                  {/* 오른쪽 위: Primary Rune */}
+                  {runePaths[0] && (
+                    <GameAssetImage
+                      type="rune"
+                      id={runePaths[0]}
+                      size="md"
+                      alt="주 룬"
+                    />
+                  )}
+                  {/* 왼쪽 아래: Spell 2 */}
+                  {spellIds[1] && (
+                    <GameAssetImage
+                      type="spell"
+                      id={spellIds[1]}
+                      size="md"
+                      alt="스펠 2"
+                    />
+                  )}
+                  {/* 오른쪽 아래: Secondary Rune */}
+                  {runePaths[1] && (
+                    <GameAssetImage
+                      type="rune"
+                      id={runePaths[1]}
+                      size="md"
+                      alt="보조 룬"
+                    />
+                  )}
                 </div>
 
-                {/* Runes - bottom right */}
-                <div className="flex items-center justify-center">
-                  <RuneImages runePaths={runePaths} size="md" />
-                </div>
+                {/* KDA Stats */}
+                {streamer_mode ? (
+                  <div className="flex flex-col gap-1 flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg md:text-xl font-black text-white">
+                        {player.kills}<span className="text-gray-500 mx-0.5">/</span>
+                        <span className="text-red-400">{player.deaths}</span><span className="text-gray-500 mx-0.5">/</span>
+                        {player.assists}
+                      </span>
+                    </div>
+                    <span className="text-xs text-gray-400 font-bold">
+                      {getKdaRatio(player.kills, player.deaths, player.assists)}:1 KDA
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-1 flex-1">
+                    <span className="text-sm md:text-base font-bold text-white truncate">
+                      {summoner_name}
+                    </span>
+                    {tag_line && (
+                      <span className="text-xs text-gray-400 font-medium truncate">
+                        #{tag_line}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {/* Win/Lose Badge */}
+                {streamer_mode && (
+                  <div
+                    className={cn(
+                      'px-3 py-1.5 md:px-4 md:py-2 font-black text-sm uppercase tracking-wide border-2 flex-shrink-0 rounded',
+                      player.win
+                        ? 'bg-opgg-blue/20 border-opgg-blue text-opgg-blue'
+                        : 'bg-red-500/20 border-red-500 text-red-400'
+                    )}
+                  >
+                    {player.win ? 'W' : 'L'}
+                  </div>
+                )}
               </div>
 
-              {/* Player Stats - Gaming style */}
-              <div className="flex flex-col gap-3 text-center">
-                <div className="flex items-center justify-center gap-2 flex-wrap">
+              {/* Player Name (for non-streamer mode) */}
+              {!streamer_mode && (
+                <div className="flex items-center gap-2">
                   <span className="text-base md:text-lg font-black text-white uppercase tracking-wide">
                     {summoner_name}
                   </span>
@@ -402,32 +480,7 @@ export default function IngameBox({
                     </span>
                   )}
                 </div>
-
-                {streamer_mode && (
-                  <div className="flex items-center justify-center gap-4">
-                    <div
-                      className={cn(
-                        'px-5 py-2.5 font-black text-base uppercase tracking-wider border-2',
-                        player.win
-                          ? 'bg-opgg-blue/20 border-opgg-blue text-opgg-blue shadow-glow-blue'
-                          : 'bg-red-500/20 border-red-500 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.5)]'
-                      )}
-                    >
-                      {player.win ? 'Victory' : 'Defeat'}
-                    </div>
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="text-xl md:text-2xl font-black text-white">
-                        {player.kills}<span className="text-gray-500">/</span>
-                        {player.deaths}<span className="text-gray-500">/</span>
-                        {player.assists}
-                      </span>
-                      <span className="text-xs text-gray-400 font-bold uppercase tracking-wide">
-                        KDA {getKdaRatio(player.kills, player.deaths, player.assists)}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
+              )}
 
               {/* Game Info Footer - HUD style */}
               <div className="flex flex-col sm:flex-row gap-3 text-sm justify-center items-center pt-4 border-t-2 border-dark-border">

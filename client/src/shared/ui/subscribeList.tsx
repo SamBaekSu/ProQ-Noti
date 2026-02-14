@@ -95,7 +95,7 @@ export default function SubscribeList({
         items-center
         justify-start
         w-full
-        px-4 md:px-6 lg:px-8
+        px-6 md:px-8 lg:px-10
         py-6
         max-w-4xl
       "
