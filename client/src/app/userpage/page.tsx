@@ -167,7 +167,7 @@ export default function UserPage() {
       <Layout.Header title="마이페이지" handleBack={() => router.back()} />
       <Layout.Main>
         <div className="h-full w-full">
-          <div className="w-full pl-10 pt-10 lg:pl-32">
+          <div className="w-full px-6 pt-8 md:px-10 lg:px-16">
             <h2 className="text-2xl font-black text-white uppercase tracking-wide">구독 목록</h2>
             {!loading && subscribeList.length > 0 && (
               <p className="text-gray-400 mt-2 font-semibold">
@@ -197,7 +197,7 @@ export default function UserPage() {
               </div>
             ) : subscribeList.length === 0 ? (
               <div className="flex items-center justify-center">
-                <div className="bg-dark-card border-2 border-dark-border p-8 w-[20.69rem] lg:w-[30rem] text-center relative overflow-hidden">
+                <div className="bg-dark-card border-2 border-dark-border p-6 md:p-8 w-full max-w-sm lg:max-w-2xl mx-auto text-center relative overflow-hidden">
                   {/* Corner accents */}
                   <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-coral"></div>
                   <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-coral"></div>
@@ -240,7 +240,7 @@ export default function UserPage() {
               />
             )}
           </div>
-          <div className="flex w-full justify-end mt-8 pr-10 lg:pr-32 pb-10">
+          <div className="flex w-full justify-end mt-8 px-6 md:px-10 lg:px-16 pb-10">
             <button
               onClick={() => setIsDeleteModalOpen(true)}
               className="text-sm text-gray-500 hover:text-red-400 transition-colors font-bold uppercase tracking-wide"

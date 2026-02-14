@@ -14,14 +14,14 @@ export default function Login() {
       <Layout.Header title="로그인" handleBack={() => router.back()} />
       <Layout.Main>
         <div className="flex flex-col items-center justify-center w-full h-full">
-          <div className="flex flex-col items-center justify-center flex-1 w-full gap-4 mb-[32px]">
-            <div className="flex justify-center w-[20.69rem] lg:w-[30rem]">
+          <div className="flex flex-col items-center justify-center flex-1 w-full gap-4 mb-8">
+            <div className="flex justify-center w-full max-w-sm lg:max-w-2xl">
               <button
                 onClick={signInWithKakao}
-                className="flex items-center w-full h-[3.437rem] lg:h-[3.25rem]
-                  bg-[#FEEA1C] border-2 border-[#FEEA1C] text-black text-lg font-black
-                  cursor-pointer hover:bg-[#F4DC00] hover:shadow-[0_0_20px_rgba(254,234,28,0.5)]
-                  focus:ring-2 focus:ring-offset-2 focus:ring-[#F4DC00] focus:outline-none
+                className="flex items-center w-full h-14 lg:h-12
+                  bg-yellow-500 border-2 border-yellow-500 text-black text-lg font-black
+                  cursor-pointer hover:bg-yellow-600 hover:shadow-[0_0_20px_rgba(234,179,8,0.5)]
+                  focus:ring-2 focus:ring-offset-2 focus:ring-yellow-600 focus:outline-none
                   transition-all duration-200 uppercase tracking-wide"
                 aria-label="카카오 로그인"
               >
@@ -31,10 +31,10 @@ export default function Login() {
                 <span className="flex-grow mr-6">카카오 로그인</span>
               </button>
             </div>
-            <div className="flex justify-center w-[20.69rem] lg:w-[30rem]">
+            <div className="flex justify-center w-full max-w-sm lg:max-w-2xl">
               <button
                 onClick={signInWithGoogle}
-                className="flex items-center justify-center w-full h-[3.437rem] lg:h-[3.25rem]
+                className="flex items-center justify-center w-full h-14 lg:h-12
                   bg-dark-card border-2 border-dark-border text-white text-lg font-bold
                   cursor-pointer hover:border-gray-500 hover:shadow-[0_0_20px_rgba(66,133,244,0.3)]
                   focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:outline-none

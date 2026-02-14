@@ -118,7 +118,7 @@ export default function HomePageClient({ initialTeams, initialLivePlayers }: Hom
       <Layout.Main>
         {/* Live Players Section */}
         {livePlayers.length > 0 && (
-          <div className="flex justify-center w-full px-4 md:px-6 lg:px-8 py-6 md:py-8">
+          <div className="flex justify-center w-full px-6 md:px-8 lg:px-10 py-6 md:py-8">
             <div className="w-full max-w-7xl">
               <div className="mb-6 md:mb-8">
                 <div className="flex items-center justify-center gap-4 mb-4">
