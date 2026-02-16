@@ -107,7 +107,7 @@ describe('LoginPage', () => {
     const googleButton = screen.getByLabelText('구글 로그인');
 
     // Kakao button should have yellow background
-    expect(kakaoButton).toHaveClass('bg-[#FEEA1C]');
+    expect(kakaoButton).toHaveClass('bg-yellow-500');
 
     // Google button should have dark card background (dark theme)
     expect(googleButton).toHaveClass('bg-dark-card');

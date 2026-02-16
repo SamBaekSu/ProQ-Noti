@@ -72,7 +72,7 @@ export default function SubscribePageClient({
         <Layout.Header title={teamName} handleBack={() => router.back()} />
         <Layout.Main>
           <div className="flex justify-center w-full">
-            <div className="w-full max-w-4xl">
+            <div className="w-full">
             {loading ? (
               <div className="py-6">
                 <SubscribeListSkeleton />
@@ -83,7 +83,7 @@ export default function SubscribePageClient({
             </div>
           </div>
           <div className="flex justify-center w-full px-4 md:px-6 lg:px-8 py-4">
-            <div className="w-full max-w-4xl flex justify-center">
+            <div className="w-full flex justify-center">
             <a
               href="https://forms.gle/r8jky7uKPyCMuwdR6"
               target="_blank"

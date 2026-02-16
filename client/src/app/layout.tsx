@@ -53,12 +53,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" data-scroll-behavior="smooth">
       <body
         className="flex justify-center w-full min-h-screen bg-background text-foreground"
         suppressHydrationWarning
       >
-        <div className="w-full min-w-mobile max-w-desktop">
+        <div className="w-full min-w-mobile">
           <Providers>
             <AuthProvider />
             <LayoutRouter>{children}</LayoutRouter>

@@ -31,17 +31,16 @@ export function Toaster() {
       })}
       <ToastViewport
         className="
-        fixed 
-        top-16 
-        left-1/2 
-        -translate-x-1/2 
-        sm:left-auto 
-        sm:right-4 
-        sm:translate-x-0 
+        fixed
+        top-16
+        left-1/2
+        -translate-x-1/2
+        sm:left-auto
+        sm:right-4
+        sm:translate-x-0
         sm:top-16
-        z-[9999] 
-        w-full 
-        max-w-xs 
+        z-notification
+        w-full
         px-4
       "
       />

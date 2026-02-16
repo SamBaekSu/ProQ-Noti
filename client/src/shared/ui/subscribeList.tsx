@@ -50,32 +50,26 @@ export default function SubscribeList({
       <div className="flex items-center justify-center w-full h-full min-h-[400px] py-12">
         {emptyState || (
           <div className="flex flex-col items-center gap-5 text-center px-6">
-            <div className="relative w-24 h-24 md:w-28 md:h-28">
-              <div className="absolute inset-0 bg-dark-card border-4 border-dark-border flex items-center justify-center">
-                <svg
-                  className="w-12 h-12 md:w-14 md:h-14 text-gray-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                  />
-                </svg>
-              </div>
-              <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-coral" />
-              <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-coral" />
-              <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-coral" />
-              <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-coral" />
+            <div className="w-24 h-24 md:w-28 md:h-28 bg-dark-card border-4 border-coral flex items-center justify-center">
+              <svg
+                className="w-12 h-12 md:w-14 md:h-14 text-gray-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
             </div>
             <div className="space-y-2">
               <p className="text-lg md:text-xl font-black text-white uppercase tracking-wide">
                 No Subscriptions
               </p>
-              <p className="text-sm md:text-base text-gray-400 max-w-sm font-medium">
+              <p className="text-sm md:text-base text-gray-400 font-medium">
                 선수를 구독하면 게임 시작 시 실시간 알림을 받을 수 있습니다
               </p>
             </div>
@@ -97,7 +91,6 @@ export default function SubscribeList({
         w-full
         px-6 md:px-8 lg:px-10
         py-6
-        max-w-4xl
       "
       role="list"
       aria-label="구독한 프로게이머 목록"

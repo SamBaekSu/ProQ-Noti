@@ -15,7 +15,7 @@ export default function Login() {
       <Layout.Main>
         <div className="flex flex-col items-center justify-center w-full h-full">
           <div className="flex flex-col items-center justify-center flex-1 w-full gap-4 mb-8">
-            <div className="flex justify-center w-full max-w-sm lg:max-w-2xl">
+            <div className="flex justify-center w-full">
               <button
                 onClick={signInWithKakao}
                 className="flex items-center w-full h-14 lg:h-12
@@ -31,7 +31,7 @@ export default function Login() {
                 <span className="flex-grow mr-6">카카오 로그인</span>
               </button>
             </div>
-            <div className="flex justify-center w-full max-w-sm lg:max-w-2xl">
+            <div className="flex justify-center w-full">
               <button
                 onClick={signInWithGoogle}
                 className="flex items-center justify-center w-full h-14 lg:h-12

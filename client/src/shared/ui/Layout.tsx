@@ -37,12 +37,9 @@ const Header = ({ title, handleBack, option, children }: HeaderProps) => {
         'px-4 md:px-6 lg:px-8',
         'bg-opgg-bg-secondary/95 backdrop-blur-xl',
         'border-b border-opgg-border',
-        'sticky top-0 z-sticky',
-        'relative'
+        'sticky top-0 z-sticky'
       )}
     >
-      {/* OP.GG accent line */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-opgg-blue/30 to-transparent" />
 
       {/* Flex Container */}
       <div className="flex items-center justify-between h-full gap-3">
@@ -84,7 +81,7 @@ const Header = ({ title, handleBack, option, children }: HeaderProps) => {
         </div>
 
         {/* 오른쪽: 드롭다운 메뉴 */}
-        <div className="flex items-center flex-shrink-0">
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
           <Dropdown />
         </div>
       </div>
@@ -138,12 +135,9 @@ const Footer = ({ children, className = '' }: FooterProps) => {
         'border-t border-opgg-border',
         'shadow-[0_-4px_20px_rgba(0,0,0,0.5)]',
         'flex items-center justify-center',
-        'relative',
         className
       )}
     >
-      {/* OP.GG accent line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-mint/30 to-transparent" />
       {children}
     </footer>
   );

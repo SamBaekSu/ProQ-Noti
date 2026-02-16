@@ -217,7 +217,7 @@ export default function IngameBox({
   };
 
   return (
-    <div className="flex flex-col gap-2 w-full max-w-3xl">
+    <div className="flex flex-col gap-2 w-full">
       {/* Main Card - Player Info (Riot/OP.GG Style) */}
       <div
         onClick={onBoxClick}
@@ -230,7 +230,7 @@ export default function IngameBox({
         role="button"
         tabIndex={0}
         className={cn(
-          'group relative overflow-hidden',
+          'group',
           'w-full',
           'px-5 py-3',
           'md:px-6 md:py-4',
@@ -247,14 +247,13 @@ export default function IngameBox({
           'hover:shadow-card-hover',
           isOpen && 'shadow-card-hover',
           // Live indicator
-          is_online && 'border-l-4 border-l-coral shadow-[inset_4px_0_0_0_rgba(233,95,92,0.3)]'
+          is_online && 'border-l-4 border-l-coral shadow-[inset_4px_0_0_0_rgba(233,95,92,0.3)]',
+          // Hover gradient background
+          'hover:bg-gradient-to-r hover:from-transparent hover:via-coral/5 hover:to-transparent'
         )}
         aria-label={`${pro_name} 게임 정보 확인`}
         aria-expanded={isOpen}
       >
-        {/* Animated gradient background on hover */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-coral/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
         {/* Left: Player Info */}
         <div className="flex-1 flex items-center gap-3 md:gap-4 min-w-0">
           <div className="flex-1 flex flex-col gap-1 min-w-0">
@@ -332,15 +331,12 @@ export default function IngameBox({
           )}
         >
           {/* Diagonal accent lines - gaming aesthetic */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-coral/10 to-transparent blur-2xl" />
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-mint/10 to-transparent blur-2xl" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-coral/10 to-transparent blur-2xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-mint/10 to-transparent blur-2xl pointer-events-none" />
           {loading ? (
             // Loading State - Gaming HUD style
-            <div className="relative flex flex-col items-center justify-center py-12 gap-4 z-10">
-              <div className="relative">
-                <div className="w-16 h-16 border-4 border-mint/30 rounded-sm rotate-45" />
-                <div className="absolute inset-0 w-16 h-16 border-4 border-t-mint border-r-transparent border-b-transparent border-l-transparent rounded-sm rotate-45 animate-spin" />
-              </div>
+            <div className="flex flex-col items-center justify-center py-12 gap-4 z-10">
+              <div className="w-16 h-16 border-4 border-t-mint border-r-transparent border-b-transparent border-l-transparent rounded-sm rotate-45 animate-spin" />
               <div className="flex flex-col items-center gap-1">
                 <span className="text-sm text-gray-300 font-bold uppercase tracking-wider">Loading Game Data</span>
                 <div className="w-32 h-1 bg-dark-hover rounded-full overflow-hidden">
@@ -371,17 +367,16 @@ export default function IngameBox({
             </div>
           ) : player ? (
             // Regular Game Mode - OP.GG Style Layout
-            <div className="relative flex flex-col gap-4 md:gap-5 z-10 px-2 md:px-4">
+            <div className="relative flex flex-col gap-4 md:gap-5 z-10 px-2 md:px-4 w-full overflow-visible">
               {/* Main Info Row - Champion + Spells/Runes + KDA */}
-              <div className="flex items-center gap-3 md:gap-4">
+              <div className="flex items-center gap-3 md:gap-4 flex-wrap min-w-0">
                 {/* Champion Image with Level */}
-                <div className="relative group flex-shrink-0">
-                  <div className="absolute inset-0 bg-coral/20 blur-xl group-hover:blur-2xl transition-all" />
+                <div className="flex flex-col items-center gap-1 flex-shrink-0">
                   <ChampionImage championId={championId} size="lg" />
                   {/* Level Badge */}
-                  <div className="absolute -bottom-1 -right-1 min-w-[28px] h-7 px-1.5 bg-dark-bg/90 border-2 border-dark-border rounded flex items-center justify-center">
+                  <div className="min-w-[28px] h-6 px-1.5 bg-dark-bg/90 border-2 border-dark-border rounded flex items-center justify-center">
                     <span className="text-xs font-black text-white">
-                      {(player as any).champLevel || player.championLevel || 1}
+                      Lv.{(player as any).champLevel || player.championLevel || 1}
                     </span>
                   </div>
                 </div>
@@ -500,10 +495,9 @@ export default function IngameBox({
             </div>
           ) : (
             // No Game State - Gaming style
-            <div className="relative flex flex-col items-center justify-center py-12 gap-4 z-10">
-              <div className="w-20 h-20 border-4 border-dark-border bg-dark-hover flex items-center justify-center relative">
+            <div className="flex flex-col items-center justify-center py-12 gap-4 z-10">
+              <div className="w-20 h-20 border-4 border-t-gray-600 border-r-transparent border-b-transparent border-l-transparent bg-dark-hover flex items-center justify-center animate-spin">
                 <FaHourglassStart className="w-8 h-8 text-gray-600" />
-                <div className="absolute inset-0 border-4 border-t-gray-600 border-r-transparent border-b-transparent border-l-transparent animate-spin" />
               </div>
               <span className="text-base md:text-lg font-black text-gray-400 uppercase tracking-wide">
                 Offline

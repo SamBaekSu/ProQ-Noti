@@ -66,7 +66,7 @@ export function TeamGrid({
 
   return (
     <div className="flex justify-center w-full px-4 md:px-6 lg:px-8 py-6 md:py-8 lg:py-10">
-      <div className="w-full max-w-7xl">
+      <div className="w-full">
         {/* LCK Teams */}
         {lckTeams.length > 0 && (
           <section className="mb-12 md:mb-16" role="group" aria-label="LCK 팀">
@@ -83,7 +83,7 @@ export function TeamGrid({
             </div>
             <div className={gridClassName}>
               {lckTeams.map((team) => (
-                <div key={team.id} className="w-full flex justify-center max-w-sm">
+                <div key={team.id} className="w-full flex justify-center">
                   <TeamCard
                     team={team}
                     selected={selectedTeam === team.name_abbr}
@@ -111,7 +111,7 @@ export function TeamGrid({
             </div>
             <div className={gridClassName}>
               {challengersTeams.map((team) => (
-                <div key={team.id} className="w-full flex justify-center max-w-sm">
+                <div key={team.id} className="w-full flex justify-center">
                   <TeamCard
                     team={team}
                     selected={selectedTeam === team.name_abbr}
@@ -139,7 +139,7 @@ export function TeamGrid({
             </div>
             <div className={gridClassName}>
               {otherTeams.map((team) => (
-                <div key={team.id} className="w-full flex justify-center max-w-sm">
+                <div key={team.id} className="w-full flex justify-center">
                   <TeamCard
                     team={team}
                     selected={selectedTeam === team.name_abbr}

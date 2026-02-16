@@ -11,7 +11,6 @@ export default function SubscribeListSkeleton() {
         w-full h-full
         px-4 sm:px-6 lg:px-8
         py-4 sm:py-6 lg:py-8
-        max-w-4xl
       "
       role="status"
       aria-label="로딩 중"
@@ -25,24 +24,14 @@ export default function SubscribeListSkeleton() {
           {/* Main Card Skeleton */}
           <div
             className="
-              relative overflow-hidden
               w-full px-4 sm:px-6 py-2.5 sm:py-3
               rounded-lg sm:rounded-xl
               bg-gray-100
               animate-pulse
             "
           >
-            {/* Shimmer effect */}
-            <div
-              className="
-                absolute inset-0 -translate-x-full
-                animate-shimmer
-                bg-gradient-to-r from-transparent via-white/40 to-transparent
-              "
-            />
-
             {/* Content placeholder */}
-            <div className="flex items-center justify-between gap-4 relative z-10">
+            <div className="flex items-center justify-between gap-4">
               {/* Left section */}
               <div className="flex-1 flex flex-col gap-1.5 min-w-0">
                 <div className="h-4 sm:h-5 bg-gray-300 rounded w-2/3" />
@@ -60,24 +49,14 @@ export default function SubscribeListSkeleton() {
           {/* Details Card Skeleton */}
           <div
             className="
-              relative overflow-hidden
               w-full px-4 sm:px-6 py-4 sm:py-6
               rounded-lg sm:rounded-xl
               bg-gray-100
               animate-pulse
             "
           >
-            {/* Shimmer effect */}
-            <div
-              className="
-                absolute inset-0 -translate-x-full
-                animate-shimmer
-                bg-gradient-to-r from-transparent via-white/40 to-transparent
-              "
-            />
-
             {/* Content placeholder */}
-            <div className="space-y-3 relative z-10">
+            <div className="space-y-3">
               {/* Champion + spells/runes */}
               <div className="flex gap-3 items-center justify-center">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-300 rounded-lg flex-shrink-0" />

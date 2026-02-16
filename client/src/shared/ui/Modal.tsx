@@ -18,9 +18,9 @@ interface ModalProps {
 }
 
 const SIZE_MAP = {
-  sm: 'w-full max-w-sm',
-  md: 'w-full max-w-md',
-  lg: 'w-full max-w-2xl'
+  sm: 'w-full max-w-sm',   // 384px
+  md: 'w-full max-w-md',   // 448px
+  lg: 'w-full max-w-lg'    // 512px
 };
 
 /**

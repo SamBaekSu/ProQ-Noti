@@ -178,10 +178,7 @@ export default function UserPage() {
           <div className="my-6">
             {loading ? (
               <div className="flex items-center justify-center h-32">
-                <div className="relative w-12 h-12">
-                  <div className="absolute inset-0 border-4 border-mint/30 rounded-sm rotate-45"></div>
-                  <div className="absolute inset-0 border-4 border-t-mint border-r-transparent border-b-transparent border-l-transparent rounded-sm rotate-45 animate-spin"></div>
-                </div>
+                <div className="w-12 h-12 border-4 border-t-mint border-r-transparent border-b-transparent border-l-transparent rounded-sm rotate-45 animate-spin"></div>
               </div>
             ) : error ? (
               <div className="flex items-center justify-center h-32">
@@ -197,13 +194,7 @@ export default function UserPage() {
               </div>
             ) : subscribeList.length === 0 ? (
               <div className="flex items-center justify-center">
-                <div className="bg-dark-card border-2 border-dark-border p-6 md:p-8 w-full max-w-sm lg:max-w-2xl mx-auto text-center relative overflow-hidden">
-                  {/* Corner accents */}
-                  <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-coral"></div>
-                  <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-coral"></div>
-                  <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-coral"></div>
-                  <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-coral"></div>
-
+                <div className="bg-dark-card border-2 border-coral p-6 md:p-8 w-full mx-auto text-center">
                   <div className="mb-4 flex justify-center">
                     <svg
                       className="h-12 w-12 text-gray-600"

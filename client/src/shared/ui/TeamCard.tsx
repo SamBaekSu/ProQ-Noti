@@ -21,15 +21,23 @@ export function TeamCard({
   const team_name = [team.name_prefix, team.name_suffix];
   const teamLabel = team_name.filter(Boolean).join(' ');
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!disabled && onClick) {
+      onClick();
+    }
+  };
+
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={handleClick}
       disabled={disabled}
       aria-label={`${teamLabel} 팀 선택`}
       className={cn(
         // Gaming card layout
-        'group relative overflow-hidden',
+        'group',
         'flex flex-col items-center justify-between',
         'w-full aspect-square',
         'p-5 md:p-6 lg:p-7',

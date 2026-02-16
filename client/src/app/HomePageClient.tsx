@@ -119,7 +119,7 @@ export default function HomePageClient({ initialTeams, initialLivePlayers }: Hom
         {/* Live Players Section */}
         {livePlayers.length > 0 && (
           <div className="flex justify-center w-full px-6 md:px-8 lg:px-10 py-6 md:py-8">
-            <div className="w-full max-w-7xl">
+            <div className="w-full">
               <div className="mb-6 md:mb-8">
                 <div className="flex items-center justify-center gap-4 mb-4">
                   <div className="h-px flex-1 bg-gradient-to-r from-transparent to-coral/50" />
@@ -143,10 +143,10 @@ export default function HomePageClient({ initialTeams, initialLivePlayers }: Hom
                   <button
                     key={player.id}
                     onClick={() => router.push(`/subscribe/${player.team_abbr}`)}
-                    className="group relative overflow-hidden p-4 bg-dark-card/80 backdrop-blur-sm border-2 border-coral/50 rounded-lg hover:border-coral hover:shadow-[0_0_20px_rgba(233,95,92,0.4)] transition-all duration-300 hover:-translate-y-1"
+                    className="group flex flex-col p-4 bg-dark-card/80 backdrop-blur-sm border-2 border-coral/50 rounded-lg hover:border-coral hover:shadow-[0_0_20px_rgba(233,95,92,0.4)] transition-all duration-300 hover:-translate-y-1 hover:bg-gradient-to-br hover:from-coral/10 hover:to-transparent"
                   >
                     {/* Live indicator */}
-                    <div className="absolute top-2 right-2 flex items-center gap-1">
+                    <div className="w-full flex justify-end mb-2">
                       <div className="w-2 h-2 bg-coral rounded-full animate-pulse" />
                     </div>
 
@@ -162,9 +162,6 @@ export default function HomePageClient({ initialTeams, initialLivePlayers }: Hom
                         {player.summoner_name}#{player.tag_line}
                       </p>
                     </div>
-
-                    {/* Hover effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-coral/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </button>
                 ))}
               </div>

@@ -399,6 +399,7 @@
   --animate-slideindown: slide-in-down 0.5s ease-in-out forwards;
   --animate-like: liked 1s ease-in-out;
   --animate-shimmer: shimmer 2s infinite;
+  --animate-scale-in: scale-in 0.2s ease-out forwards;
 }
 
 /* ========================================
@@ -465,33 +466,35 @@
    GLOBAL STYLES & RESET
    ======================================== */
 
-html {
-  scroll-behavior: smooth;
-  /* Prevent font size adjustment on landscape mode */
-  -webkit-text-size-adjust: 100%;
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Prevent font size adjustment on landscape mode */
+    -webkit-text-size-adjust: 100%;
+  }
 
-body {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  color: var(--color-foreground);
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  line-height: 1.5;
-  width: 100vw;
-  min-height: 100vh;
-  background-color: var(--color-background);
-  margin: 0;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.5;
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--color-background);
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-* {
-  border-color: var(--color-border);
-  margin: 0;
-  padding: 0;
+  * {
+    border-color: var(--color-border);
+    margin: 0;
+    padding: 0;
+  }
 }
 
 /* ========================================
@@ -643,73 +646,79 @@ body {
    INTERACTIVE ELEMENT STYLES
    ======================================== */
 
-/* Links */
-a {
-  color: inherit;
-  text-decoration: none;
-  transition: color 150ms var(--timing-out);
-}
+@layer base {
+  /* Links */
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 150ms var(--timing-out);
+  }
 
-a:hover {
-  color: var(--color-coral);
-}
+  a:hover {
+    color: var(--color-coral);
+  }
 
-a:focus-visible {
-  outline: 2px solid var(--color-coral);
-  outline-offset: 2px;
-}
+  a:focus-visible {
+    outline: 2px solid var(--color-coral);
+    outline-offset: 2px;
+  }
 
-/* Buttons */
-button {
-  all: unset;
-  cursor: pointer;
-  transition: all 150ms var(--timing-out);
-  border-radius: var(--radius-md);
-}
+  /* Buttons */
+  button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: all 150ms var(--timing-out);
+    border-radius: var(--radius-md);
+  }
 
-button:focus-visible {
-  outline: 2px solid var(--color-coral);
-  outline-offset: 2px;
-}
+  button:focus-visible {
+    outline: 2px solid var(--color-coral);
+    outline-offset: 2px;
+  }
 
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 
-/* Form Inputs */
-input,
-select,
-textarea {
-  font-family: inherit;
-  font-size: 1rem;
-  border: none;
-  border-radius: var(--radius-md);
-  transition: all 150ms var(--timing-out);
-}
+  /* Form Inputs */
+  input,
+  select,
+  textarea {
+    font-family: inherit;
+    font-size: 1rem;
+    border: none;
+    border-radius: var(--radius-md);
+    transition: all 150ms var(--timing-out);
+  }
 
-input:focus,
-select:focus,
-textarea:focus {
-  outline: 2px solid var(--color-coral);
-  outline-offset: 2px;
-}
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 2px solid var(--color-coral);
+    outline-offset: 2px;
+  }
 
-input:disabled,
-select:disabled,
-textarea:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+  input:disabled,
+  select:disabled,
+  textarea:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 
-/* ========================================
-   ACCESSIBILITY
-   ======================================== */
+  /* ========================================
+     ACCESSIBILITY
+     ======================================== */
 
-/* Focus visible styles for keyboard navigation */
-:focus-visible {
-  outline: 2px solid var(--color-coral);
-  outline-offset: 2px;
+  /* Focus visible styles for keyboard navigation */
+  :focus-visible {
+    outline: 2px solid var(--color-coral);
+    outline-offset: 2px;
+  }
 }
 
 /* Reduce motion for users who prefer it */
