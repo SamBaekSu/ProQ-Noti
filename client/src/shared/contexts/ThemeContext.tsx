@@ -27,9 +27,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!mounted) return;
 
-    // 테마 변경 시 localStorage 저장 및 document에 class 추가
+    // 테마 변경 시 localStorage 저장, data-theme 속성 및 class 모두 설정
     localStorage.setItem('proq-theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.classList.remove('dark', 'white', 'blue', 'pink');
+    document.documentElement.classList.add(theme);
   }, [theme, mounted]);
 
   const setTheme = (newTheme: ThemeType) => {

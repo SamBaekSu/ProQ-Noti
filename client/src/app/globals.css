@@ -739,7 +739,8 @@
 
 /* Dark Theme (Default - OP.GG Style) */
 :root,
-[data-theme='dark'] {
+[data-theme='dark'],
+.dark {
   color-scheme: dark;
 
   --theme-bg-primary: #0f1419;
@@ -757,10 +758,26 @@
 
   --theme-accent: #5383E8;
   --theme-accent-hover: #3B5BA5;
+
+  /* Dropdown */
+  --dropdown-bg: #1a1d29;
+  --dropdown-border: #2d3748;
+  --dropdown-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --dropdown-trigger-bg: #262a3a;
+  --dropdown-accent: #5383e8;
+  --dropdown-accent-bg: rgba(83, 131, 232, 0.2);
+  --dropdown-accent-shadow: 0 0 15px rgba(83, 131, 232, 0.4);
+  --dropdown-item-text: #d1d5db;
+  --dropdown-item-text-hover: #ffffff;
+  --dropdown-item-hover-bg: #2d3748;
+  --dropdown-item-muted: #9ca3af;
+  --dropdown-section-bg: rgba(26, 29, 41, 0.5);
+  --dropdown-btn-hover-border: #6b7280;
 }
 
 /* White Theme (Light Mode) */
-[data-theme='white'] {
+[data-theme='white'],
+.white {
   color-scheme: light;
 
   --theme-bg-primary: #ffffff;
@@ -778,10 +795,46 @@
 
   --theme-accent: #5383E8;
   --theme-accent-hover: #3B5BA5;
+
+  /* Color token overrides — Tailwind 유틸리티(bg-dark-*, bg-background 등)가 참조 */
+  --color-dark-bg: #f8fafc;
+  --color-dark-surface: #f1f5f9;
+  --color-dark-card: #ffffff;
+  --color-dark-hover: #e2e8f0;
+  --color-dark-border: #cbd5e1;
+  --color-background: #f8fafc;
+  --color-background-secondary: #f1f5f9;
+  --color-foreground: #0f172a;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
+  --color-border: #e2e8f0;
+  --color-border-light: #f1f5f9;
+  --color-opgg-bg-secondary: #e8ecf0;
+  --color-opgg-border: #cbd5e1;
+  /* 라이트 배경에서 가독성 위해 회색 계열 어둡게 */
+  --color-gray-300: #64748b;
+  --color-gray-400: #475569;
+  --color-gray-500: #334155;
+
+  /* Dropdown */
+  --dropdown-bg: #ffffff;
+  --dropdown-border: #e4e4e7;
+  --dropdown-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --dropdown-trigger-bg: #f4f4f5;
+  --dropdown-accent: #5383e8;
+  --dropdown-accent-bg: rgba(83, 131, 232, 0.1);
+  --dropdown-accent-shadow: 0 0 15px rgba(83, 131, 232, 0.3);
+  --dropdown-item-text: #3f3f46;
+  --dropdown-item-text-hover: #18181b;
+  --dropdown-item-hover-bg: #f4f4f5;
+  --dropdown-item-muted: #71717a;
+  --dropdown-section-bg: rgba(244, 244, 245, 0.8);
+  --dropdown-btn-hover-border: #a1a1aa;
 }
 
 /* Blue Theme (Ocean Blue) */
-[data-theme='blue'] {
+[data-theme='blue'],
+.blue {
   color-scheme: dark;
 
   --theme-bg-primary: #0a1929;
@@ -799,10 +852,42 @@
 
   --theme-accent: #60a5fa;
   --theme-accent-hover: #3b82f6;
+
+  /* Color token overrides */
+  --color-dark-bg: #0a1929;
+  --color-dark-surface: #132f4c;
+  --color-dark-card: #1a2942;
+  --color-dark-hover: #1e3a5f;
+  --color-dark-border: #2a4a7f;
+  --color-background: #0a1929;
+  --color-background-secondary: #132f4c;
+  --color-foreground: #e3f2fd;
+  --color-card: #1a2942;
+  --color-card-foreground: #e3f2fd;
+  --color-border: #1e3a5f;
+  --color-border-light: #1a2942;
+  --color-opgg-bg-secondary: #1a2942;
+  --color-opgg-border: #2563eb;
+
+  /* Dropdown */
+  --dropdown-bg: #132f4c;
+  --dropdown-border: #1e3a5f;
+  --dropdown-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --dropdown-trigger-bg: #1a2942;
+  --dropdown-accent: #60a5fa;
+  --dropdown-accent-bg: rgba(96, 165, 250, 0.2);
+  --dropdown-accent-shadow: 0 0 15px rgba(96, 165, 250, 0.4);
+  --dropdown-item-text: #90caf9;
+  --dropdown-item-text-hover: #e3f2fd;
+  --dropdown-item-hover-bg: #1e3a5f;
+  --dropdown-item-muted: #64b5f6;
+  --dropdown-section-bg: rgba(10, 25, 41, 0.5);
+  --dropdown-btn-hover-border: #64b5f6;
 }
 
 /* Pink Theme (Gaming Pink) */
-[data-theme='pink'] {
+[data-theme='pink'],
+.pink {
   color-scheme: dark;
 
   --theme-bg-primary: #1a0d1a;
@@ -820,6 +905,37 @@
 
   --theme-accent: #ec4899;
   --theme-accent-hover: #db2777;
+
+  /* Color token overrides */
+  --color-dark-bg: #1a0d1a;
+  --color-dark-surface: #2d1b2d;
+  --color-dark-card: #3d2540;
+  --color-dark-hover: #4a2f4d;
+  --color-dark-border: #6b2d4e;
+  --color-background: #1a0d1a;
+  --color-background-secondary: #2d1b2d;
+  --color-foreground: #fce7f3;
+  --color-card: #3d2540;
+  --color-card-foreground: #fce7f3;
+  --color-border: #4a2f4d;
+  --color-border-light: #3d2540;
+  --color-opgg-bg-secondary: #2d1b2d;
+  --color-opgg-border: #ec4899;
+
+  /* Dropdown */
+  --dropdown-bg: #2d1b2d;
+  --dropdown-border: #4a2f4d;
+  --dropdown-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --dropdown-trigger-bg: #3d2540;
+  --dropdown-accent: #ec4899;
+  --dropdown-accent-bg: rgba(236, 72, 153, 0.2);
+  --dropdown-accent-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+  --dropdown-item-text: #f9a8d4;
+  --dropdown-item-text-hover: #fce7f3;
+  --dropdown-item-hover-bg: #4a2f4d;
+  --dropdown-item-muted: #f472b6;
+  --dropdown-section-bg: rgba(26, 13, 26, 0.5);
+  --dropdown-btn-hover-border: #f472b6;
 }
 
 /* Apply theme to body */

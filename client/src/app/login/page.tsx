@@ -12,9 +12,9 @@ export default function Login() {
   return (
     <Layout>
       <Layout.Header title="로그인" handleBack={() => router.back()} />
-      <Layout.Main>
-        <div className="flex flex-col items-center justify-center w-full h-full">
-          <div className="flex flex-col items-center justify-center flex-1 w-full gap-4 mb-8">
+      <Layout.Main className="justify-center">
+        <div className="flex flex-col items-center justify-center w-full flex-1 px-2">
+          <div className="flex flex-col items-center justify-center w-full gap-4 mb-8">
             <div className="flex justify-center w-full">
               <button
                 onClick={signInWithKakao}

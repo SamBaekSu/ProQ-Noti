@@ -13,9 +13,9 @@ export default function LayoutRouter({
 
   return (
     <div
-      className="flex flex-col bg-dark-bg w-full min-w-mobile min-h-screen"
+      className="flex flex-col w-full min-w-mobile min-h-screen"
       style={{
-        background: 'linear-gradient(135deg, #0f1419 0%, #1a1d29 100%)'
+        background: 'linear-gradient(135deg, var(--theme-bg-primary) 0%, var(--theme-bg-secondary) 100%)'
       }}
     >
       {children}

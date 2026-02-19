@@ -66,13 +66,13 @@ export default function DeleteAccountModal({
       showCloseButton={false}
     >
       <div className="mb-6">
-        <p className="text-gray-700 mb-3">정말로 회원탈퇴를 하시겠습니까?</p>
+        <p className="text-foreground mb-3">정말로 회원탈퇴를 하시겠습니까?</p>
         <p className="text-red-600 text-sm mb-4">
           ⚠️ 탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.
         </p>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-foreground mb-2">
             확인을 위해{' '}
             <span className="font-bold text-red-600">&apos;회원탈퇴&apos;</span>를
             입력해주세요:
@@ -81,7 +81,7 @@ export default function DeleteAccountModal({
             type="text"
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="w-full px-3 py-2 bg-dark-hover border border-dark-border text-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
             placeholder="회원탈퇴"
             disabled={isDeleting}
           />
@@ -92,7 +92,7 @@ export default function DeleteAccountModal({
         <button
           onClick={onClose}
           disabled={isDeleting}
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          className="flex-1 px-4 py-2 border border-dark-border rounded-md text-foreground hover:bg-dark-hover disabled:opacity-50"
         >
           취소
         </button>

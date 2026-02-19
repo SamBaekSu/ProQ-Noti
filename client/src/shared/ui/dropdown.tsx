@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { IoClose } from 'react-icons/io5';
 import { useToast } from '@/shared/hooks/useToast';
-import useOutsideClick from '@/shared/hooks/useOutsideClick';
 import { storeLogout } from '@/shared/store/authSlice';
 import { useIsLoggedIn, useUserId } from '@/shared/hooks/useAuth';
 import { signOut } from '@/shared/lib/supabase/actions';
@@ -25,6 +24,7 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
   const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 });
 
   const dispatch = useDispatch();
@@ -33,9 +33,19 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
   const userId = useUserId();
   const { theme, setTheme } = useTheme();
 
-  useOutsideClick(dropdownRef as React.RefObject<HTMLElement>, () =>
-    setOpen(false)
-  );
+  // portal 메뉴가 dropdownRef 바깥에 렌더링되므로 두 ref 모두 체크
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as Node;
+      const inTrigger = dropdownRef.current?.contains(target) ?? false;
+      const inMenu = menuRef.current?.contains(target) ?? false;
+      if (!inTrigger && !inMenu) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // SSR 이후 portal 마운트
   useEffect(() => {
@@ -116,10 +126,10 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
         ref={buttonRef}
         style={{
           padding: '12px',
-          backgroundColor: '#262a3a',
+          backgroundColor: 'var(--dropdown-trigger-bg)',
           border: '1px solid',
-          borderColor: open ? '#5383e8' : '#2d3748',
-          boxShadow: open ? '0 0 15px rgba(83, 131, 232, 0.4)' : 'none',
+          borderColor: open ? 'var(--dropdown-accent)' : 'var(--dropdown-border)',
+          boxShadow: open ? 'var(--dropdown-accent-shadow)' : 'none',
           transition: 'all 0.2s',
           display: 'flex',
           alignItems: 'center',
@@ -127,13 +137,13 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
           cursor: 'pointer',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = '#5383e8';
-          e.currentTarget.style.boxShadow = '0 0 15px rgba(83, 131, 232, 0.4)';
+          e.currentTarget.style.setProperty('border-color', 'var(--dropdown-accent)');
+          e.currentTarget.style.setProperty('box-shadow', 'var(--dropdown-accent-shadow)');
         }}
         onMouseLeave={(e) => {
           if (!open) {
-            e.currentTarget.style.borderColor = '#2d3748';
-            e.currentTarget.style.boxShadow = 'none';
+            e.currentTarget.style.setProperty('border-color', 'var(--dropdown-border)');
+            e.currentTarget.style.setProperty('box-shadow', 'none');
           }
         }}
         onClick={(e) => {
@@ -155,24 +165,25 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
         aria-haspopup="menu"
       >
         {open ? (
-          <IoClose style={{ width: '24px', height: '24px', color: '#ffffff', transition: 'transform 0.2s' }} aria-hidden="true" />
+          <IoClose style={{ width: '24px', height: '24px', color: 'var(--dropdown-item-text-hover)', transition: 'transform 0.2s' }} aria-hidden="true" />
         ) : (
-          <GiHamburgerMenu style={{ width: '24px', height: '24px', color: '#d1d5db', transition: 'all 0.2s' }} aria-hidden="true" />
+          <GiHamburgerMenu style={{ width: '24px', height: '24px', color: 'var(--dropdown-item-text)', transition: 'all 0.2s' }} aria-hidden="true" />
         )}
       </button>
 
       {/* Dropdown Menu - OP.GG dark style (portal로 헤더 stacking context 탈출) */}
       {open && mounted && createPortal(
         <div
+          ref={menuRef}
           style={{
             position: 'fixed',
             top: `${menuPosition.top}px`,
             right: `${menuPosition.right}px`,
             minWidth: '224px',
-            backgroundColor: '#1a1d29',
-            border: '1px solid #2d3748',
+            backgroundColor: 'var(--dropdown-bg)',
+            border: '1px solid var(--dropdown-border)',
             borderRadius: '8px',
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
+            boxShadow: 'var(--dropdown-shadow)',
             zIndex: 9999,
             overflow: 'hidden',
           }}
@@ -184,7 +195,7 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
               <div
                 key={index}
                 style={{
-                  borderBottom: index < menuItems.length - 1 ? '1px solid #2d3748' : 'none'
+                  borderBottom: index < menuItems.length - 1 ? '1px solid var(--dropdown-border)' : 'none'
                 }}
               >
                 {item.type === 'external' ? (
@@ -197,19 +208,19 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
                       width: '100%',
                       padding: '12px 20px',
                       fontSize: '14px',
-                      color: '#d1d5db',
+                      color: 'var(--dropdown-item-text)',
                       fontWeight: '600',
                       textAlign: 'center',
                       textDecoration: 'none',
                       transition: 'all 0.2s',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#2d3748';
-                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.setProperty('background-color', 'var(--dropdown-item-hover-bg)');
+                      e.currentTarget.style.setProperty('color', 'var(--dropdown-item-text-hover)');
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.color = '#d1d5db';
+                      e.currentTarget.style.setProperty('background-color', 'transparent');
+                      e.currentTarget.style.setProperty('color', 'var(--dropdown-item-text)');
                     }}
                     role="menuitem"
                     onClick={() => setOpen(false)}
@@ -224,19 +235,19 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
                       width: '100%',
                       padding: '12px 20px',
                       fontSize: '14px',
-                      color: '#d1d5db',
+                      color: 'var(--dropdown-item-text)',
                       fontWeight: '600',
                       textAlign: 'center',
                       textDecoration: 'none',
                       transition: 'all 0.2s',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#2d3748';
-                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.setProperty('background-color', 'var(--dropdown-item-hover-bg)');
+                      e.currentTarget.style.setProperty('color', 'var(--dropdown-item-text-hover)');
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.color = '#d1d5db';
+                      e.currentTarget.style.setProperty('background-color', 'transparent');
+                      e.currentTarget.style.setProperty('color', 'var(--dropdown-item-text)');
                     }}
                     role="menuitem"
                     onClick={() => setOpen(false)}
@@ -250,7 +261,7 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
             {/* Logout Button - Gaming danger style */}
             {isLoggedIn && (
               <>
-                <div style={{ borderTop: '1px solid #2d3748' }}>
+                <div style={{ borderTop: '1px solid var(--dropdown-border)' }}>
                   <button
                     onClick={handleLogout}
                     style={{
@@ -281,7 +292,7 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
                 </div>
 
                 {/* Notification Settings - Gaming accent */}
-                <div style={{ borderBottom: '1px solid #2d3748' }}>
+                <div style={{ borderBottom: '1px solid var(--dropdown-border)' }}>
                   <button
                     onClick={() => {
                       setShowConfirmDialog(true);
@@ -320,10 +331,10 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
             )}
 
             {/* Theme Selector */}
-            <div style={{ padding: '16px', backgroundColor: 'rgba(26, 29, 41, 0.5)' }}>
+            <div style={{ padding: '16px', backgroundColor: 'var(--dropdown-section-bg)' }}>
               <p style={{
                 fontSize: '12px',
-                color: '#9ca3af',
+                color: 'var(--dropdown-item-muted)',
                 fontWeight: '700',
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
@@ -349,10 +360,10 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       border: '2px solid',
-                      borderColor: theme === themeOption ? '#5383e8' : '#2d3748',
-                      backgroundColor: theme === themeOption ? 'rgba(83, 131, 232, 0.2)' : '#262a3a',
-                      color: theme === themeOption ? '#5383e8' : '#9ca3af',
-                      boxShadow: theme === themeOption ? '0 0 15px rgba(83, 131, 232, 0.4)' : 'none',
+                      borderColor: theme === themeOption ? 'var(--dropdown-accent)' : 'var(--dropdown-border)',
+                      backgroundColor: theme === themeOption ? 'var(--dropdown-accent-bg)' : 'var(--dropdown-trigger-bg)',
+                      color: theme === themeOption ? 'var(--dropdown-accent)' : 'var(--dropdown-item-muted)',
+                      boxShadow: theme === themeOption ? 'var(--dropdown-accent-shadow)' : 'none',
                       cursor: 'pointer',
                       transition: 'all 0.2s',
                       display: 'flex',
@@ -362,14 +373,14 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
                     }}
                     onMouseEnter={(e) => {
                       if (theme !== themeOption) {
-                        e.currentTarget.style.borderColor = '#6b7280';
-                        e.currentTarget.style.color = '#d1d5db';
+                        e.currentTarget.style.setProperty('border-color', 'var(--dropdown-btn-hover-border)');
+                        e.currentTarget.style.setProperty('color', 'var(--dropdown-item-text)');
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (theme !== themeOption) {
-                        e.currentTarget.style.borderColor = '#2d3748';
-                        e.currentTarget.style.color = '#9ca3af';
+                        e.currentTarget.style.setProperty('border-color', 'var(--dropdown-border)');
+                        e.currentTarget.style.setProperty('color', 'var(--dropdown-item-muted)');
                       }
                     }}
                     aria-label={`${themeOption} 테마 선택`}

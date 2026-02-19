@@ -6,7 +6,8 @@ import * as React from 'react';
 import type { ToastActionElement, ToastProps } from '@/shared/ui/ui/toast';
 
 const TOAST_LIMIT = 1;
-const TOAST_REMOVE_DELAY = 1000000;
+const TOAST_REMOVE_DELAY = 1000;  // dismiss 후 state에서 제거까지 애니메이션 시간
+const TOAST_AUTO_DISMISS_DELAY = 3000;  // 3초 후 자동 닫힘
 
 type ToasterToast = ToastProps & {
   id: string;
@@ -160,6 +161,9 @@ function toast({ ...props }: Toast) {
       }
     }
   });
+
+  // 3초 후 자동 닫힘
+  setTimeout(dismiss, TOAST_AUTO_DISMISS_DELAY);
 
   return {
     id: id,
