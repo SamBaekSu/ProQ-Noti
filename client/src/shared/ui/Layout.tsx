@@ -37,7 +37,7 @@ const Header = ({ title, handleBack, option, children }: HeaderProps) => {
         'px-4 md:px-6 lg:px-8',
         'bg-opgg-bg-secondary/95 backdrop-blur-xl',
         'border-b border-opgg-border',
-        'sticky top-0 z-sticky'
+        'sticky top-0 z-dropdown'
       )}
     >
 

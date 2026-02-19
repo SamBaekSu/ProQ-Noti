@@ -262,7 +262,7 @@ describe('Layout', () => {
       );
 
       const header = container.querySelector('header');
-      expect(header).toHaveClass('z-sticky');
+      expect(header).toHaveClass('z-dropdown');
     });
   });
 });

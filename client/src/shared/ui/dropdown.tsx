@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useDispatch } from 'react-redux';
 import Link from 'next/link';
 import { GiHamburgerMenu } from 'react-icons/gi';
@@ -21,6 +22,7 @@ interface DropdownProps {
 const Dropdown = ({ isOpen = false }: DropdownProps) => {
   const [open, setOpen] = useState(isOpen);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 });
@@ -34,6 +36,11 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
   useOutsideClick(dropdownRef as React.RefObject<HTMLElement>, () =>
     setOpen(false)
   );
+
+  // SSR 이후 portal 마운트
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // 스크롤/리사이즈 시 드롭다운 위치 업데이트
   useEffect(() => {
@@ -154,8 +161,8 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
         )}
       </button>
 
-      {/* Dropdown Menu - OP.GG dark style */}
-      {open && (
+      {/* Dropdown Menu - OP.GG dark style (portal로 헤더 stacking context 탈출) */}
+      {open && mounted && createPortal(
         <div
           style={{
             position: 'fixed',
@@ -166,7 +173,7 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
             border: '1px solid #2d3748',
             borderRadius: '8px',
             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
-            zIndex: 40,
+            zIndex: 9999,
             overflow: 'hidden',
           }}
           role="menu"
@@ -387,7 +394,8 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
               </div>
             </div>
           </nav>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Confirm Dialog */}
