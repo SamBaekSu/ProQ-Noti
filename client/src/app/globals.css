@@ -778,6 +778,29 @@
   --dropdown-btn-hover-border: #a1a1aa;
 }
 
+/* White 테마: 밝은 배경에서 텍스트 가독성 보정 */
+[data-theme='white'] .text-white,
+.white .text-white {
+  color: #18181b;
+}
+
+[data-theme='white'] .text-black,
+.white .text-black {
+  color: #18181b;
+}
+
+/* Live Now 섹션 등 강조 텍스트 */
+[data-theme='white'] .text-white\/90,
+.white .text-white\/90 {
+  color: #27272a;
+}
+
+/* 그라디언트 텍스트 — 화이트 기반은 어두운 계열로 */
+[data-theme='white'] .from-transparent.to-coral\/50,
+.white .from-transparent.to-coral\/50 {
+  --tw-gradient-to: rgba(233, 95, 92, 0.4);
+}
+
 /* Blue Theme (Ocean Blue) */
 [data-theme='blue'],
 .blue {
