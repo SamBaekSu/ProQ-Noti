@@ -131,7 +131,7 @@ export default function IngameBox({
           setLoading(false);
         });
     }
-  }, [puuid, isOpen, hasFetched]);
+  }, [puuid, isOpen, hasFetched, streamer_mode, last_match_id, toast]);
 
   useEffect(() => {
     if (!isOpen) {

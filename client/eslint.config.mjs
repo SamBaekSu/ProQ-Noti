@@ -14,7 +14,7 @@ const compat = new FlatCompat({
 });
 
 /** @type {import('eslint').Linter.Config[]} */
-export default [
+const eslintConfig = [
   { ignores: ['.next/**', 'public/**', 'node_modules/**', '.turbo/**'] },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
@@ -32,3 +32,5 @@ export default [
     }
   }
 ];
+
+export default eslintConfig;

@@ -63,7 +63,7 @@ export default function SubscribePageClient({
           });
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [isLoggedIn, userId]); // teamName 의존성 제거 - 페이지 이동 시마다 실행될 필요 없음
 
   return (
@@ -73,25 +73,25 @@ export default function SubscribePageClient({
         <Layout.Main>
           <div className="flex justify-center w-full">
             <div className="w-full">
-            {loading ? (
-              <div className="py-6">
-                <SubscribeListSkeleton />
-              </div>
-            ) : (
-              <SubscribeList list={members as IProPlayerData[]} />
-            )}
+              {loading ? (
+                <div className="py-6">
+                  <SubscribeListSkeleton />
+                </div>
+              ) : (
+                <SubscribeList list={members as IProPlayerData[]} />
+              )}
             </div>
           </div>
           <div className="flex justify-center w-full px-4 md:px-6 lg:px-8 py-4">
             <div className="w-full flex justify-center">
-            <a
-              href="https://forms.gle/r8jky7uKPyCMuwdR6"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors font-semibold uppercase tracking-wide border-b-2 border-transparent hover:border-coral"
-            >
-              계정 추가 제보
-            </a>
+              <a
+                href="https://forms.gle/r8jky7uKPyCMuwdR6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors font-semibold uppercase tracking-wide border-b-2 border-transparent hover:border-coral"
+              >
+                계정 추가 제보
+              </a>
             </div>
           </div>
         </Layout.Main>
