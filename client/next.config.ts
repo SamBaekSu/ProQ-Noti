@@ -32,7 +32,9 @@ const nextConfig: NextConfig = {
   },
   // Silence Turbopack warning about webpack config
   turbopack: {},
-  experimental: {}
+  experimental: {
+    optimizePackageImports: ['firebase', 'firebase/app', 'firebase/messaging', 'react-icons']
+  }
 };
 
 // @ts-expect-error next-pwa return type mismatch

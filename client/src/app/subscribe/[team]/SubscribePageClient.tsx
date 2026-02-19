@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePlayerList } from '@/shared/hooks/usePlayer';
 import SubscribeListSkeleton from '@/shared/ui/SubscribeSkeleton';
-import { getToken } from 'firebase/messaging';
 import { getFirebaseMessaging } from '@/shared/lib/firebase';
 import { getDeviceType } from '@/shared/lib/device';
 import { useIsLoggedIn, useUserId } from '@/shared/hooks/useAuth';
@@ -30,39 +29,40 @@ export default function SubscribePageClient({
   );
   const isLoggedIn = useIsLoggedIn();
   const userId = useUserId();
-  const messaging = getFirebaseMessaging();
-
   // FCM 토큰 등록 - 한 번만 실행
   useEffect(() => {
-    if (!isLoggedIn || !userId || !messaging) return;
+    if (!isLoggedIn || !userId) return;
 
     const permission = Notification.permission;
+    if (!('Notification' in window) || permission !== 'default') return;
 
-    // 권한이 default인 경우에만 요청
-    if ('Notification' in window && permission === 'default') {
-      Notification.requestPermission().then((result) => {
-        if (result === 'granted') {
-          getToken(messaging, {
-            vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
-          }).then((currentToken) => {
-            if (currentToken && userId) {
-              const deviceType = getDeviceType();
-              upsertFcmToken(userId, currentToken, deviceType)
-                .then((res) => {
-                  if (res.status === 'success') {
-                    console.log('FCM 토큰 등록 완료:', currentToken);
-                  } else {
-                    console.warn('FCM 토큰 저장 실패:', res.message);
-                  }
-                })
-                .catch((error) => {
-                  console.error('FCM 토큰 저장 중 오류 발생:', error);
-                });
-            }
-          });
-        }
+    // Firebase Messaging 지연 로딩
+    Notification.requestPermission().then(async (result) => {
+      if (result !== 'granted') return;
+
+      const messaging = await getFirebaseMessaging();
+      if (!messaging) return;
+
+      const { getToken } = await import('firebase/messaging');
+      const currentToken = await getToken(messaging, {
+        vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
       });
-    }
+
+      if (currentToken && userId) {
+        const deviceType = getDeviceType();
+        upsertFcmToken(userId, currentToken, deviceType)
+          .then((res) => {
+            if (res.status === 'success') {
+              console.log('FCM 토큰 등록 완료:', currentToken);
+            } else {
+              console.warn('FCM 토큰 저장 실패:', res.message);
+            }
+          })
+          .catch((error) => {
+            console.error('FCM 토큰 저장 중 오류 발생:', error);
+          });
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, userId]); // teamName 의존성 제거 - 페이지 이동 시마다 실행될 필요 없음
 

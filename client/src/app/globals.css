@@ -125,10 +125,10 @@
      TYPOGRAPHY SYSTEM
      ======================================== */
 
-  /* Font Families */
-  --font-sans: 'Pretendard', system-ui, -apple-system, sans-serif;
-  --font-display: 'KCC-Ganpan', serif;
-  --font-ganpan: 'KCC-Ganpan', sans-serif;
+  /* Font Families — variables set by next/font/local in layout.tsx */
+  --font-sans: var(--font-pretendard), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-kcc-ganpan), serif;
+  --font-ganpan: var(--font-kcc-ganpan), sans-serif;
   --font-pretendard: 'Pretendard', sans-serif;
 
   /* Font Sizes - Scale (4px base) */
@@ -403,64 +403,10 @@
 }
 
 /* ========================================
-   FONT FACES - Custom Typography
+   FONT FACES - next/font/local manages font loading
+   CSS variables --font-pretendard and --font-kcc-ganpan
+   are injected by next/font via layout.tsx
    ======================================== */
-
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 200;
-  src: url('./assets/fonts/Pretendard-ExtraLight.woff') format('woff');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 300;
-  src: url('./assets/fonts/Pretendard-Light.woff') format('woff');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 400;
-  src: url('./assets/fonts/Pretendard-Regular.woff') format('woff');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 500;
-  src: url('./assets/fonts/Pretendard-Medium.woff') format('woff');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 600;
-  src: url('./assets/fonts/Pretendard-SemiBold.woff') format('woff');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 700;
-  src: url('./assets/fonts/Pretendard-Bold.woff') format('woff');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 800;
-  src: url('./assets/fonts/Pretendard-ExtraBold.woff') format('woff');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'KCC-Ganpan';
-  font-weight: 500;
-  src: url('./assets/fonts/KCC-Ganpan.woff') format('woff');
-  font-display: swap;
-}
 
 /* ========================================
    GLOBAL STYLES & RESET
@@ -942,5 +888,5 @@
 body {
   background: linear-gradient(135deg, var(--theme-bg-primary) 0%, var(--theme-bg-secondary) 100%);
   color: var(--theme-text-primary);
-  font-family: 'Pretendard', -apple-system, sans-serif;
+  font-family: var(--font-sans);
 }

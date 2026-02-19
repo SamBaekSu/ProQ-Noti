@@ -1,9 +1,32 @@
 import { Metadata } from 'next';
+import localFont from 'next/font/local';
 import './globals.css';
 import Providers from './provider';
 import Pwa from './Pwa';
 import LayoutRouter from './layoutRouter';
 import AuthProvider from '@/shared/store/AuthProvider';
+
+const pretendard = localFont({
+  src: [
+    { path: './assets/fonts/Pretendard-Regular.woff', weight: '400', style: 'normal' },
+    { path: './assets/fonts/Pretendard-Medium.woff', weight: '500', style: 'normal' },
+    { path: './assets/fonts/Pretendard-SemiBold.woff', weight: '600', style: 'normal' },
+    { path: './assets/fonts/Pretendard-Bold.woff', weight: '700', style: 'normal' },
+    { path: './assets/fonts/Pretendard-ExtraBold.woff', weight: '800', style: 'normal' }
+  ],
+  display: 'swap',
+  variable: '--font-pretendard',
+  preload: true,
+  fallback: ['system-ui', '-apple-system', 'sans-serif']
+});
+
+const kccGanpan = localFont({
+  src: './assets/fonts/KCC-Ganpan.woff',
+  display: 'swap',
+  variable: '--font-kcc-ganpan',
+  preload: false,
+  fallback: ['serif']
+});
 
 export const metadata: Metadata = {
   title: 'ProQ-Noti | 프로들의 협곡을 실시간으로',
@@ -53,7 +76,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" data-scroll-behavior="smooth">
+    <html
+      lang="ko"
+      data-scroll-behavior="smooth"
+      className={`${pretendard.variable} ${kccGanpan.variable}`}
+    >
       <body
         className="flex justify-center w-full min-h-screen bg-background text-foreground"
         suppressHydrationWarning

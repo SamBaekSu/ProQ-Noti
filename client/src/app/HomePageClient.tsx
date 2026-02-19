@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { useIsLoggedIn, useUserId } from '@/shared/hooks/useAuth';
 import { getFirebaseMessaging } from '@/shared/lib/firebase';
-import { getToken } from 'firebase/messaging';
 import { getDeviceType } from '@/shared/lib/device';
 import { upsertFcmToken } from '@/actions/fcm';
 import type { Team } from '@/shared/types';
@@ -43,21 +42,17 @@ export default function HomePageClient({ initialTeams, initialLivePlayers }: Hom
   };
 
   const validateAndRefreshToken = useCallback(async () => {
-    // 1. 로그인 상태가 아니거나, 메시징 기능이 없으면 즉시 중단
-    const messaging = getFirebaseMessaging();
-    if (!isLoggedIn || !userId || !messaging) {
-      return;
-    }
+    if (!isLoggedIn || !userId) return;
 
     try {
-      // 2. 알림 권한 상태를 먼저 확인
+      // 1. 알림 권한 상태를 먼저 확인
       const permission = Notification.permission;
       if (permission === 'denied') {
         console.warn('알림 권한이 차단되었습니다.');
         return;
       }
 
-      // 3. 권한이 없으면 요청, 이미 있으면 바로 토큰 가져오기
+      // 2. 권한이 없으면 요청, 이미 있으면 바로 토큰 가져오기
       if (permission === 'default') {
         const result = await Notification.requestPermission();
         if (result !== 'granted') {
@@ -66,7 +61,12 @@ export default function HomePageClient({ initialTeams, initialLivePlayers }: Hom
         }
       }
 
+      // 3. Firebase Messaging 지연 로딩
+      const messaging = await getFirebaseMessaging();
+      if (!messaging) return;
+
       // 4. FCM 토큰 가져오기
+      const { getToken } = await import('firebase/messaging');
       const currentToken = await getToken(messaging, {
         vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
       });

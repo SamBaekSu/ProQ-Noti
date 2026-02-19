@@ -3,35 +3,41 @@
 import { upsertFcmToken } from '@/actions/fcm';
 import { toast } from '@/shared/hooks/useToast';
 import { getDeviceType } from '@/shared/lib/device';
-import { initializeApp, getApp, getApps, FirebaseApp } from 'firebase/app';
-import { getMessaging, getToken, Messaging } from 'firebase/messaging';
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGINGSENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-};
+// Firebase는 필요할 때만 동적 import하여 초기 번들에서 제외
+let appInstance: import('firebase/app').FirebaseApp | null = null;
+let messagingInstance: import('firebase/messaging').Messaging | null = null;
 
-// Firebase 앱 초기화는 서버/클라이언트 양쪽에서 안전
-const app: FirebaseApp = !getApps().length
-  ? initializeApp(firebaseConfig)
-  : getApp();
+async function getFirebaseApp() {
+  if (appInstance) return appInstance;
 
-let messaging: Messaging | null = null;
+  const { initializeApp, getApp, getApps } = await import('firebase/app');
+  appInstance = !getApps().length
+    ? initializeApp({
+        apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+        authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGINGSENDER_ID,
+        appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+        measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+      })
+    : getApp();
 
-export const getFirebaseMessaging = (): Messaging | null => {
-  if (typeof window !== 'undefined') {
-    if (!messaging) {
-      messaging = getMessaging(app);
-    }
-    return messaging;
-  }
-  return null;
-};
+  return appInstance;
+}
+
+export const getFirebaseMessaging =
+  async (): Promise<import('firebase/messaging').Messaging | null> => {
+    if (typeof window === 'undefined') return null;
+
+    if (messagingInstance) return messagingInstance;
+
+    const app = await getFirebaseApp();
+    const { getMessaging } = await import('firebase/messaging');
+    messagingInstance = getMessaging(app);
+    return messagingInstance;
+  };
 
 export const requestToken = (userId: string | null, isLoggedIn: boolean) => {
   if (typeof window === 'undefined') {
@@ -40,20 +46,22 @@ export const requestToken = (userId: string | null, isLoggedIn: boolean) => {
   }
 
   if (isLoggedIn) {
-    Notification.requestPermission().then((result) => {
-      if (result === 'granted' && messaging) {
+    Notification.requestPermission().then(async (result) => {
+      if (result === 'granted') {
+        const messaging = await getFirebaseMessaging();
+        if (!messaging) return;
+
+        const { getToken } = await import('firebase/messaging');
         getToken(messaging, {
           vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
         }).then((currentToken) => {
           if (currentToken) {
             const deviceType = getDeviceType();
-            // FCM 토큰을 서버에 저장하는 Server Action 호출
             if (userId) {
-              const result = upsertFcmToken(userId, currentToken, deviceType)
+              upsertFcmToken(userId, currentToken, deviceType)
                 .then((res) => {
                   if (res.status === 'success') {
                     toast({ description: '알림이 재설정됐습니다' });
-                    console.log('토큰', currentToken);
                     localStorage.setItem('sentFCMToken', currentToken);
                   } else {
                     console.warn('FCM 토큰 저장 실패:', res.message);
@@ -63,9 +71,7 @@ export const requestToken = (userId: string | null, isLoggedIn: boolean) => {
                   console.error('FCM 토큰 저장 중 오류 발생:', error);
                 });
             } else {
-              console.warn(
-                '로그인 되지 않은 상태에서 FCM 토큰을 저장할 수 없습니다.'
-              );
+              console.warn('로그인 되지 않은 상태에서 FCM 토큰을 저장할 수 없습니다.');
             }
           } else {
             console.warn('fcm 토큰을 가져올 수 없습니다.');
@@ -77,5 +83,3 @@ export const requestToken = (userId: string | null, isLoggedIn: boolean) => {
     });
   }
 };
-
-export { app };
