@@ -9,7 +9,7 @@ interface TeamGridProps {
 }
 
 // LCK 팀 목록 (2025 기준)
-const LCK_TEAMS = ['T1', 'GEN', 'DK', 'HLE', 'KT', 'DRX', 'NS', 'BRO', 'FOX', 'KDF'];
+const LCK_TEAMS = ['T1', 'GEN', 'DK', 'HLE', 'KT', 'DRX', 'NS', 'BRO', 'FOX', 'KDF', 'BNK', 'DN'];
 
 // 팀을 그룹별로 분류
 function groupTeams(teams: Team[]) {
@@ -18,13 +18,12 @@ function groupTeams(teams: Team[]) {
   const otherTeams: Team[] = [];
 
   teams.forEach((team) => {
-    if (LCK_TEAMS.includes(team.name_abbr)) {
+    const abbr = team.name_abbr.trim();
+    if (LCK_TEAMS.includes(abbr)) {
       lckTeams.push(team);
     } else if (
-      team.name_abbr.includes('CL') ||
-      team.name_abbr === 'BNK' ||
-      team.name_abbr === 'DN' ||
-      team.name_abbr === 'OK'
+      abbr.includes('CL') ||
+      abbr === 'OK'
     ) {
       challengersTeams.push(team);
     } else {
