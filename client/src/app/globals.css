@@ -1,129 +1,915 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 800;
-  src: url('./assets/fonts/Pretendard-ExtraBold.woff') format('woff');
+@theme {
+  /* ========================================
+     COLOR SYSTEM - Design Tokens
+     ======================================== */
+
+  /* Primary Colors - Brand Colors */
+  --color-coral: #e95f5c;
+  --color-coral-50: #fef7f7;
+  --color-coral-100: #fce8e7;
+  --color-coral-200: #f8ccc9;
+  --color-coral-300: #f5a9a4;
+  --color-coral-400: #f08780;
+  --color-coral-500: #e95f5c;
+  --color-coral-600: #d14742;
+  --color-coral-700: #b8362f;
+  --color-coral-800: #932b25;
+  --color-coral-900: #6d1f1a;
+
+  --color-mint: #79ceb8;
+  --color-mint-50: #f0f9f6;
+  --color-mint-100: #d0ede5;
+  --color-mint-200: #b0e2d4;
+  --color-mint-300: #90d6c3;
+  --color-mint-400: #79ceb8;
+  --color-mint-500: #79ceb8;
+  --color-mint-600: #5fa399;
+  --color-mint-700: #45787a;
+  --color-mint-800: #2b4d5b;
+  --color-mint-900: #11223c;
+
+  --color-yellow: #ffdb00;
+  --color-yellow-50: #fffef0;
+  --color-yellow-100: #fffbe0;
+  --color-yellow-200: #fff9cc;
+  --color-yellow-300: #fff7b3;
+  --color-yellow-400: #fff599;
+  --color-yellow-500: #ffdb00;
+  --color-yellow-600: #ffb800;
+  --color-yellow-700: #ff9500;
+  --color-yellow-800: #ff7200;
+  --color-yellow-900: #ff5000;
+
+  --color-skyblue: #5cc3e8;
+  --color-skyblue-50: #f0f8fc;
+  --color-skyblue-100: #d0eef7;
+  --color-skyblue-200: #b0e4f1;
+  --color-skyblue-300: #90daeb;
+  --color-skyblue-400: #5cc3e8;
+  --color-skyblue-500: #5cc3e8;
+  --color-skyblue-600: #4a9ec4;
+  --color-skyblue-700: #3879a0;
+  --color-skyblue-800: #26547c;
+  --color-skyblue-900: #142f58;
+
+  --color-navy: #314855;
+  --color-navy-50: #f2f4f6;
+  --color-navy-100: #d9dfe5;
+  --color-navy-200: #c0c9d4;
+  --color-navy-300: #a7b3c3;
+  --color-navy-400: #8e9db2;
+  --color-navy-500: #758a9f;
+  --color-navy-600: #5c738c;
+  --color-navy-700: #435c79;
+  --color-navy-800: #2a4566;
+  --color-navy-900: #314855;
+
+  /* Neutral Colors */
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Gaming Dark Theme Grays (OP.GG / Riot Style) */
+  --color-gray-50: #f4f4f5;
+  --color-gray-100: #e4e4e7;
+  --color-gray-200: #d4d4d8;
+  --color-gray-300: #a1a1aa;
+  --color-gray-400: #71717a;
+  --color-gray-500: #52525b;
+  --color-gray-600: #3f3f46;
+  --color-gray-700: #27272a;
+  --color-gray-800: #18181b;
+  --color-gray-900: #09090b;
+
+  /* Gaming Dark Backgrounds */
+  --color-dark-bg: #0f1419;
+  --color-dark-surface: #1a1d29;
+  --color-dark-card: #1e2130;
+  --color-dark-hover: #252836;
+  --color-dark-border: #2d3041;
+
+  /* Semantic Colors */
+  --color-success: #10b981;
+  --color-success-light: #d1fae5;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fef3c7;
+  --color-error: #ef4444;
+  --color-error-light: #fee2e2;
+  --color-info: #3b82f6;
+  --color-info-light: #dbeafe;
+
+  /* Background & Surface (Gaming Dark) */
+  --color-background: #0f1419;
+  --color-background-secondary: #1a1d29;
+  --color-foreground: #e4e4e7;
+
+  --color-card: #1e2130;
+  --color-card-foreground: #e4e4e7;
+
+  /* Borders (Gaming Dark) */
+  --color-border: #2d3041;
+  --color-border-light: #252836;
+
+  /* OP.GG Color System */
+  --color-opgg-blue: #5383E8;
+  --color-opgg-blue-dark: #3B5BA5;
+  --color-opgg-blue-light: #7BA3FF;
+  --color-opgg-yellow: #E8B034;
+  --color-opgg-bg-primary: #1C1C1F;
+  --color-opgg-bg-secondary: #28344E;
+  --color-opgg-bg-tertiary: #31313C;
+  --color-opgg-border: #3F3F46;
+
+  /* ========================================
+     TYPOGRAPHY SYSTEM
+     ======================================== */
+
+  /* Font Families — variables set by next/font/local in layout.tsx */
+  --font-sans: var(--font-pretendard), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-kcc-ganpan), serif;
+  --font-ganpan: var(--font-kcc-ganpan), sans-serif;
+  --font-pretendard: 'Pretendard', sans-serif;
+
+  /* Font Sizes - Scale (4px base) */
+  --font-size-xs: 0.75rem;      /* 12px - captions, small text */
+  --font-size-sm: 0.875rem;     /* 14px - labels, helper text */
+  --font-size-base: 1rem;       /* 16px - body text, default */
+  --font-size-lg: 1.125rem;     /* 18px - emphasis text */
+  --font-size-xl: 1.25rem;      /* 20px - heading 3 */
+  --font-size-2xl: 1.5rem;      /* 24px - heading 2 */
+  --font-size-3xl: 2rem;        /* 32px - heading 1 */
+  --font-size-4xl: 2.5rem;      /* 40px - hero heading */
+
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Line Heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+  --line-height-loose: 1.8;
+
+  /* ========================================
+     SPACING SYSTEM - 4px base unit
+     ======================================== */
+
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;   /* 4px */
+  --spacing-2: 0.5rem;    /* 8px */
+  --spacing-3: 0.75rem;   /* 12px */
+  --spacing-4: 1rem;      /* 16px */
+  --spacing-5: 1.25rem;   /* 20px */
+  --spacing-6: 1.5rem;    /* 24px */
+  --spacing-8: 2rem;      /* 32px */
+  --spacing-10: 2.5rem;   /* 40px */
+  --spacing-12: 3rem;     /* 48px */
+  --spacing-16: 4rem;     /* 64px */
+  --spacing-20: 5rem;     /* 80px */
+  --spacing-24: 6rem;     /* 96px */
+
+  /* ========================================
+     SIZE SYSTEM
+     ======================================== */
+
+  /* Touch Target Minimum Size (WCAG AAA) */
+  --size-touch-min: 2.75rem;  /* 44px - Minimum touch target */
+
+  /* ========================================
+     BORDER RADIUS SYSTEM
+     ======================================== */
+
+  --radius-none: 0;
+  --radius-sm: 0.25rem;   /* 4px */
+  --radius-md: 0.5rem;    /* 8px */
+  --radius-lg: 0.75rem;   /* 12px */
+  --radius-xl: 1rem;      /* 16px */
+  --radius-2xl: 1.5rem;   /* 24px */
+  --radius-full: 9999px;
+
+  /* ========================================
+     COMPONENT DESIGN TOKENS
+     ======================================== */
+
+  /* Card Padding - Responsive */
+  --spacing-card-mobile: 1rem;      /* 16px - Mobile (360px) */
+  --spacing-card-tablet: 1.25rem;   /* 20px - Tablet (768px) */
+  --spacing-card-desktop: 1.5rem;   /* 24px - Desktop (960px+) */
+
+  /* Card Border Radius - Responsive */
+  --radius-card-mobile: 0.5rem;     /* 8px - Mobile */
+  --radius-card-tablet: 0.75rem;    /* 12px - Tablet */
+  --radius-card-desktop: 1rem;      /* 16px - Desktop */
+
+  /* Button Padding - Responsive */
+  --spacing-button-mobile: 0.75rem 1rem;      /* 12px 16px */
+  --spacing-button-tablet: 0.875rem 1.25rem;  /* 14px 20px */
+  --spacing-button-desktop: 1rem 1.5rem;      /* 16px 24px */
+
+  /* Button Border Radius */
+  --radius-button: 0.5rem;        /* 8px */
+
+  /* Focus Ring */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: var(--color-coral);
+
+  /* Layout Spacing - Responsive */
+  --spacing-page-mobile: 1rem;      /* 16px */
+  --spacing-page-tablet: 1.5rem;    /* 24px */
+  --spacing-page-desktop: 2rem;     /* 32px */
+
+  /* Grid Gap - Responsive */
+  --gap-mobile: 0.75rem;   /* 12px */
+  --gap-tablet: 1rem;      /* 16px */
+  --gap-desktop: 1.5rem;   /* 24px */
+
+  /* ========================================
+     SHADOW SYSTEM
+     ======================================== */
+
+  --shadow-none: none;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 4px 0 rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-bottom: 0px 4px 4px rgba(0, 0, 0, 0.1);
+
+  /* OP.GG Gaming Shadows */
+  --shadow-card: 0 2px 8px 0 rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 4px 16px 0 rgba(0, 0, 0, 0.4);
+  --shadow-glow-coral: 0 0 15px rgba(233, 95, 92, 0.5);
+  --shadow-glow-blue: 0 0 15px rgba(83, 131, 232, 0.5);
+  --shadow-glow-mint: 0 0 15px rgba(121, 206, 184, 0.5);
+
+  /* ========================================
+     TRANSITIONS & ANIMATIONS
+     ======================================== */
+
+  --duration-75: 75ms;
+  --duration-100: 100ms;
+  --duration-150: 150ms;
+  --duration-200: 200ms;
+  --duration-300: 300ms;
+  --duration-500: 500ms;
+  --duration-700: 700ms;
+  --duration-1000: 1000ms;
+
+  --timing-linear: linear;
+  --timing-in: cubic-bezier(0.4, 0, 1, 1);
+  --timing-out: cubic-bezier(0, 0, 0.2, 1);
+  --timing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ========================================
+     BREAKPOINTS (Mobile First)
+     ======================================== */
+
+  /* Custom breakpoints for responsive design */
+  --breakpoint-mobile: 360px;   /* Base mobile (default, no prefix) */
+  --breakpoint-tablet: 768px;   /* md - Tablets and small laptops */
+  --breakpoint-desktop: 940px;  /* lg - Desktop and larger screens */
+  --breakpoint-wide: 1280px;    /* xl - Wide screens */
+
+  /* ========================================
+     Z-INDEX SYSTEM
+     ======================================== */
+
+  --z-hide: -1;
+  --z-base: 0;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-dropdown: 40;
+  --z-modal-backdrop: 50;
+  --z-modal: 60;
+  --z-popover: 70;
+  --z-tooltip: 75;
+  --z-notification: 80;
+
+  /* ========================================
+     ANIMATION KEYFRAMES
+     ======================================== */
+
+  @keyframes slide-in-down {
+    0% {
+      transform: translateY(-10%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-in-up {
+    0% {
+      transform: translateY(10%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-out {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes scale-in {
+    0% {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes liked {
+    50% {
+      transform: scale(1.15);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-0.5rem);
+    }
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* ========================================
+     CUSTOM ANIMATION DURATIONS
+     ======================================== */
+
+  --animate-slideindown: slide-in-down 0.5s ease-in-out forwards;
+  --animate-like: liked 1s ease-in-out;
+  --animate-shimmer: shimmer 2s infinite;
+  --animate-scale-in: scale-in 0.2s ease-out forwards;
 }
 
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 700;
-  src: url('./assets/fonts/Pretendard-Bold.woff') format('woff');
-}
+/* ========================================
+   FONT FACES - next/font/local manages font loading
+   CSS variables --font-pretendard and --font-kcc-ganpan
+   are injected by next/font via layout.tsx
+   ======================================== */
 
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 600;
-  src: url('./assets/fonts/Pretendard-SemiBold.woff');
-}
-
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 500;
-  src: url('./assets/fonts/Pretendard-Medium.woff');
-}
-
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 400;
-  src: url('./assets/fonts/Pretendard-Regular.woff');
-}
-
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 300;
-  src: url('./assets/fonts/Pretendard-Light.woff');
-}
-
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 200;
-  src: url('./assets/fonts/Pretendard-ExtraLight.woff');
-}
-
-@font-face {
-  font-family: 'KCC-Ganpan';
-  font-weight: 500;
-  src: url('./assets/fonts/KCC-Ganpan.woff') format('woff');
-}
-
-body {
-  display: flex;
-  justify-content: center;
-  @apply text-primary-navy;
-  font-family: 'Pretendard', 'sans-serif';
-  width: 100vw;
-  min-height: 100vh;
-}
-
-
+/* ========================================
+   GLOBAL STYLES & RESET
+   ======================================== */
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+  html {
+    scroll-behavior: smooth;
+    /* Prevent font size adjustment on landscape mode */
+    -webkit-text-size-adjust: 100%;
   }
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
-}
 
-
-
-@layer base {
-  * {
-    @apply border-border;
-  }
   body {
-    @apply bg-background text-foreground;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.5;
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--color-background);
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
+  * {
+    border-color: var(--color-border);
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* ========================================
+   TEXT UTILITIES - Typography Classes
+   ======================================== */
+
+@utility text-xs {
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+@utility text-sm {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+@utility text-base {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+@utility text-lg {
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+@utility text-caption {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+@utility text-body2 {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+@utility text-body2Bold {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  font-weight: 700;
+}
+
+@utility text-body1 {
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+@utility text-body1Bold {
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 700;
+}
+
+@utility text-smallBtn {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+@utility text-button {
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+@utility text-heading3 {
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+@utility text-heading2 {
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+@utility text-heading1 {
+  font-size: 1.5rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+/* OP.GG Typography Utilities */
+@utility text-opgg-body {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+@utility text-opgg-body-lg {
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+@utility text-opgg-heading {
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* ========================================
+   RESPONSIVE WIDTH UTILITIES
+   ======================================== */
+
+/* Mobile-first container widths */
+@utility w-mobile {
+  width: 100%;
+  max-width: 360px;
+}
+
+@utility w-tablet {
+  width: 100%;
+  max-width: 768px;
+}
+
+@utility w-desktop {
+  width: 100%;
+  max-width: 940px;
+}
+
+@utility w-wide {
+  width: 100%;
+  max-width: 1280px;
+}
+
+/* Minimum widths */
+@utility min-w-mobile {
+  min-width: 360px;
+}
+
+/* Container utility */
+@utility container-responsive {
+  width: 100%;
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* ========================================
+   INTERACTIVE ELEMENT STYLES
+   ======================================== */
+
+@layer base {
+  /* Links */
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 150ms var(--timing-out);
+  }
+
+  a:hover {
+    color: var(--color-coral);
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--color-coral);
+    outline-offset: 2px;
+  }
+
+  /* Buttons */
+  button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: all 150ms var(--timing-out);
+    border-radius: var(--radius-md);
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--color-coral);
+    outline-offset: 2px;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  /* Form Inputs */
+  input,
+  select,
+  textarea {
+    font-family: inherit;
+    font-size: 1rem;
+    border: none;
+    border-radius: var(--radius-md);
+    transition: all 150ms var(--timing-out);
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 2px solid var(--color-coral);
+    outline-offset: 2px;
+  }
+
+  input:disabled,
+  select:disabled,
+  textarea:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* ========================================
+     ACCESSIBILITY
+     ======================================== */
+
+  /* Focus visible styles for keyboard navigation */
+  :focus-visible {
+    outline: 2px solid var(--color-coral);
+    outline-offset: 2px;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ========================================
+   THEME SYSTEM - 4 Themes (dark, white, blue, pink)
+   ======================================== */
+
+/* Dark Theme (Default - OP.GG Style) */
+:root,
+[data-theme='dark'],
+.dark {
+  color-scheme: dark;
+
+  --theme-bg-primary: #0f1419;
+  --theme-bg-secondary: #1a1d29;
+  --theme-bg-card: #1e2130;
+  --theme-bg-surface: #1a1d29;
+  --theme-bg-hover: #252836;
+
+  --theme-text-primary: #e4e4e7;
+  --theme-text-secondary: #a1a1aa;
+  --theme-text-muted: #71717a;
+
+  --theme-border: #2d3041;
+  --theme-border-hover: #3f3f46;
+
+  --theme-accent: #5383E8;
+  --theme-accent-hover: #3B5BA5;
+
+  /* Dropdown */
+  --dropdown-bg: #1a1d29;
+  --dropdown-border: #2d3748;
+  --dropdown-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --dropdown-trigger-bg: #262a3a;
+  --dropdown-accent: #5383e8;
+  --dropdown-accent-bg: rgba(83, 131, 232, 0.2);
+  --dropdown-accent-shadow: 0 0 15px rgba(83, 131, 232, 0.4);
+  --dropdown-item-text: #d1d5db;
+  --dropdown-item-text-hover: #ffffff;
+  --dropdown-item-hover-bg: #2d3748;
+  --dropdown-item-muted: #9ca3af;
+  --dropdown-section-bg: rgba(26, 29, 41, 0.5);
+  --dropdown-btn-hover-border: #6b7280;
+}
+
+/* White Theme (Light Mode) */
+[data-theme='white'],
+.white {
+  color-scheme: light;
+
+  --theme-bg-primary: #ffffff;
+  --theme-bg-secondary: #f4f4f5;
+  --theme-bg-card: #ffffff;
+  --theme-bg-surface: #fafafa;
+  --theme-bg-hover: #e4e4e7;
+
+  --theme-text-primary: #18181b;
+  --theme-text-secondary: #3f3f46;
+  --theme-text-muted: #71717a;
+
+  --theme-border: #e4e4e7;
+  --theme-border-hover: #d4d4d8;
+
+  --theme-accent: #5383E8;
+  --theme-accent-hover: #3B5BA5;
+
+  /* Color token overrides — Tailwind 유틸리티(bg-dark-*, bg-background 등)가 참조 */
+  --color-dark-bg: #f8fafc;
+  --color-dark-surface: #f1f5f9;
+  --color-dark-card: #ffffff;
+  --color-dark-hover: #e2e8f0;
+  --color-dark-border: #cbd5e1;
+  --color-background: #f8fafc;
+  --color-background-secondary: #f1f5f9;
+  --color-foreground: #0f172a;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
+  --color-border: #e2e8f0;
+  --color-border-light: #f1f5f9;
+  --color-opgg-bg-secondary: #e8ecf0;
+  --color-opgg-border: #cbd5e1;
+  /* 라이트 배경에서 가독성 위해 회색 계열 어둡게 */
+  --color-gray-300: #64748b;
+  --color-gray-400: #475569;
+  --color-gray-500: #334155;
+
+  /* Dropdown */
+  --dropdown-bg: #ffffff;
+  --dropdown-border: #e4e4e7;
+  --dropdown-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --dropdown-trigger-bg: #f4f4f5;
+  --dropdown-accent: #5383e8;
+  --dropdown-accent-bg: rgba(83, 131, 232, 0.1);
+  --dropdown-accent-shadow: 0 0 15px rgba(83, 131, 232, 0.3);
+  --dropdown-item-text: #3f3f46;
+  --dropdown-item-text-hover: #18181b;
+  --dropdown-item-hover-bg: #f4f4f5;
+  --dropdown-item-muted: #71717a;
+  --dropdown-section-bg: rgba(244, 244, 245, 0.8);
+  --dropdown-btn-hover-border: #a1a1aa;
+}
+
+/* White 테마: 밝은 배경에서 텍스트 가독성 보정 */
+[data-theme='white'] .text-white,
+.white .text-white {
+  color: #18181b;
+}
+
+[data-theme='white'] .text-black,
+.white .text-black {
+  color: #18181b;
+}
+
+/* Live Now 섹션 등 강조 텍스트 */
+[data-theme='white'] .text-white\/90,
+.white .text-white\/90 {
+  color: #27272a;
+}
+
+/* 그라디언트 텍스트 — 화이트 기반은 어두운 계열로 */
+[data-theme='white'] .from-transparent.to-coral\/50,
+.white .from-transparent.to-coral\/50 {
+  --tw-gradient-to: rgba(233, 95, 92, 0.4);
+}
+
+/* Blue Theme (Ocean Blue) */
+[data-theme='blue'],
+.blue {
+  color-scheme: dark;
+
+  --theme-bg-primary: #0a1929;
+  --theme-bg-secondary: #132f4c;
+  --theme-bg-card: #1a2942;
+  --theme-bg-surface: #132f4c;
+  --theme-bg-hover: #1e3a5f;
+
+  --theme-text-primary: #e3f2fd;
+  --theme-text-secondary: #90caf9;
+  --theme-text-muted: #64b5f6;
+
+  --theme-border: #1e3a5f;
+  --theme-border-hover: #2563eb;
+
+  --theme-accent: #60a5fa;
+  --theme-accent-hover: #3b82f6;
+
+  /* Color token overrides */
+  --color-dark-bg: #0a1929;
+  --color-dark-surface: #132f4c;
+  --color-dark-card: #1a2942;
+  --color-dark-hover: #1e3a5f;
+  --color-dark-border: #2a4a7f;
+  --color-background: #0a1929;
+  --color-background-secondary: #132f4c;
+  --color-foreground: #e3f2fd;
+  --color-card: #1a2942;
+  --color-card-foreground: #e3f2fd;
+  --color-border: #1e3a5f;
+  --color-border-light: #1a2942;
+  --color-opgg-bg-secondary: #1a2942;
+  --color-opgg-border: #2563eb;
+
+  /* Dropdown */
+  --dropdown-bg: #132f4c;
+  --dropdown-border: #1e3a5f;
+  --dropdown-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --dropdown-trigger-bg: #1a2942;
+  --dropdown-accent: #60a5fa;
+  --dropdown-accent-bg: rgba(96, 165, 250, 0.2);
+  --dropdown-accent-shadow: 0 0 15px rgba(96, 165, 250, 0.4);
+  --dropdown-item-text: #90caf9;
+  --dropdown-item-text-hover: #e3f2fd;
+  --dropdown-item-hover-bg: #1e3a5f;
+  --dropdown-item-muted: #64b5f6;
+  --dropdown-section-bg: rgba(10, 25, 41, 0.5);
+  --dropdown-btn-hover-border: #64b5f6;
+}
+
+/* Pink Theme (Gaming Pink) */
+[data-theme='pink'],
+.pink {
+  color-scheme: dark;
+
+  --theme-bg-primary: #1a0d1a;
+  --theme-bg-secondary: #2d1b2d;
+  --theme-bg-card: #3d2540;
+  --theme-bg-surface: #2d1b2d;
+  --theme-bg-hover: #4a2f4d;
+
+  --theme-text-primary: #fce7f3;
+  --theme-text-secondary: #f9a8d4;
+  --theme-text-muted: #f472b6;
+
+  --theme-border: #4a2f4d;
+  --theme-border-hover: #ec4899;
+
+  --theme-accent: #ec4899;
+  --theme-accent-hover: #db2777;
+
+  /* Color token overrides */
+  --color-dark-bg: #1a0d1a;
+  --color-dark-surface: #2d1b2d;
+  --color-dark-card: #3d2540;
+  --color-dark-hover: #4a2f4d;
+  --color-dark-border: #6b2d4e;
+  --color-background: #1a0d1a;
+  --color-background-secondary: #2d1b2d;
+  --color-foreground: #fce7f3;
+  --color-card: #3d2540;
+  --color-card-foreground: #fce7f3;
+  --color-border: #4a2f4d;
+  --color-border-light: #3d2540;
+  --color-opgg-bg-secondary: #2d1b2d;
+  --color-opgg-border: #ec4899;
+
+  /* Dropdown */
+  --dropdown-bg: #2d1b2d;
+  --dropdown-border: #4a2f4d;
+  --dropdown-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --dropdown-trigger-bg: #3d2540;
+  --dropdown-accent: #ec4899;
+  --dropdown-accent-bg: rgba(236, 72, 153, 0.2);
+  --dropdown-accent-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+  --dropdown-item-text: #f9a8d4;
+  --dropdown-item-text-hover: #fce7f3;
+  --dropdown-item-hover-bg: #4a2f4d;
+  --dropdown-item-muted: #f472b6;
+  --dropdown-section-bg: rgba(26, 13, 26, 0.5);
+  --dropdown-btn-hover-border: #f472b6;
+}
+
+/* Apply theme to body */
+body {
+  background: linear-gradient(135deg, var(--theme-bg-primary) 0%, var(--theme-bg-secondary) 100%);
+  color: var(--theme-text-primary);
+  font-family: var(--font-sans);
 }

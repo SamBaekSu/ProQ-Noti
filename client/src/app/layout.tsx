@@ -1,15 +1,73 @@
 import { Metadata } from 'next';
+import localFont from 'next/font/local';
 import './globals.css';
 import Providers from './provider';
 import Pwa from './Pwa';
 import LayoutRouter from './layoutRouter';
-import AuthProvider from '@/store/AuthProvider';
+import AuthProvider from '@/shared/store/AuthProvider';
+
+const pretendard = localFont({
+  src: [
+    { path: './assets/fonts/Pretendard-Regular.woff', weight: '400', style: 'normal' },
+    { path: './assets/fonts/Pretendard-Medium.woff', weight: '500', style: 'normal' },
+    { path: './assets/fonts/Pretendard-SemiBold.woff', weight: '600', style: 'normal' },
+    { path: './assets/fonts/Pretendard-Bold.woff', weight: '700', style: 'normal' },
+    { path: './assets/fonts/Pretendard-ExtraBold.woff', weight: '800', style: 'normal' }
+  ],
+  display: 'swap',
+  variable: '--font-pretendard',
+  preload: true,
+  fallback: ['system-ui', '-apple-system', 'sans-serif']
+});
+
+const kccGanpan = localFont({
+  src: './assets/fonts/KCC-Ganpan.woff',
+  display: 'swap',
+  variable: '--font-kcc-ganpan',
+  preload: false,
+  fallback: ['serif']
+});
 
 export const metadata: Metadata = {
   title: 'ProQ-Noti | 프로들의 협곡을 실시간으로',
+  description:
+    'ProQ-Noti는 프로게이머들의 솔로랭크 상태를 실시간으로 확인하고 알림을 받을 수 있는 서비스입니다.',
+  keywords: [
+    'LOL',
+    'League of Legends',
+    'Pro Gamer',
+    'In-game Notification',
+    'LCK',
+    'LCK Notification'
+  ],
+  openGraph: {
+    title: 'ProQ-Noti | 프로들의 협곡을 실시간으로',
+    description:
+      '프로게이머들의 솔로랭크 상태를 실시간으로 확인하고 알림을 받을 수 있는 서비스입니다.',
+    url: 'https://proq-noti.vercel.app',
+    siteName: 'ProQ-Noti',
+    images: [
+      {
+        url: '/og-image.png', // Ensure this file exists in public/
+        width: 1200,
+        height: 630
+      }
+    ],
+    locale: 'ko_KR',
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ProQ-Noti | 프로들의 협곡을 실시간으로',
+    description:
+      '프로게이머들의 솔로랭크 상태를 실시간으로 확인하고 알림을 받을 수 있는 서비스입니다.',
+    images: ['/og-image.png']
+  },
   icons: {
-    icon: '/favicon.ico'
-  }
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png'
+  },
+  manifest: '/manifest.json'
 };
 
 export default async function RootLayout({
@@ -18,15 +76,21 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html
+      lang="ko"
+      data-scroll-behavior="smooth"
+      className={`${pretendard.variable} ${kccGanpan.variable}`}
+    >
       <body
-        className="flex justify-center w-full min-h-screen"
+        className="flex justify-center w-full min-h-screen bg-background text-foreground"
         suppressHydrationWarning
       >
-        <Providers>
-          <AuthProvider />
-          <LayoutRouter>{children}</LayoutRouter>
-        </Providers>
+        <div className="w-full min-w-mobile">
+          <Providers>
+            <AuthProvider />
+            <LayoutRouter>{children}</LayoutRouter>
+          </Providers>
+        </div>
       </body>
       <Pwa />
     </html>

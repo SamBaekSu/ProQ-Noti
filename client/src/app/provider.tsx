@@ -1,9 +1,10 @@
 'use client';
 
-import store from '@/store/store';
+import store from '@/shared/store/store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { PropsWithChildren, useState } from 'react';
+import { ThemeProvider } from '@/shared/contexts/ThemeContext';
 
 const Providers = ({ children }: PropsWithChildren) => {
   const [client] = useState(
@@ -19,7 +20,9 @@ const Providers = ({ children }: PropsWithChildren) => {
 
   return (
     <Provider store={store}>
-      <QueryClientProvider client={client}>{children}</QueryClientProvider>
+      <QueryClientProvider client={client}>
+        <ThemeProvider>{children}</ThemeProvider>
+      </QueryClientProvider>
     </Provider>
   );
 };
