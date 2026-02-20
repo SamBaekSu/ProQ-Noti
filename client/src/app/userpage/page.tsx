@@ -1,13 +1,38 @@
 'use client';
 
-import { Layout } from '@/components/Layout';
-import DeleteAccountModal from '@/components/modal/DeleteAccountModal';
-import SubscribeList from '@/components/subscribeList';
-import { useIsLoggedIn, useUserId } from '@/hooks/useAuth';
-import { IProPlayerData } from '@/types';
-import { supabase } from '@/utils/supabase/client';
+import { Layout } from '@/shared/ui/Layout';
+import DeleteAccountModal from '@/shared/ui/modal/DeleteAccountModal';
+import SubscribeList from '@/shared/ui/subscribeList';
+import { useIsLoggedIn, useUserId } from '@/shared/hooks/useAuth';
+import { IProPlayerData } from '@/shared/types';
+import { supabase } from '@/shared/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+// Types for Supabase join results
+interface SubscriptionWithProUser {
+  riot_pro_user_id: number;
+  created_at: string | null;
+  riot_pro_users: {
+    id: number;
+    pro_name: string;
+    team_id: number | null;
+    position_number: number;
+    is_starter: boolean;
+  } | null;
+}
+
+interface RiotAccountRow {
+  pro_user_id: number;
+  summoner_name: string;
+  tag_line: string;
+  puuid: string;
+  is_online: boolean | null;
+  is_main: boolean | null;
+  last_online: string | null;
+  last_match_id: string | null;
+  streamer_mode: boolean;
+}
 
 export default function UserPage() {
   const router = useRouter();
@@ -58,7 +83,7 @@ export default function UserPage() {
           return;
         }
 
-        const riotProUserIds = subscriptions
+        const riotProUserIds = (subscriptions as SubscriptionWithProUser[])
           .map((s) => s.riot_pro_user_id)
           .filter(Boolean);
 
@@ -74,31 +99,33 @@ export default function UserPage() {
           throw new Error('계정 정보를 가져오는데 실패했습니다.');
         }
 
-        const combinedData = subscriptions.map((subscription) => {
-          const proPlayerData = subscription.riot_pro_users;
-          const riotAccount = riotAccounts?.find(
-            (acc) =>
-              acc.pro_user_id === subscription.riot_pro_user_id && acc.is_main
-          );
+        const combinedData = (subscriptions as SubscriptionWithProUser[]).map(
+          (subscription) => {
+            const proPlayerData = subscription.riot_pro_users;
+            const riotAccount = (riotAccounts as RiotAccountRow[])?.find(
+              (acc) =>
+                acc.pro_user_id === subscription.riot_pro_user_id && acc.is_main
+            );
 
-          return {
-            id: subscription.riot_pro_user_id,
-            pro_name: proPlayerData?.pro_name || 'Unknown',
-            position_number: proPlayerData?.position_number || 0,
-            is_starter: proPlayerData?.is_starter || false,
-            created_at: subscription.created_at,
-            team_id: proPlayerData?.team_id || null,
-            account_id: subscription.riot_pro_user_id,
-            is_subscribed: true,
-            puuid: riotAccount?.puuid || null,
-            summoner_name: riotAccount?.summoner_name || 'Unknown',
-            tag_line: riotAccount?.tag_line || null,
-            is_online: riotAccount?.is_online || false,
-            last_online: riotAccount?.last_online || null,
-            streamer_mode: riotAccount?.streamer_mode,
-            last_match_id: riotAccount?.last_match_id || null
-          };
-        });
+            return {
+              id: subscription.riot_pro_user_id,
+              pro_name: proPlayerData?.pro_name || 'Unknown',
+              position_number: proPlayerData?.position_number || 0,
+              is_starter: proPlayerData?.is_starter || false,
+              created_at: subscription.created_at,
+              team_id: proPlayerData?.team_id || null,
+              account_id: subscription.riot_pro_user_id,
+              is_subscribed: true,
+              puuid: riotAccount?.puuid || null,
+              summoner_name: riotAccount?.summoner_name || 'Unknown',
+              tag_line: riotAccount?.tag_line || null,
+              is_online: riotAccount?.is_online || false,
+              last_online: riotAccount?.last_online || null,
+              streamer_mode: riotAccount?.streamer_mode,
+              last_match_id: riotAccount?.last_match_id || null
+            };
+          }
+        );
 
         setSubscribeList(combinedData as IProPlayerData[]);
       } catch (err) {
@@ -140,10 +167,10 @@ export default function UserPage() {
       <Layout.Header title="마이페이지" handleBack={() => router.back()} />
       <Layout.Main>
         <div className="h-full w-full">
-          <div className="w-full pl-10 pt-10 web:pl-32">
-            <h2 className="text-2xl font-bold">구독 목록</h2>
+          <div className="w-full px-6 pt-8 md:px-10 lg:px-16">
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">구독 목록</h2>
             {!loading && subscribeList.length > 0 && (
-              <p className="text-gray-600 mt-2">
+              <p className="text-gray-400 mt-2 font-semibold">
                 총 {subscribeList.length}명의 프로게이머를 구독중입니다.
               </p>
             )}
@@ -151,15 +178,15 @@ export default function UserPage() {
           <div className="my-6">
             {loading ? (
               <div className="flex items-center justify-center h-32">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-mint"></div>
+                <div className="w-12 h-12 border-4 border-t-mint border-r-transparent border-b-transparent border-l-transparent rounded-sm rotate-45 animate-spin"></div>
               </div>
             ) : error ? (
               <div className="flex items-center justify-center h-32">
                 <div className="text-center">
-                  <p className="text-red-500 mb-4">{error}</p>
+                  <p className="text-red-400 mb-4 font-bold">{error}</p>
                   <button
                     onClick={() => window.location.reload()}
-                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                    className="px-5 py-2.5 bg-dark-card border-2 border-dark-border text-white font-bold uppercase tracking-wide hover:border-coral hover:shadow-[0_0_15px_rgba(233,95,92,0.4)] transition-all"
                   >
                     다시 시도
                   </button>
@@ -167,10 +194,10 @@ export default function UserPage() {
               </div>
             ) : subscribeList.length === 0 ? (
               <div className="flex items-center justify-center">
-                <div className="bg-white rounded-lg shadow-bottom p-8 w-[20.69rem] web:w-[30rem] text-center">
-                  <div className="mb-4">
+                <div className="bg-dark-card border-2 border-coral p-6 md:p-8 w-full mx-auto text-center">
+                  <div className="mb-4 flex justify-center">
                     <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
+                      className="h-12 w-12 text-gray-600"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -183,15 +210,15 @@ export default function UserPage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    구독한 프로게이머가 없습니다
+                  <h3 className="text-lg font-black text-white uppercase tracking-wide mb-2">
+                    No Subscriptions
                   </h3>
-                  <p className="text-gray-500 mb-4">
+                  <p className="text-gray-400 mb-4 font-medium">
                     관심 있는 프로게이머를 구독해보세요!
                   </p>
                   <button
                     onClick={() => router.push('/')}
-                    className="px-4 py-2 bg-primary-mint text-white rounded-md hover:bg-primary-mint/80 transition-colors"
+                    className="px-5 py-2.5 bg-mint/20 border-2 border-mint text-mint font-black uppercase tracking-wide hover:bg-mint/30 hover:shadow-[0_0_15px_rgba(121,206,184,0.4)] transition-all"
                   >
                     프로게이머 둘러보기
                   </button>
@@ -204,10 +231,10 @@ export default function UserPage() {
               />
             )}
           </div>
-          <div className="flex w-full justify-end mt-8 pr-10 web:pr-32 pb-10">
+          <div className="flex w-full justify-end mt-8 px-6 md:px-10 lg:px-16 pb-10">
             <button
               onClick={() => setIsDeleteModalOpen(true)}
-              className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+              className="text-sm text-gray-500 hover:text-red-400 transition-colors font-bold uppercase tracking-wide"
             >
               회원탈퇴
             </button>

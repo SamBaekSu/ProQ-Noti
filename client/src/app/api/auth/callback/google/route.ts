@@ -1,4 +1,4 @@
-import { createClientForServer } from '@/utils/supabase/server';
+import { createClientForServer } from '@/shared/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ message: 'empty user' });
   }
 
-  const { error: insertError } = await supabase.from('users').upsert(
+  const { error: insertError } = await (supabase as any).from('users').upsert(
     {
       id: user.id,
       email: user.email,

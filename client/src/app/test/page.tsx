@@ -1,19 +1,19 @@
 'use client';
 
-import RuneImages from '@/components/RuneImages';
-import SpellImages from '@/components/SpellImages';
+import RuneImages from '@/shared/ui/RuneImages';
+import SpellImages from '@/shared/ui/SpellImages';
 
 const rankedSpellIds = [
-  1,   // Cleanse
-  3,   // Exhaust
-  4,   // Flash
-  6,   // Ghost
-  7,   // Heal
-  11,  // Smite
-  12,  // Teleport
-  13,  // Clarity
-  14,  // Ignite
-  21   // Barrier
+  1, // Cleanse
+  3, // Exhaust
+  4, // Flash
+  6, // Ghost
+  7, // Heal
+  11, // Smite
+  12, // Teleport
+  13, // Clarity
+  14, // Ignite
+  21 // Barrier
 ];
 
 const keystoneRuneIds = [
@@ -32,7 +32,7 @@ const keystoneRuneIds = [
   8303, // First Strike
   8437, // Grasp of the Undying
   8401, // Aftershock
-  8465  // Guardian
+  8465 // Guardian
 ];
 
 const substyleRuneIds = [
@@ -40,7 +40,7 @@ const substyleRuneIds = [
   8100, // Domination
   8200, // Sorcery
   8300, // Inspiration
-  8400  // Resolve
+  8400 // Resolve
 ];
 
 export default function TestPage() {
@@ -51,7 +51,9 @@ export default function TestPage() {
         <RuneImages runePaths={keystoneRuneIds} />
       </div>
 
-      <h1 className="text-2xl font-bold mt-8">🌀 Sub Rune Styles (부룬 스타일)</h1>
+      <h1 className="text-2xl font-bold mt-8">
+        🌀 Sub Rune Styles (부룬 스타일)
+      </h1>
       <div className="flex flex-wrap gap-2">
         <RuneImages runePaths={substyleRuneIds} />
       </div>

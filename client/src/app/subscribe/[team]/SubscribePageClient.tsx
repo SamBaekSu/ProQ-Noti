@@ -1,0 +1,101 @@
+'use client';
+
+import { Layout } from '@/shared/ui/Layout';
+import SubscribeList from '@/shared/ui/subscribeList';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { usePlayerList } from '@/shared/hooks/usePlayer';
+import SubscribeListSkeleton from '@/shared/ui/SubscribeSkeleton';
+import { getFirebaseMessaging } from '@/shared/lib/firebase';
+import { getDeviceType } from '@/shared/lib/device';
+import { useIsLoggedIn, useUserId } from '@/shared/hooks/useAuth';
+import { upsertFcmToken } from '@/actions/fcm';
+import type { IProPlayerData, gamerInfo } from '@/shared/types';
+
+interface SubscribePageClientProps {
+  teamName: string;
+  initialPlayers: gamerInfo[];
+}
+
+export default function SubscribePageClient({
+  teamName,
+  initialPlayers
+}: SubscribePageClientProps) {
+  const router = useRouter();
+  // teamName is passed from Server Component
+  const { members, loading } = usePlayerList(
+    teamName,
+    initialPlayers
+  );
+  const isLoggedIn = useIsLoggedIn();
+  const userId = useUserId();
+  // FCM 토큰 등록 - 한 번만 실행
+  useEffect(() => {
+    if (!isLoggedIn || !userId) return;
+
+    const permission = Notification.permission;
+    if (!('Notification' in window) || permission !== 'default') return;
+
+    // Firebase Messaging 지연 로딩
+    Notification.requestPermission().then(async (result) => {
+      if (result !== 'granted') return;
+
+      const messaging = await getFirebaseMessaging();
+      if (!messaging) return;
+
+      const { getToken } = await import('firebase/messaging');
+      const currentToken = await getToken(messaging, {
+        vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
+      });
+
+      if (currentToken && userId) {
+        const deviceType = getDeviceType();
+        upsertFcmToken(userId, currentToken, deviceType)
+          .then((res) => {
+            if (res.status === 'success') {
+              console.log('FCM 토큰 등록 완료:', currentToken);
+            } else {
+              console.warn('FCM 토큰 저장 실패:', res.message);
+            }
+          })
+          .catch((error) => {
+            console.error('FCM 토큰 저장 중 오류 발생:', error);
+          });
+      }
+    });
+
+  }, [isLoggedIn, userId]); // teamName 의존성 제거 - 페이지 이동 시마다 실행될 필요 없음
+
+  return (
+    <>
+      <Layout>
+        <Layout.Header title={teamName} handleBack={() => router.back()} />
+        <Layout.Main>
+          <div className="flex justify-center w-full">
+            <div className="w-full">
+              {loading ? (
+                <div className="py-6">
+                  <SubscribeListSkeleton />
+                </div>
+              ) : (
+                <SubscribeList list={members as IProPlayerData[]} />
+              )}
+            </div>
+          </div>
+          <div className="flex justify-center w-full px-4 md:px-6 lg:px-8 py-4">
+            <div className="w-full flex justify-center">
+              <a
+                href="https://forms.gle/r8jky7uKPyCMuwdR6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors font-semibold uppercase tracking-wide border-b-2 border-transparent hover:border-coral"
+              >
+                계정 추가 제보
+              </a>
+            </div>
+          </div>
+        </Layout.Main>
+      </Layout>
+    </>
+  );
+}
