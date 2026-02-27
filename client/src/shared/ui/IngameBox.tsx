@@ -470,20 +470,6 @@ export default function IngameBox({
                 )}
               </div>
 
-              {/* Player Name (for non-streamer mode - 데스크탑 원본 위치 유지) */}
-              {/* {!streamer_mode && (
-                <div className="hidden md:flex items-center gap-2">
-                  <span className="text-lg font-black text-white tracking-wide">
-                    {summoner_name}
-                    {tag_line && (
-                      <span className="text-base text-gray-400 font-bold">
-                        #{tag_line}
-                      </span>
-                    )}
-                  </span>
-                </div>
-              )} */}
-
               {/* Game Info Footer (모바일 최적화 배치) */}
               <div className="flex flex-row flex-wrap gap-2 sm:gap-3 text-sm justify-center items-center pt-4 border-t-2 border-dark-border">
                 <div className="flex gap-2 items-center px-4 py-2 bg-dark-hover border border-dark-border rounded-md">
