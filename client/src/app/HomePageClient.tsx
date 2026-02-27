@@ -26,7 +26,10 @@ interface HomePageClientProps {
   initialLivePlayers: LivePlayer[];
 }
 
-export default function HomePageClient({ initialTeams, initialLivePlayers }: HomePageClientProps) {
+export default function HomePageClient({
+  initialTeams,
+  initialLivePlayers
+}: HomePageClientProps) {
   const router = useRouter();
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   // We use initialTeams passed from Server Component
@@ -142,7 +145,9 @@ export default function HomePageClient({ initialTeams, initialLivePlayers }: Hom
                 {livePlayers.map((player) => (
                   <button
                     key={player.id}
-                    onClick={() => router.push(`/subscribe/${player.team_abbr}`)}
+                    onClick={() =>
+                      router.push(`/subscribe/${player.team_abbr}`)
+                    }
                     className="group flex flex-col p-4 bg-dark-card/80 backdrop-blur-sm border-2 border-coral/50 rounded-lg hover:border-coral hover:shadow-[0_0_20px_rgba(233,95,92,0.4)] transition-all duration-300 hover:-translate-y-1 hover:bg-gradient-to-br hover:from-coral/10 hover:to-transparent"
                   >
                     {/* Live indicator */}
@@ -152,14 +157,11 @@ export default function HomePageClient({ initialTeams, initialLivePlayers }: Hom
 
                     {/* Player Info */}
                     <div className="flex flex-col items-center gap-2 text-center">
-                      <p className="text-lg md:text-xl font-black text-white uppercase tracking-wide">
+                      <p className="text-lg md:text-xl font-black text-white tracking-wide">
                         {player.pro_name}
                       </p>
                       <p className="text-xs md:text-sm text-gray-400 font-semibold">
                         {player.team_name}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate w-full">
-                        {player.summoner_name}#{player.tag_line}
                       </p>
                     </div>
                   </button>
@@ -172,6 +174,6 @@ export default function HomePageClient({ initialTeams, initialLivePlayers }: Hom
         {/* Team Selection */}
         <TeamGrid onSelectTeam={handleSelectTeam} teamList={teams} />
       </Layout.Main>
-    </Layout >
+    </Layout>
   );
 }
