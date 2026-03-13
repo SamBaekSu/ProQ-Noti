@@ -8,6 +8,7 @@ import { IProPlayerData } from '@/shared/types';
 import { supabase } from '@/shared/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import SubscribeListSkeleton from '@/shared/ui/SubscribeSkeleton';
 
 // Types for Supabase join results
 interface SubscriptionWithProUser {
@@ -168,7 +169,9 @@ export default function UserPage() {
       <Layout.Main>
         <div className="h-full w-full">
           <div className="w-full px-6 pt-8 md:px-10 lg:px-16">
-            <h2 className="text-2xl font-black text-white uppercase tracking-wide">구독 목록</h2>
+            <h2 className="text-2xl font-black text-white uppercase tracking-wide">
+              구독 목록
+            </h2>
             {!loading && subscribeList.length > 0 && (
               <p className="text-gray-400 mt-2 font-semibold">
                 총 {subscribeList.length}명의 프로게이머를 구독중입니다.
@@ -177,9 +180,7 @@ export default function UserPage() {
           </div>
           <div className="my-6">
             {loading ? (
-              <div className="flex items-center justify-center h-32">
-                <div className="w-12 h-12 border-4 border-t-mint border-r-transparent border-b-transparent border-l-transparent rounded-sm rotate-45 animate-spin"></div>
-              </div>
+              <SubscribeListSkeleton />
             ) : error ? (
               <div className="flex items-center justify-center h-32">
                 <div className="text-center">
