@@ -8,30 +8,21 @@ interface TeamGridProps {
   selectedTeam?: string | null;
 }
 
-// LCK 팀 목록 (2025 기준)
-const LCK_TEAMS = ['T1', 'GEN', 'DK', 'HLE', 'KT', 'DRX', 'NS', 'BRO', 'FOX', 'KDF', 'BNK', 'DN'];
-
 // 팀을 그룹별로 분류
 function groupTeams(teams: Team[]) {
   const lckTeams: Team[] = [];
-  const challengersTeams: Team[] = [];
   const otherTeams: Team[] = [];
 
   teams.forEach((team) => {
-    const abbr = team.name_abbr.trim();
-    if (LCK_TEAMS.includes(abbr)) {
+    const id = team.id;
+    if (id <= 10) {
       lckTeams.push(team);
-    } else if (
-      abbr.includes('CL') ||
-      abbr === 'OK'
-    ) {
-      challengersTeams.push(team);
     } else {
       otherTeams.push(team);
     }
   });
 
-  return { lckTeams, challengersTeams, otherTeams };
+  return { lckTeams, otherTeams };
 }
 
 /**
@@ -48,12 +39,14 @@ export function TeamGrid({
   if (!teamList || teamList.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-[400px] w-full">
-        <p className="text-gray-400 text-lg font-bold uppercase">팀 정보를 불러올 수 없습니다.</p>
+        <p className="text-gray-400 text-lg font-bold uppercase">
+          팀 정보를 불러올 수 없습니다.
+        </p>
       </div>
     );
   }
 
-  const { lckTeams, challengersTeams, otherTeams } = groupTeams(teamList);
+  const { lckTeams, otherTeams } = groupTeams(teamList);
 
   const gridClassName = cn(
     'w-full grid',
@@ -82,34 +75,6 @@ export function TeamGrid({
             </div>
             <div className={gridClassName}>
               {lckTeams.map((team) => (
-                <div key={team.id} className="w-full flex justify-center">
-                  <TeamCard
-                    team={team}
-                    selected={selectedTeam === team.name_abbr}
-                    onClick={() => onSelectTeam(team.name_abbr)}
-                  />
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Challengers League Teams */}
-        {challengersTeams.length > 0 && (
-          <section className="mb-12 md:mb-16" role="group" aria-label="Challengers League 팀">
-            <div className="mb-6 md:mb-8 relative">
-              <div className="flex items-center gap-4">
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-white uppercase tracking-wider">
-                  Challengers League
-                </h2>
-                <div className="flex-1 h-px bg-gradient-to-r from-mint/50 to-transparent" />
-              </div>
-              <p className="text-sm md:text-base text-gray-400 mt-2 font-semibold">
-                {challengersTeams.length}개 팀
-              </p>
-            </div>
-            <div className={gridClassName}>
-              {challengersTeams.map((team) => (
                 <div key={team.id} className="w-full flex justify-center">
                   <TeamCard
                     team={team}
