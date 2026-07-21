@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '@/shared/lib/utils';
 import { useFocusTrap } from '@/shared/lib/a11y';
 import { FOCUS_RING } from '@/shared/lib/component-utils';
@@ -44,7 +45,7 @@ export function ConfirmDialog({
 
   if (!isOpen) return null;
 
-  return (
+  const dialog = (
     <div
       className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-modal-backdrop"
       role="dialog"
@@ -54,7 +55,7 @@ export function ConfirmDialog({
     >
       <div
         ref={dialogRef}
-        className="bg-dark-card border-2 border-coral rounded-2xl p-6 sm:p-8 w-[20rem] sm:w-[28rem] mx-4 animate-scale-in shadow-[0_8px_32px_rgba(0,0,0,0.6)]"
+        className="relative z-modal bg-dark-card border-2 border-coral rounded-2xl p-6 sm:p-8 w-[20rem] sm:w-[28rem] mx-4 animate-scale-in shadow-[0_8px_32px_rgba(0,0,0,0.6)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
@@ -110,4 +111,8 @@ export function ConfirmDialog({
       </div>
     </div>
   );
+
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(dialog, document.body);
 }

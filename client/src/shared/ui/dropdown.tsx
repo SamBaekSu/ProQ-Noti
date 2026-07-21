@@ -213,7 +213,7 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
               border: '1px solid var(--dropdown-border)',
               borderRadius: '8px',
               boxShadow: 'var(--dropdown-shadow)',
-              zIndex: 9999,
+              zIndex: 'var(--z-dropdown)',
               overflow: 'hidden'
             }}
             role="menu"
@@ -359,6 +359,7 @@ const Dropdown = ({ isOpen = false }: DropdownProps) => {
                   >
                     <button
                       onClick={() => {
+                        setOpen(false);
                         setShowConfirmDialog(true);
                       }}
                       style={{
