@@ -24,6 +24,7 @@ interface SubscriptionWithProUser {
 }
 
 interface RiotAccountRow {
+  id: number;
   pro_user_id: number;
   summoner_name: string;
   tag_line: string;
@@ -91,7 +92,7 @@ export default function UserPage() {
         const { data: riotAccounts, error: riotAccountsError } = await supabase
           .from('riot_accounts')
           .select(
-            'pro_user_id, summoner_name, tag_line, puuid, is_online, is_main, last_online, last_match_id, streamer_mode'
+            'id, pro_user_id, summoner_name, tag_line, puuid, is_online, is_main, last_online, last_match_id, streamer_mode'
           )
           .in('pro_user_id', riotProUserIds);
 
@@ -103,10 +104,15 @@ export default function UserPage() {
         const combinedData = (subscriptions as SubscriptionWithProUser[]).map(
           (subscription) => {
             const proPlayerData = subscription.riot_pro_users;
-            const riotAccount = (riotAccounts as RiotAccountRow[])?.find(
-              (acc) =>
-                acc.pro_user_id === subscription.riot_pro_user_id && acc.is_main
-            );
+            const riotAccount = (riotAccounts as RiotAccountRow[])
+              ?.filter(
+                (acc) => acc.pro_user_id === subscription.riot_pro_user_id
+              )
+              .sort(
+                (a, b) =>
+                  Number(b.is_online) - Number(a.is_online) ||
+                  Number(b.is_main) - Number(a.is_main)
+              )[0];
 
             return {
               id: subscription.riot_pro_user_id,
@@ -115,14 +121,14 @@ export default function UserPage() {
               is_starter: proPlayerData?.is_starter || false,
               created_at: subscription.created_at,
               team_id: proPlayerData?.team_id || null,
-              account_id: subscription.riot_pro_user_id,
+              account_id: riotAccount?.id || subscription.riot_pro_user_id,
               is_subscribed: true,
               puuid: riotAccount?.puuid || null,
               summoner_name: riotAccount?.summoner_name || 'Unknown',
               tag_line: riotAccount?.tag_line || null,
               is_online: riotAccount?.is_online || false,
               last_online: riotAccount?.last_online || null,
-              streamer_mode: riotAccount?.streamer_mode,
+              streamer_mode: riotAccount?.streamer_mode || false,
               last_match_id: riotAccount?.last_match_id || null
             };
           }
