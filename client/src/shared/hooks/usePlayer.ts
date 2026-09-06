@@ -75,6 +75,7 @@ export function usePlayerList(team: string, initialData?: gamerInfo[]) {
           if (!currentMembers) return;
 
           const newOnline = payload.new?.is_online;
+          const newLastMatchId = payload.new?.last_match_id;
           const proUserId = payload.new?.pro_user_id;
           const accountId = payload.new?.id;
 
@@ -86,6 +87,7 @@ export function usePlayerList(team: string, initialData?: gamerInfo[]) {
           if (!currentMember) return;
 
           const oldOnline = currentMember.is_online;
+          const oldLastMatchId = currentMember.last_match_id;
           //새로 받아온게 지금 보는 계정이 아닌 다른 부계정이고 상태가 online이면 새로고침
           if (currentMember.account_id !== accountId) {
             if (newOnline) {
@@ -103,7 +105,10 @@ export function usePlayerList(team: string, initialData?: gamerInfo[]) {
 
           // 새로 받아온 계정이 지금 보는 계정이고 상태가 바뀌었으면
           if (currentMember.account_id === accountId) {
-            if (newOnline !== oldOnline) {
+            if (
+              newOnline !== oldOnline ||
+              newLastMatchId !== oldLastMatchId
+            ) {
               if (debounceTimerRef.current) {
                 clearTimeout(debounceTimerRef.current);
               }

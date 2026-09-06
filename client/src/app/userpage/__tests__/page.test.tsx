@@ -86,9 +86,7 @@ describe('UserPage', () => {
 
     render(<UserPage />);
 
-    // Loading spinner should be present
-    const spinner = document.querySelector('.animate-spin');
-    expect(spinner).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: '로딩 중' })).toBeInTheDocument();
   });
 
   it('should show empty state when not logged in', async () => {
@@ -236,6 +234,71 @@ describe('UserPage', () => {
     await waitFor(() => {
       expect(screen.getByTestId('player-1')).toBeInTheDocument();
       expect(screen.getByText('Faker')).toBeInTheDocument();
+    });
+  });
+
+  it('should render subscribed non-starter players on my page', async () => {
+    const { useIsLoggedIn, useUserId } = await import('@/shared/hooks/useAuth');
+    const { supabase } = await import('@/shared/lib/supabase/client');
+
+    (useIsLoggedIn as any).mockReturnValue(true);
+    (useUserId as any).mockReturnValue('user-123');
+
+    const mockSubscriptions = [
+      {
+        riot_pro_user_id: 2,
+        created_at: '2024-01-01',
+        riot_pro_users: {
+          id: 2,
+          pro_name: 'Rekkles',
+          team_id: 99,
+          position_number: 6,
+          is_starter: false
+        }
+      }
+    ];
+
+    const mockRiotAccounts = [
+      {
+        id: 20,
+        pro_user_id: 2,
+        summoner_name: 'Rekkles account',
+        tag_line: 'EUW',
+        puuid: 'puuid-456',
+        is_online: false,
+        is_main: true,
+        last_online: null,
+        last_match_id: null,
+        streamer_mode: false
+      }
+    ];
+
+    (supabase.from as any).mockImplementation((table: string) => {
+      if (table === 'subscribe') {
+        return {
+          select: vi.fn(() => ({
+            eq: vi.fn(() =>
+              Promise.resolve({ data: mockSubscriptions, error: null })
+            )
+          }))
+        };
+      }
+      if (table === 'riot_accounts') {
+        return {
+          select: vi.fn(() => ({
+            in: vi.fn(() =>
+              Promise.resolve({ data: mockRiotAccounts, error: null })
+            )
+          }))
+        };
+      }
+    });
+
+    render(<UserPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('player-2')).toBeInTheDocument();
+      expect(screen.getByText('Rekkles')).toBeInTheDocument();
     });
   });
 

@@ -28,7 +28,20 @@ import { announceStateChange } from '@/shared/lib/a11y';
 const FETCH_INTERVAL = 3000;
 const ARENA_GAME_MODES = ['CHERRY'];
 const ARENA_QUEUE_IDS = [1700, 1710];
-const RIOT_API_KEY = process.env.NEXT_PUBLIC_RIOT_API_KEY;
+type GameDataKind = 'live' | 'match';
+
+async function fetchMatchResult(matchId: string) {
+  const res = await fetch(`/api/match?matchId=${encodeURIComponent(matchId)}`, {
+    cache: 'no-store'
+  });
+
+  if (!res.ok) {
+    throw new Error('전적 정보를 불러올 수 없습니다');
+  }
+
+  const json = await res.json();
+  return json.info ?? null;
+}
 
 export default function IngameBox({
   pro_name,
@@ -52,12 +65,12 @@ export default function IngameBox({
   const [loading, setLoading] = useState(false);
 
   const [loadingProgress, setLoadingProgress] = useState(10);
-  console.log(summoner_name);
 
   const [liveGame, setLiveGame] = useState<LiveGameData<
     StreamerModePlayerFields,
     StreamerModeGameFields
   > | null>(null);
+  const [gameDataKind, setGameDataKind] = useState<GameDataKind | null>(null);
   const lastFetchTimeRef = useRef<number>(0);
   const { toast } = useToast();
   const userId = useUserId();
@@ -75,6 +88,7 @@ export default function IngameBox({
 
   useEffect(() => {
     if (!puuid || !isOpen || hasFetched) return;
+    if ((streamer_mode || !is_online) && !last_match_id) return;
 
     const now = Date.now();
     const timeSinceLastFetch = now - lastFetchTimeRef.current;
@@ -88,88 +102,89 @@ export default function IngameBox({
     }
 
     lastFetchTimeRef.current = now;
-    setLoading(true);
+    const loadMatchResult = async () => {
+      if (!last_match_id) {
+        setLiveGame(null);
+        setGameDataKind(null);
+        return;
+      }
 
-    if (streamer_mode) {
-      fetch(
-        `https://asia.api.riotgames.com/lol/match/v5/matches/${last_match_id}?api_key=${RIOT_API_KEY}`,
-        { cache: 'no-store' }
-      )
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error('전적 정보를 불러올 수 없습니다');
-          }
-          return res.json();
-        })
-        .then((json) => {
-          if (json.info) {
-            setLiveGame(json.info);
-          } else {
-            setLiveGame(null);
-          }
-          setHasFetched(true);
-        })
-        .catch((error) => {
-          toast({
-            description:
-              '전적 정보를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.'
-          });
-          setLiveGame(null);
-          setHasFetched(true);
-        })
-        .finally(() => {
-          setLoading(false);
+      const matchInfo = await fetchMatchResult(last_match_id);
+      setLiveGame(matchInfo);
+      setGameDataKind(matchInfo ? 'match' : null);
+    };
+
+    const loadGameData = async () => {
+      setLoading(true);
+
+      try {
+        if (streamer_mode || !is_online) {
+          await loadMatchResult();
+          return;
+        }
+
+        const res = await fetch(`/api/live-game?summonerId=${puuid}`, {
+          cache: 'no-store'
         });
-    } else {
-      fetch(`/api/live-game?summonerId=${puuid}`, { cache: 'no-store' })
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error('게임 정보를 불러올 수 없습니다');
-          }
-          return res.json();
-        })
-        .then((json) => {
-          if (json.inGame) {
-            setLiveGame(json.game);
-          } else {
-            setLiveGame(null);
-          }
-          setHasFetched(true);
-        })
-        .catch((error) => {
-          toast({
-            description:
-              '게임 정보를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.'
-          });
-          setLiveGame(null);
-          setHasFetched(true);
-        })
-        .finally(() => {
-          setLoading(false);
+
+        if (!res.ok) {
+          throw new Error('게임 정보를 불러올 수 없습니다');
+        }
+
+        const json = await res.json();
+
+        if (json.inGame) {
+          setLiveGame(json.game);
+          setGameDataKind('live');
+        } else {
+          await loadMatchResult();
+        }
+      } catch {
+        toast({
+          description:
+            '게임 정보를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.'
         });
-    }
-  }, [puuid, isOpen, hasFetched, streamer_mode, last_match_id, toast]);
+        setLiveGame(null);
+        setGameDataKind(null);
+      } finally {
+        setHasFetched(true);
+        setLoading(false);
+      }
+    };
+
+    loadGameData();
+  }, [
+    puuid,
+    isOpen,
+    hasFetched,
+    streamer_mode,
+    is_online,
+    last_match_id,
+    toast
+  ]);
 
   useEffect(() => {
     if (!isOpen) {
       setLoading(false);
       setHasFetched(false);
+      setGameDataKind(null);
     }
   }, [isOpen]);
 
+  const isMatchResult = gameDataKind === 'match';
   const player = liveGame?.participants.find(
     (p: LiveGameParticipant) => p.puuid === puuid
   );
   const championId = player ? player.championId : null;
   const spellIds = player
-    ? streamer_mode
+    ? isMatchResult
       ? [player.summoner1Id, player.summoner2Id]
       : [player.spell1Id, player.spell2Id]
     : [];
 
   const runePaths = player?.perks
-    ? streamer_mode
-      ? [player.perks.styles[0].style, player.perks.styles[1].style]
+    ? isMatchResult
+      ? [player.perks.styles?.[0]?.style, player.perks.styles?.[1]?.style]
       : [player.perks.perkStyle, player.perks.perkSubStyle]
     : [];
 
@@ -182,11 +197,25 @@ export default function IngameBox({
 
   const isArenaMode = (game: LiveGameData | null): boolean => {
     if (!game) return false;
+    const queueId = game.gameQueueConfigId ?? (game as any).queueId;
 
     return (
       ARENA_GAME_MODES.includes(game.gameMode) ||
-      ARENA_QUEUE_IDS.includes(game.gameQueueConfigId)
+      ARENA_QUEUE_IDS.includes(queueId)
     );
+  };
+
+  const getGameTimeLabel = (game: LiveGameData): string => {
+    const timestamp = isMatchResult
+      ? (game as any).gameEndTimestamp
+      : game.gameStartTime;
+
+    if (typeof timestamp !== 'number') {
+      return isMatchResult ? '최근 전적' : '진행 중';
+    }
+
+    const minutes = Math.max(0, Math.floor((Date.now() - timestamp) / 60000));
+    return `${minutes}분 전 ${isMatchResult ? '종료' : '시작'}`;
   };
 
   const handleSubscribeClick = async (event: MouseEvent<HTMLButtonElement>) => {
@@ -341,7 +370,7 @@ export default function IngameBox({
                 </div>
               </div>
             </div>
-          ) : liveGame && isArenaMode(liveGame) ? (
+          ) : liveGame && !isMatchResult && isArenaMode(liveGame) ? (
             <div className="relative flex flex-col items-center justify-center gap-4 py-6 z-10">
               <div className="relative flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-yellow/20 to-amber-500/20 border-2 border-yellow shadow-[0_0_20px_rgba(255,219,0,0.3)]">
                 <GiSwordClash className="w-6 h-6 text-yellow drop-shadow-[0_0_8px_rgba(255,219,0,0.8)] animate-pulse" />
@@ -425,7 +454,7 @@ export default function IngameBox({
                 </div>
 
                 {/* 3. KDA Stats */}
-                {streamer_mode ? (
+                {isMatchResult ? (
                   <div className="flex flex-col gap-1 flex-1 min-w-0 items-center pr-1 md:pr-0">
                     <div className="flex items-center gap-1 md:gap-2">
                       <span className="text-base md:text-xl font-black text-white whitespace-nowrap">
@@ -455,7 +484,7 @@ export default function IngameBox({
                 )}
 
                 {/* 4. 승패 배지 */}
-                {streamer_mode && (
+                {isMatchResult && (
                   <div
                     className={cn(
                       'flex items-center justify-center font-black uppercase tracking-wide border-2 flex-shrink-0',
@@ -475,18 +504,14 @@ export default function IngameBox({
                 <div className="flex gap-2 items-center px-4 py-2 bg-dark-hover border border-dark-border rounded-md">
                   <FaHourglassStart className="w-4 h-4 flex-shrink-0 text-coral" />
                   <span className="font-bold text-gray-300">
-                    {streamer_mode
-                      ? `${Math.max(0, Math.floor((Date.now() - liveGame!.gameEndTimestamp) / 60000))}분 전 종료`
-                      : `${Math.max(0, Math.floor((Date.now() - liveGame!.gameStartTime) / 60000))}분 전 시작`}
+                    {getGameTimeLabel(liveGame!)}
                   </span>
                 </div>
 
                 <span className="px-4 py-2 bg-mint/20 text-mint border-2 border-mint/50 font-black uppercase tracking-wide rounded-md shadow-[0_0_10px_rgba(121,206,184,0.3)]">
-                  {
-                    gameModeMap[
-                      (liveGame?.gameMode as keyof typeof gameModeMap) || ''
-                    ]
-                  }
+                  {gameModeMap[
+                    (liveGame?.gameMode as keyof typeof gameModeMap) || ''
+                  ] ?? '게임 정보'}
                 </span>
               </div>
             </div>
@@ -499,7 +524,9 @@ export default function IngameBox({
                 Offline
               </span>
               <span className="text-sm text-gray-500 font-medium">
-                게임이 시작되면 알려드릴게요
+                {last_match_id
+                  ? '최근 전적을 불러올 수 없습니다'
+                  : '최근 전적이 저장되면 보여드릴게요'}
               </span>
             </div>
           )}
