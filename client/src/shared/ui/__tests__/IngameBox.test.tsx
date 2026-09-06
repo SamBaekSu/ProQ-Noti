@@ -63,7 +63,8 @@ describe('IngameBox', () => {
     onBoxClick: mockOnBoxClick,
     loggedIn: false,
     puuid: 'test-puuid',
-    id: '1',
+    id: 1,
+    account_id: 1,
     streamer_mode: false,
     last_match_id: null
   };
@@ -118,6 +119,63 @@ describe('IngameBox', () => {
     render(<IngameBox {...defaultProps} isOpen={true} />);
 
     expect(screen.getByText(/Hide on bush/)).toBeInTheDocument();
+  });
+
+  it('should render latest match result when offline and last_match_id exists', async () => {
+    const matchInfo = {
+      gameMode: 'CLASSIC',
+      gameEndTimestamp: Date.now() - 60_000,
+      gameLength: 1800,
+      gameQueueConfigId: 420,
+      participants: [
+        {
+          puuid: 'test-puuid',
+          summonerName: 'Hide on bush',
+          championId: 103,
+          summoner1Id: 4,
+          summoner2Id: 14,
+          champLevel: 14,
+          kills: 3,
+          deaths: 1,
+          assists: 5,
+          win: true,
+          perks: {
+            styles: [
+              { style: 8000, description: 'primaryStyle', selections: [] },
+              { style: 8100, description: 'subStyle', selections: [] }
+            ],
+            statPerks: {}
+          }
+        }
+      ]
+    };
+
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ info: matchInfo })
+    });
+
+    render(
+      <IngameBox
+        {...defaultProps}
+        isOpen={true}
+        last_match_id="KR_1234567890"
+      />
+    );
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        '/api/match?matchId=KR_1234567890',
+        { cache: 'no-store' }
+      );
+    });
+
+    expect(await screen.findByText('W')).toBeInTheDocument();
+    expect(screen.getByText('8.00:1 KDA')).toBeInTheDocument();
+    expect(screen.getByTestId('champion-image')).toHaveAttribute(
+      'data-champion-id',
+      '103'
+    );
   });
 
   it('should not show summoner name when collapsed', () => {
